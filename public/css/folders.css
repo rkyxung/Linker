@@ -1,38 +1,49 @@
 /* 폴더 상세 페이지 스타일 */
 
-.folder-hero-card {
-  min-height: 8vw;
-  padding: 2vw 4vw;
+.hero-card.folder-hero-card {
+  position: relative;
+  padding: 4.62vh 3.2vw 2.5vh;
+  border-radius: 1.67vw;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: linear-gradient(110deg, #2f6bff 0%, #2bd0ff 45%, #42e0cb 100%);
+  color: #ffffff;
+  min-height: 18.5vh;
+  box-shadow: 0 1vw 2.5vh rgba(47, 107, 255, 0.1);
+  overflow: hidden;
 }
 
-.folder-hero-text {
+.hero-card.folder-hero-card .folder-hero-text {
   flex: 1;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.30vh;
+  color: #ffffff;
 }
 
-.folder-hero-nickname {
+.hero-card.folder-hero-card .folder-hero-nickname {
   font-size: 2vw;
   font-weight: 700;
   margin: 0;
   display: flex;
   align-items: center;
   gap: 1vw;
+  color: #ffffff;
 }
 
-.folder-hero-description {
+.hero-card.folder-hero-card .folder-hero-description {
   font-size: 0.9vw;
   margin: 0.5vw 0 0 0;
   color: rgba(255, 255, 255, 0.8);
 }
 
-.folder-board-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr));
-  gap: 1.2vw;
+.board-panel.folder-board-panel.is-active {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr)) !important;
+  gap: 1.2vw !important;
 }
 
 .folder-post-card {
@@ -113,7 +124,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5vw;
-  margin-bottom: 0.8vw;
   padding-bottom: 0.8vw;
   border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);
 }
@@ -134,14 +144,14 @@
 
 .folder-post-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 1vw;
   font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
 }
 
 .folder-remove-section {
-  margin-top: 0.5vw;
   padding-top: 0.5vw;
   border-top: 0.05vw solid rgba(31, 61, 122, 0.1);
 }

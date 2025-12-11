@@ -196,22 +196,54 @@
             <% if (typeof popularCampus !== 'undefined' && popularCampus && popularCampus.length > 0) { %>
               <div class="trend-panel-grid">
                 <% popularCampus.forEach(post => { %>
-                  <article class="post-card post-card--trend" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
-                    <div class="post-card--trend-content">
-                      <h3 class="post-card--trend-title"><%= post.title %></h3>
-                      <p class="post-card--trend-meta">
-                        <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
-                        · 스크랩 <%= post.scraps || 0 %>
+                  <article class="post-card" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
+                    <!-- 상단: 제목 + 스크랩/댓글 -->
+                    <div class="post-card-header">
+                      <h2 class="post-card-title"><%= post.title %></h2>
+                      <div class="post-card-actions" onclick="event.stopPropagation();">
+                        <button type="button" class="scrap-btn-preview" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="<%= post.isScrapped ? 'true' : 'false' %>">
+                          <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="<%= post.isScrapped ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isScrapped ? '#1D5DFF' : 'none' %>"/>
+                          </svg>
+                          <span class="post-scraps-preview-<%= post._id %>"><%= post.scraps || 0 %></span>
+                        </button>
+                        <div class="post-card-comment">
+                          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <mask id="path-1-inside-1_389_1164_<%= post._id %>_popular_campus" fill="white">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
+                            </mask>
+                            <path d="M20 10.001L18 10.0021V10.001H20ZM19.049 14.263L17.0897 14.6646L16.9562 14.0133L17.2392 13.4117L19.049 14.263ZM19.979 18.8L21.9383 18.3984L21.9385 18.3995L19.979 18.8ZM18.799 19.98L18.3985 21.9395L18.3974 21.9393L18.799 19.98ZM14.262 19.05L13.4092 17.2409L14.0114 16.957L14.6636 17.0907L14.262 19.05ZM10 0.00100005V-1.999C16.6276 -1.999 22 3.37343 22 10.001H20H18C18 5.58257 14.4184 2.001 10 2.001V0.00100005ZM20 10.001L22 9.99985C22.001 11.7679 21.6113 13.5143 20.8588 15.1142L19.049 14.263L17.2392 13.4117C17.7409 12.3451 18.0007 11.1809 18 10.0021L20 10.001ZM19.049 14.263L21.0083 13.8614L21.9383 18.3984L19.979 18.8L18.0197 19.2016L17.0897 14.6646L19.049 14.263ZM19.979 18.8L21.9385 18.3995C22.0378 18.8855 22.0151 19.3885 21.8724 19.8635L19.957 19.288L18.0416 18.7125C17.994 18.8708 17.9864 19.0385 18.0195 19.2005L19.979 18.8ZM19.957 19.288L21.8724 19.8635C21.7296 20.3386 21.4713 20.7708 21.1206 21.1216L19.7064 19.7074L18.2921 18.2931C18.1752 18.4101 18.0891 18.5541 18.0416 18.7125L19.957 19.288ZM19.7064 19.7074L21.1206 21.1216C20.7698 21.4723 20.3376 21.7306 19.8625 21.8734L19.287 19.958L18.7115 18.0426C18.5531 18.0901 18.4091 18.1762 18.2921 18.2931L19.7064 19.7074ZM19.287 19.958L19.8625 21.8734C19.3875 22.0161 18.8845 22.0388 18.3985 21.9395L18.799 19.98L19.1995 18.0205C19.0375 17.9874 18.8698 17.995 18.7115 18.0426L19.287 19.958ZM18.799 19.98L18.3974 21.9393L13.8604 21.0093L14.262 19.05L14.6636 17.0907L19.2006 18.0207L18.799 19.98ZM14.262 19.05L15.1148 20.8591C13.5591 21.5924 11.8223 22 10 22V20V18C11.2217 18 12.3769 17.7275 13.4092 17.2409L14.262 19.05ZM10 20V22C3.37256 22 -2 16.6287 -2 10H0H2C2 14.4193 5.58144 18 10 18V20ZM0 10H-2C-2 3.37356 3.3723 -2 10 -2V0V2C5.5817 2 2 5.58244 2 10H0Z" fill="#818181" mask="url(#path-1-inside-1_389_1164_<%= post._id %>_popular_campus)"/>
+                          </svg>
+                          <span><%= post.comments || 0 %></span>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 본문: 내용 -->
+                    <div class="post-card-body">
+                      <p class="post-card-content">
+                        <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
                       </p>
-                      <p class="post-card--trend-content-text">
-                        <%= post.content.length > 90 ? post.content.substring(0, 90) + '...' : post.content %>
-                      </p>
+                    </div>
+                    <!-- 해시태그 -->
+                    <% if (post.hashtags && post.hashtags.length > 0) { %>
+                      <div class="post-card-hashtags">
+                        <% post.hashtags.forEach(tag => { %>
+                          <span class="post-card-hashtag">#<%= tag %></span>
+                        <% }) %>
+                      </div>
+                    <% } else { %>
+                      <div class="post-card-hashtags-empty"></div>
+                    <% } %>
+                    <!-- 하단: 글쓴이 + 마감일 -->
+                    <div class="post-card-footer">
+                      <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
+                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
                     </div>
                   </article>
                 <% }) %>
               </div>
             <% } else { %>
-              <article class="post-card post-card--empty post-card--trend" aria-live="polite">
+              <article class="post-card post-card--empty" aria-live="polite">
                 <div class="post-empty__message">
                   <strong>등록된 글이 없습니다</strong>
                   인기 캠퍼스 글이 있으면 이곳에 표시됩니다.
@@ -224,22 +256,54 @@
             <% if (typeof popularContest !== 'undefined' && popularContest && popularContest.length > 0) { %>
               <div class="trend-panel-grid">
                 <% popularContest.forEach(post => { %>
-                  <article class="post-card post-card--trend" onclick="window.location.href='<%= post.postType === 'recruit' ? '/contest/' : '/contest/seek/' %><%= post._id %>'">
-                    <div class="post-card--trend-content">
-                      <h3 class="post-card--trend-title"><%= post.title %></h3>
-                      <p class="post-card--trend-meta">
-                        <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
-                        · 스크랩 <%= post.scraps || 0 %>
+                  <article class="post-card" onclick="window.location.href='<%= post.postType === 'recruit' ? '/contest/' : '/contest/seek/' %><%= post._id %>'">
+                    <!-- 상단: 제목 + 스크랩/댓글 -->
+                    <div class="post-card-header">
+                      <h2 class="post-card-title"><%= post.title %></h2>
+                      <div class="post-card-actions" onclick="event.stopPropagation();">
+                        <button type="button" class="scrap-btn-preview" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="<%= post.isScrapped ? 'true' : 'false' %>">
+                          <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="<%= post.isScrapped ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isScrapped ? '#1D5DFF' : 'none' %>"/>
+                          </svg>
+                          <span class="post-scraps-preview-<%= post._id %>"><%= post.scraps || 0 %></span>
+                        </button>
+                        <div class="post-card-comment">
+                          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <mask id="path-1-inside-1_389_1164_<%= post._id %>_popular_contest" fill="white">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
+                            </mask>
+                            <path d="M20 10.001L18 10.0021V10.001H20ZM19.049 14.263L17.0897 14.6646L16.9562 14.0133L17.2392 13.4117L19.049 14.263ZM19.979 18.8L21.9383 18.3984L21.9385 18.3995L19.979 18.8ZM18.799 19.98L18.3985 21.9395L18.3974 21.9393L18.799 19.98ZM14.262 19.05L13.4092 17.2409L14.0114 16.957L14.6636 17.0907L14.262 19.05ZM10 0.00100005V-1.999C16.6276 -1.999 22 3.37343 22 10.001H20H18C18 5.58257 14.4184 2.001 10 2.001V0.00100005ZM20 10.001L22 9.99985C22.001 11.7679 21.6113 13.5143 20.8588 15.1142L19.049 14.263L17.2392 13.4117C17.7409 12.3451 18.0007 11.1809 18 10.0021L20 10.001ZM19.049 14.263L21.0083 13.8614L21.9383 18.3984L19.979 18.8L18.0197 19.2016L17.0897 14.6646L19.049 14.263ZM19.979 18.8L21.9385 18.3995C22.0378 18.8855 22.0151 19.3885 21.8724 19.8635L19.957 19.288L18.0416 18.7125C17.994 18.8708 17.9864 19.0385 18.0195 19.2005L19.979 18.8ZM19.957 19.288L21.8724 19.8635C21.7296 20.3386 21.4713 20.7708 21.1206 21.1216L19.7064 19.7074L18.2921 18.2931C18.1752 18.4101 18.0891 18.5541 18.0416 18.7125L19.957 19.288ZM19.7064 19.7074L21.1206 21.1216C20.7698 21.4723 20.3376 21.7306 19.8625 21.8734L19.287 19.958L18.7115 18.0426C18.5531 18.0901 18.4091 18.1762 18.2921 18.2931L19.7064 19.7074ZM19.287 19.958L19.8625 21.8734C19.3875 22.0161 18.8845 22.0388 18.3985 21.9395L18.799 19.98L19.1995 18.0205C19.0375 17.9874 18.8698 17.995 18.7115 18.0426L19.287 19.958ZM18.799 19.98L18.3974 21.9393L13.8604 21.0093L14.262 19.05L14.6636 17.0907L19.2006 18.0207L18.799 19.98ZM14.262 19.05L15.1148 20.8591C13.5591 21.5924 11.8223 22 10 22V20V18C11.2217 18 12.3769 17.7275 13.4092 17.2409L14.262 19.05ZM10 20V22C3.37256 22 -2 16.6287 -2 10H0H2C2 14.4193 5.58144 18 10 18V20ZM0 10H-2C-2 3.37356 3.3723 -2 10 -2V0V2C5.5817 2 2 5.58244 2 10H0Z" fill="#818181" mask="url(#path-1-inside-1_389_1164_<%= post._id %>_popular_contest)"/>
+                          </svg>
+                          <span><%= post.comments || 0 %></span>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 본문: 내용 -->
+                    <div class="post-card-body">
+                      <p class="post-card-content">
+                        <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
                       </p>
-                      <p class="post-card--trend-content-text">
-                        <%= post.content.length > 90 ? post.content.substring(0, 90) + '...' : post.content %>
-                      </p>
+                    </div>
+                    <!-- 해시태그 -->
+                    <% if (post.hashtags && post.hashtags.length > 0) { %>
+                      <div class="post-card-hashtags">
+                        <% post.hashtags.forEach(tag => { %>
+                          <span class="post-card-hashtag">#<%= tag %></span>
+                        <% }) %>
+                      </div>
+                    <% } else { %>
+                      <div class="post-card-hashtags-empty"></div>
+                    <% } %>
+                    <!-- 하단: 글쓴이 + 마감일 -->
+                    <div class="post-card-footer">
+                      <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
+                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
                     </div>
                   </article>
                 <% }) %>
               </div>
             <% } else { %>
-              <article class="post-card post-card--empty post-card--trend" aria-live="polite">
+              <article class="post-card post-card--empty" aria-live="polite">
                 <div class="post-empty__message">
                   <strong>등록된 글이 없습니다</strong>
                   인기 공모전 글이 있으면 이곳에 표시됩니다.
@@ -252,6 +316,46 @@
 
       <p class="main-footer">Linker와 함께 더 많은 협업 기회를 만들어보세요.</p>
     </main>
+
+    <!-- 폴더 선택 모달 -->
+    <dialog class="modal" id="folder-select-modal">
+      <div class="modal-form">
+        <h2>폴더 선택</h2>
+        <p class="modal-desc">이 글을 저장할 폴더를 선택하세요</p>
+        <div id="folder-list" class="folder-select-list">
+          <% if (typeof folders !== 'undefined' && folders && folders.length > 0) { %>
+            <% folders.forEach(folder => { %>
+              <button type="button" class="folder-select-item" data-folder-id="<%= folder._id %>">
+                <span><%= folder.name %></span>
+                <span class="folder-select-count"><%= folder.posts ? folder.posts.length : 0 %>개</span>
+              </button>
+            <% }) %>
+          <% } else { %>
+            <p class="folder-empty-message">폴더가 없습니다. 프로필에서 폴더를 먼저 생성해주세요.</p>
+          <% } %>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" onclick="document.getElementById('folder-select-modal').close(); showCreateFolderModal();">폴더 생성</button>
+          <button type="button" class="btn" onclick="document.getElementById('folder-select-modal').close()">취소</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- 폴더 생성 모달 -->
+    <dialog class="modal" id="create-folder-modal">
+      <form id="create-folder-form" class="modal-form" autocomplete="off">
+        <h2>폴더 생성</h2>
+        <p class="modal-desc">스크랩한 글을 저장할 폴더를 만들어주세요</p>
+        <div class="form-group">
+          <label for="folder-name">폴더 이름</label>
+          <input type="text" id="folder-name" name="name" required autocomplete="off" placeholder="폴더 이름을 입력하세요" />
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">생성</button>
+          <button type="button" class="btn" onclick="document.getElementById('create-folder-modal').close()">취소</button>
+        </div>
+      </form>
+    </dialog>
 
     <script>
       (function () {
@@ -322,6 +426,91 @@
           }
         });
 
+        // 폴더 모달 관련 변수
+        let folders = <%- JSON.stringify(typeof folders !== 'undefined' && folders ? folders : []) %>;
+        let currentLikePostId = null;
+        let currentScrapPostId = null;
+        let currentScrapPostType = null;
+        let currentActionType = null; // 'like' or 'scrap'
+
+        // 폴더 목록 업데이트 함수
+        function updateFolderList() {
+          const folderList = document.getElementById('folder-list');
+          if (folders && folders.length > 0) {
+            folderList.innerHTML = folders.map(folder => `
+              <button type="button" class="folder-select-item" data-folder-id="${folder._id}">
+                <span>${folder.name}</span>
+                <span class="folder-select-count">${folder.posts ? folder.posts.length : 0}개</span>
+              </button>
+            `).join('');
+            
+            // 폴더 선택 이벤트 리스너 추가
+            document.querySelectorAll('.folder-select-item').forEach(btn => {
+              btn.addEventListener('click', async function() {
+                const folderId = this.dataset.folderId;
+                
+                try {
+                  const postId = currentActionType === 'like' ? currentLikePostId : currentScrapPostId;
+                  const postType = currentActionType === 'like' ? 'community' : currentScrapPostType;
+                  
+                  const response = await fetch(`/folders/${folderId}/posts`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                      postId: postId,
+                      postType: postType
+                    })
+                  });
+
+                  const data = await response.json();
+                  if (data.success) {
+                    // 폴더 목록 업데이트
+                    const folderIndex = folders.findIndex(f => f._id === folderId);
+                    if (folderIndex !== -1) {
+                      folders[folderIndex] = data.folder;
+                      updateFolderList();
+                    }
+                    document.getElementById('folder-select-modal').close();
+                    alert('폴더에 추가되었습니다.');
+                  } else {
+                    alert(data.message || '폴더에 추가하는데 실패했습니다.');
+                  }
+                } catch (error) {
+                  console.error('폴더에 추가 중 오류:', error);
+                  alert('폴더에 추가 중 오류가 발생했습니다.');
+                }
+              });
+            });
+          } else {
+            folderList.innerHTML = '<p class="folder-empty-message">폴더가 없습니다. 프로필에서 폴더를 먼저 생성해주세요.</p>';
+          }
+        }
+
+        // 폴더 모달 함수 정의 (좋아요 핸들러보다 먼저 정의)
+        function showFolderSelectModal() {
+          const modal = document.getElementById('folder-select-modal');
+          if (modal) {
+            updateFolderList();
+            modal.showModal();
+          }
+        }
+
+        function showCreateFolderModal() {
+          const modal = document.getElementById('create-folder-modal');
+          if (modal) {
+            console.log('폴더 생성 모달 표시:', { 
+              currentActionType, 
+              currentLikePostId, 
+              currentScrapPostId, 
+              currentScrapPostType 
+            });
+            modal.showModal();
+          }
+        }
+
         // 좋아요 기능
         document.querySelectorAll('.like-btn').forEach(btn => {
           btn.addEventListener('click', async function(e) {
@@ -329,6 +518,9 @@
             const postId = this.dataset.postId;
             const likesSpan = this.querySelector(`.post-likes-${postId}`);
             const svg = this.querySelector('svg path');
+            
+            currentLikePostId = postId;
+            currentActionType = 'like';
             
             try {
               const response = await fetch(`/community/${postId}/like`, {
@@ -347,6 +539,18 @@
                     svg.setAttribute('stroke', '#1D5DFF');
                     svg.setAttribute('fill', '#1D5DFF');
                     svg.removeAttribute('fill-opacity');
+                    
+                    // 좋아요 성공 시 폴더 모달 표시
+                    console.log('좋아요 성공, 폴더 모달 표시:', { 
+                      currentActionType, 
+                      currentLikePostId, 
+                      foldersLength: folders ? folders.length : 0 
+                    });
+                    if (folders && folders.length > 0) {
+                      showFolderSelectModal();
+                    } else {
+                      showCreateFolderModal();
+                    }
                   } else {
                     svg.setAttribute('stroke', '#818181');
                     svg.setAttribute('fill', 'none');
@@ -358,6 +562,149 @@
               console.error('좋아요 처리 중 오류:', error);
             }
           });
+        });
+
+        // 스크랩 버튼 클릭 핸들러
+        document.querySelectorAll('.scrap-btn-preview').forEach(btn => {
+          btn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            const postId = this.dataset.postId;
+            const postType = this.dataset.postType;
+            const scrapsSpan = this.querySelector(`.post-scraps-preview-${postId}`);
+            const svg = this.querySelector('svg path');
+            
+            currentScrapPostId = postId;
+            currentScrapPostType = postType;
+            currentActionType = 'scrap';
+            
+            try {
+              const url = postType === 'recruit' 
+                ? `/campus/${postId}/scrap`
+                : `/campus/seek/${postId}/scrap`;
+              
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin'
+              });
+              
+              const data = await response.json();
+              if (data.success) {
+                scrapsSpan.textContent = data.scraps;
+                if (data.isScrapped) {
+                  svg.setAttribute('stroke', '#1D5DFF');
+                  svg.setAttribute('fill', '#1D5DFF');
+                  svg.removeAttribute('fill-opacity');
+                  
+                  // 스크랩 성공 시 폴더 모달 표시
+                  if (folders && folders.length > 0) {
+                    showFolderSelectModal();
+                  } else {
+                    showCreateFolderModal();
+                  }
+                } else {
+                  svg.setAttribute('stroke', '#818181');
+                  svg.setAttribute('fill', 'none');
+                  svg.removeAttribute('fill-opacity');
+                }
+              }
+            } catch (error) {
+              console.error('스크랩 처리 중 오류:', error);
+            }
+          });
+        });
+
+        // 폴더 생성 폼 제출
+        document.getElementById('create-folder-form')?.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const name = formData.get('name');
+
+          if (!name || !name.trim()) {
+            alert('폴더 이름을 입력해주세요.');
+            return;
+          }
+
+          try {
+            const response = await fetch('/folders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'same-origin',
+              body: JSON.stringify({ name: name.trim() })
+            });
+
+            const data = await response.json();
+            if (data.success && data.folder) {
+              // 폴더 목록에 새 폴더 추가
+              folders.push(data.folder);
+              
+              // 생성된 폴더에 자동으로 글 추가
+              const postId = currentActionType === 'like' ? currentLikePostId : currentScrapPostId;
+              const postType = currentActionType === 'like' ? 'community' : currentScrapPostType;
+              
+              console.log('폴더 생성 후 자동 저장:', { 
+                currentActionType, 
+                postId, 
+                postType, 
+                currentLikePostId, 
+                currentScrapPostId, 
+                currentScrapPostType 
+              });
+              
+              if (postId && postType) {
+                try {
+                  const addResponse = await fetch(`/folders/${data.folder._id}/posts`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                      postId: postId,
+                      postType: postType
+                    })
+                  });
+
+                  const addData = await addResponse.json();
+                  console.log('폴더에 글 추가 응답:', addData);
+                  if (addData.success) {
+                    // 폴더 목록 업데이트
+                    const folderIndex = folders.findIndex(f => f._id === data.folder._id);
+                    if (folderIndex !== -1) {
+                      folders[folderIndex] = addData.folder;
+                    }
+                    
+                    document.getElementById('create-folder-modal').close();
+                    
+                    // 폴더 선택 모달로 전환
+                    showFolderSelectModal();
+                    alert('폴더가 생성되었고 글도 추가되었습니다.');
+                  } else {
+                    document.getElementById('create-folder-modal').close();
+                    alert('폴더는 생성되었지만 글 추가에 실패했습니다: ' + (addData.message || '알 수 없는 오류'));
+                  }
+                } catch (error) {
+                  console.error('폴더에 글 추가 중 오류:', error);
+                  document.getElementById('create-folder-modal').close();
+                  alert('폴더는 생성되었지만 글 추가 중 오류가 발생했습니다: ' + error.message);
+                }
+              } else {
+                console.warn('폴더 생성 후 자동 저장 실패: postId 또는 postType이 없음', { postId, postType });
+                document.getElementById('create-folder-modal').close();
+                // 폴더만 생성된 경우 폴더 선택 모달로 전환
+                showFolderSelectModal();
+              }
+            } else {
+              alert(data.message || '폴더 생성에 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('폴더 생성 중 오류:', error);
+            alert('폴더 생성 중 오류가 발생했습니다.');
+          }
         });
       })();
     </script>

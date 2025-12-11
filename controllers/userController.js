@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 
 // @desc Get all users
@@ -74,11 +75,12 @@ const createUser = asyncHandler(async (req, res) => {
   }
 
   try {
+    const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
     await User.create({
       name: trimmedName,
       nickname: trimmedNickname,
       email: normalizedEmail,
-      password: trimmedPassword,
+      password: hashedPassword,
     });
   } catch (error) {
     if (error && error.code === 11000) {
@@ -179,11 +181,11 @@ const updateUser = asyncHandler(async (req, res) => {
     return respondWithError(400, "현재 비밀번호를 입력해주세요.");
   }
 
-  if (
-    typeof trimmedCurrentPassword !== "undefined" &&
-    trimmedCurrentPassword !== existingUser.password
-  ) {
-    return respondWithError(401, "현재 비밀번호가 일치하지 않습니다.");
+  if (typeof trimmedCurrentPassword !== "undefined") {
+    const isCurrentPasswordValid = await bcrypt.compare(trimmedCurrentPassword, existingUser.password);
+    if (!isCurrentPasswordValid) {
+      return respondWithError(401, "현재 비밀번호가 일치하지 않습니다.");
+    }
   }
 
   const duplicateUser = await User.findOne({
@@ -201,7 +203,8 @@ const updateUser = asyncHandler(async (req, res) => {
   }
   existingUser.email = normalizedEmail;
   if (trimmedPassword) {
-    existingUser.password = trimmedPassword;
+    const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
+    existingUser.password = hashedPassword;
   }
 
   try {
@@ -254,7 +257,29 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({ email: normalizedEmail });
-  if (!user || user.password !== trimmedPassword) {
+  if (!user) {
+    return res
+      .status(401)
+      .render("auth/signIn", { error: "일치하는 회원 정보가 없습니다.", formData });
+  }
+
+  // 기존 평문 비밀번호와 새 해싱된 비밀번호 모두 지원
+  let isPasswordValid = false;
+  if (user.password.startsWith('$2a$') || user.password.startsWith('$2b$') || user.password.startsWith('$2y$')) {
+    // 해싱된 비밀번호인 경우
+    isPasswordValid = await bcrypt.compare(trimmedPassword, user.password);
+  } else {
+    // 평문 비밀번호인 경우 (기존 사용자)
+    isPasswordValid = user.password === trimmedPassword;
+    // 로그인 성공 시 자동으로 해싱된 비밀번호로 업데이트
+    if (isPasswordValid) {
+      const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+    }
+  }
+
+  if (!isPasswordValid) {
     return res
       .status(401)
       .render("auth/signIn", { error: "일치하는 회원 정보가 없습니다.", formData });

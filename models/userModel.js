@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
         },
         postType: {
           type: String,
-          enum: ['recruit', 'seeking'],
+          enum: ['recruit', 'seeking', 'community'],
           required: true,
         },
         addedAt: {

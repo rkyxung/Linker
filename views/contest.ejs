@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/contest.css" />
+  <link rel="stylesheet" href="/css/board.css" />
 </head>
 
 <body class="page-contest">
@@ -306,7 +306,217 @@
             });
           });
         })();
+
+        // 폴더 모달 관련
+        const folders = <%- JSON.stringify(typeof folders !== 'undefined' && folders ? folders : []) %>;
+        let currentScrapPostId = null;
+        let currentScrapPostType = null;
+
+        function showFolderSelectModal() {
+          const modal = document.getElementById('folder-select-modal');
+          if (modal) {
+            const folderList = document.getElementById('folder-list');
+            if (folders && folders.length > 0) {
+              folderList.innerHTML = folders.map(folder => `
+                <button type="button" class="folder-select-item" data-folder-id="${folder._id}">
+                  <span>${folder.name}</span>
+                  <span class="folder-select-count">${folder.posts ? folder.posts.length : 0}개</span>
+                </button>
+              `).join('');
+              
+              document.querySelectorAll('.folder-select-item').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                  const folderId = this.dataset.folderId;
+                  
+                  try {
+                    const response = await fetch(`/folders/${folderId}/posts`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      credentials: 'same-origin',
+                      body: JSON.stringify({
+                        postId: currentScrapPostId,
+                        postType: currentScrapPostType
+                      })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                      document.getElementById('folder-select-modal').close();
+                      alert('폴더에 추가되었습니다.');
+                    } else {
+                      alert(data.message || '폴더에 추가하는데 실패했습니다.');
+                    }
+                  } catch (error) {
+                    console.error('폴더에 추가 중 오류:', error);
+                    alert('폴더에 추가 중 오류가 발생했습니다.');
+                  }
+                });
+              });
+            }
+            modal.showModal();
+          }
+        }
+
+        function showCreateFolderModal() {
+          const modal = document.getElementById('create-folder-modal');
+          if (modal) {
+            modal.showModal();
+          }
+        }
+
+        // 스크랩 버튼 클릭 핸들러 수정
+        document.querySelectorAll('.scrap-btn-preview').forEach(btn => {
+          btn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            const postId = this.dataset.postId;
+            const postType = this.dataset.postType;
+            const scrapsSpan = this.querySelector(`.post-scraps-preview-${postId}`);
+            const svg = this.querySelector('svg path');
+            
+            currentScrapPostId = postId;
+            currentScrapPostType = postType;
+            
+            try {
+              const url = postType === 'recruit' 
+                ? `/contest/${postId}/scrap`
+                : `/contest/seek/${postId}/scrap`;
+              
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin'
+              });
+              
+              const data = await response.json();
+              if (data.success) {
+                scrapsSpan.textContent = data.scraps;
+                if (data.isScrapped) {
+                  svg.setAttribute('stroke', '#1D5DFF');
+                  svg.setAttribute('fill', '#1D5DFF');
+                  svg.removeAttribute('fill-opacity');
+                  
+                  // 스크랩 성공 시 폴더 모달 표시
+                  if (folders && folders.length > 0) {
+                    showFolderSelectModal();
+                  } else {
+                    showCreateFolderModal();
+                  }
+                } else {
+                  svg.setAttribute('stroke', '#818181');
+                  svg.setAttribute('fill', 'none');
+                  svg.removeAttribute('fill-opacity');
+                }
+              }
+            } catch (error) {
+              console.error('스크랩 처리 중 오류:', error);
+            }
+          });
+        });
+
+        // 폴더 생성 폼 제출
+        document.getElementById('create-folder-form')?.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const name = formData.get('name');
+
+          if (!name || !name.trim()) {
+            alert('폴더 이름을 입력해주세요.');
+            return;
+          }
+
+          try {
+            const response = await fetch('/folders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'same-origin',
+              body: JSON.stringify({ name: name.trim() })
+            });
+
+            const data = await response.json();
+            if (data.success && data.folder) {
+              document.getElementById('create-folder-modal').close();
+              
+              if (currentScrapPostId && currentScrapPostType) {
+                try {
+                  const addResponse = await fetch(`/folders/${data.folder._id}/posts`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                      postId: currentScrapPostId,
+                      postType: currentScrapPostType
+                    })
+                  });
+
+                  const addData = await addResponse.json();
+                  if (addData.success) {
+                    alert('폴더가 생성되었고 글도 추가되었습니다.');
+                    location.reload();
+                  } else {
+                    alert('폴더는 생성되었지만 글 추가에 실패했습니다.');
+                  }
+                } catch (error) {
+                  console.error('폴더에 글 추가 중 오류:', error);
+                  alert('폴더는 생성되었지만 글 추가 중 오류가 발생했습니다.');
+                }
+              }
+            } else {
+              alert(data.message || '폴더 생성에 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('폴더 생성 중 오류:', error);
+            alert('폴더 생성 중 오류가 발생했습니다.');
+          }
+        });
       </script>
+
+      <!-- 폴더 선택 모달 -->
+      <dialog class="modal" id="folder-select-modal">
+        <div class="modal-form">
+          <h2>폴더 선택</h2>
+          <p class="modal-desc">이 글을 저장할 폴더를 선택하세요</p>
+          <div id="folder-list" class="folder-select-list">
+            <% if (typeof folders !== 'undefined' && folders && folders.length > 0) { %>
+              <% folders.forEach(folder => { %>
+                <button type="button" class="folder-select-item" data-folder-id="<%= folder._id %>">
+                  <span><%= folder.name %></span>
+                  <span class="folder-select-count"><%= folder.posts ? folder.posts.length : 0 %>개</span>
+                </button>
+              <% }) %>
+            <% } else { %>
+              <p class="folder-empty-message">폴더가 없습니다. 프로필에서 폴더를 먼저 생성해주세요.</p>
+            <% } %>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('folder-select-modal').close(); showCreateFolderModal();">폴더 생성</button>
+            <button type="button" class="btn" onclick="document.getElementById('folder-select-modal').close()">취소</button>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- 폴더 생성 모달 -->
+      <dialog class="modal" id="create-folder-modal">
+        <form id="create-folder-form" class="modal-form" autocomplete="off">
+          <h2>폴더 생성</h2>
+          <p class="modal-desc">스크랩한 글을 저장할 폴더를 만들어주세요</p>
+          <div class="form-group">
+            <label for="folder-name">폴더 이름</label>
+            <input type="text" id="folder-name" name="name" required autocomplete="off" placeholder="폴더 이름을 입력하세요" />
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">생성</button>
+            <button type="button" class="btn" onclick="document.getElementById('create-folder-modal').close()">취소</button>
+          </div>
+        </form>
+      </dialog>
 </body>
 
 </html>

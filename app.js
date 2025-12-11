@@ -146,13 +146,32 @@ app.get("/", requireAuth, asyncHandler(async (req, res) => {
     .limit(8)
     .lean();
 
+  const user = await User.findById(userId).lean();
+  const folders = user ? (user.folders || []) : [];
+
   const popularCampus = [
-    ...popularCampusRecruit.map(post => ({ ...post, postType: "recruit" })),
-    ...popularCampusSeek.map(post => ({ ...post, postType: "seeking" }))
+    ...popularCampusRecruit.map(post => ({ 
+      ...post, 
+      postType: "recruit",
+      isScrapped: post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)
+    })),
+    ...popularCampusSeek.map(post => ({ 
+      ...post, 
+      postType: "seeking",
+      isScrapped: post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)
+    }))
   ];
   const popularContest = [
-    ...popularContestRecruit.map(post => ({ ...post, postType: "recruit" })),
-    ...popularContestSeek.map(post => ({ ...post, postType: "seeking" }))
+    ...popularContestRecruit.map(post => ({ 
+      ...post, 
+      postType: "recruit",
+      isScrapped: post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)
+    })),
+    ...popularContestSeek.map(post => ({ 
+      ...post, 
+      postType: "seeking",
+      isScrapped: post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)
+    }))
   ];
 
   res.render("main", {
@@ -160,7 +179,9 @@ app.get("/", requireAuth, asyncHandler(async (req, res) => {
     myPosts: myPostsWithLiked || [],
     scrappedPosts: scrappedPosts || [],
     popularCampus: popularCampus || [],
-    popularContest: popularContest || []
+    popularContest: popularContest || [],
+    folders: folders,
+    currentUser: user
   });
 }));
 
@@ -241,10 +262,14 @@ app.get("/campus", requireAuth, asyncHandler(async (req, res) => {
     isScrapped: post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)
   }));
   
+  const user = await User.findById(userId).lean();
+  const folders = user ? (user.folders || []) : [];
+  
   res.render("campus", {
     pageTitle: "캠퍼스",
     posts: allPostsWithScrapped || [],
-    currentSort: sort
+    currentSort: sort,
+    folders: folders
   });
 }));
 
@@ -460,10 +485,14 @@ app.get("/contest", requireAuth, asyncHandler(async (req, res) => {
     isScrapped: post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)
   }));
   
+  const user = await User.findById(userId).lean();
+  const folders = user ? (user.folders || []) : [];
+  
   res.render("contest", {
     pageTitle: "공모전",
     posts: allPostsWithScrapped || [],
-    currentSort: sort
+    currentSort: sort,
+    folders: folders
   });
 }));
 
@@ -1117,10 +1146,14 @@ app.get("/community", requireAuth, asyncHandler(async (req, res) => {
     isLiked: post.likedBy && post.likedBy.some(id => id.toString() === userId)
   }));
   
+  const user = await User.findById(userId).lean();
+  const folders = user ? (user.folders || []) : [];
+  
   res.render("community", {
     pageTitle: "커뮤니티",
     posts: postsWithLiked || [],
     currentCategory: category || 'all',
+    folders: folders,
     getRelativeTime: getRelativeTime
   });
 }));
@@ -1503,7 +1536,7 @@ app.post("/folders/:folderId/posts", requireAuth, asyncHandler(async (req, res) 
     return res.status(400).json({ success: false, message: "글 정보가 필요합니다." });
   }
 
-  if (!['recruit', 'seeking'].includes(postType)) {
+  if (!['recruit', 'seeking', 'community'].includes(postType)) {
     return res.status(400).json({ success: false, message: "올바른 글 타입이 아닙니다." });
   }
 
@@ -1523,22 +1556,27 @@ app.post("/folders/:folderId/posts", requireAuth, asyncHandler(async (req, res) 
     return res.status(400).json({ success: false, message: "이미 폴더에 추가된 글입니다." });
   }
 
-  // 스크랩한 글인지 확인
-  let isScrapped = false;
+  // 스크랩한 글인지 또는 좋아요한 글인지 확인
+  let canAdd = false;
   if (postType === 'recruit') {
     const post = await RecruitmentPost.findById(postId);
     if (post && post.scrappedBy.some(id => id.toString() === userId)) {
-      isScrapped = true;
+      canAdd = true;
     }
   } else if (postType === 'seeking') {
     const post = await TeamSeekingPost.findById(postId);
     if (post && post.scrappedBy.some(id => id.toString() === userId)) {
-      isScrapped = true;
+      canAdd = true;
+    }
+  } else if (postType === 'community') {
+    const post = await CommunityPost.findById(postId);
+    if (post && post.likedBy.some(id => id.toString() === userId)) {
+      canAdd = true;
     }
   }
 
-  if (!isScrapped) {
-    return res.status(400).json({ success: false, message: "스크랩한 글만 폴더에 추가할 수 있습니다." });
+  if (!canAdd) {
+    return res.status(400).json({ success: false, message: postType === 'community' ? "좋아요한 글만 폴더에 추가할 수 있습니다." : "스크랩한 글만 폴더에 추가할 수 있습니다." });
   }
 
   folder.posts.push({
