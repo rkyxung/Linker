@@ -611,9 +611,14 @@ body {
 .page-home .post-card-comment {
   display: flex;
   align-items: center;
-  gap: 0.3vw;
-  font-size: 0.65vw;
+  gap: 0.4vw;
+  font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
+}
+
+.page-home .post-card-comment svg {
+  width: 1.04167vw;
+  height: auto;
 }
 
 .page-home .post-card-scrap {

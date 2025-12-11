@@ -113,9 +113,14 @@
 .post-card-comment {
   display: flex;
   align-items: center;
-  gap: 0.3vw;
+  gap: 0.4vw;
   font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
+}
+
+.post-card-comment svg {
+  width: 1.04167vw;
+  height: auto;
 }
 
 .post-card-body {

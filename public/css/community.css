@@ -80,6 +80,11 @@
   color: rgba(31, 61, 122, 0.75);
 }
 
+.community-comment-count svg {
+  width: 1.04167vw;
+  height: auto;
+}
+
 .community-post-content {
   margin: 0;
   font-size: 0.83vw;
