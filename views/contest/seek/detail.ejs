@@ -302,6 +302,27 @@
           }
         });
 
+        // 더보기 메뉴 (점 세 개)
+        function setupMoreMenu(btn) {
+          if (!btn) return;
+          if (btn.dataset.attached === 'true') return;
+          btn.dataset.attached = 'true';
+
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const menu = this.nextElementSibling;
+            document.querySelectorAll('.more-menu').forEach(m => {
+              if (m !== menu) m.classList.remove('show');
+            });
+            menu.classList.toggle('show');
+          });
+        }
+
+        document.querySelectorAll('.more-menu-btn').forEach(btn => setupMoreMenu(btn));
+        document.addEventListener('click', () => {
+          document.querySelectorAll('.more-menu').forEach(m => m.classList.remove('show'));
+        });
+
         function deletePost(postId) {
           if (!confirm('정말 글을 삭제하시겠습니까?')) return;
           fetch(`/contest/seek/${postId}?_method=DELETE`, {

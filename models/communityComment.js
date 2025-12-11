@@ -1,3 +1,5 @@
+// models/communityComment.js
+
 const mongoose = require("mongoose");
 
 // 커뮤니티 댓글

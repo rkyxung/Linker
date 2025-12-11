@@ -101,7 +101,7 @@
                     <!-- 하단: 글쓴이 + 마감일 -->
                     <div class="post-card-footer">
                       <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
-                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
+                      <span>마감일: <%= post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
                     </div>
                   </article>
                 <% }) %>
@@ -169,7 +169,7 @@
                     <!-- 하단: 글쓴이 + 마감일 -->
                     <div class="post-card-footer">
                       <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
-                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
+                      <span>마감일: <%= post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
                     </div>
                   </article>
                 <% }) %>

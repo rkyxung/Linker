@@ -56,21 +56,30 @@
         <div class="board-panels">
           <div class="board-panel is-active" data-panel="posted" role="tabpanel" id="panel-posted"
             aria-labelledby="tab-posted">
+            <% 
+              const myLabel = (post) => {
+                if (post.postType === 'community') {
+                  const categoryMap = { free: '자유게시판', qna: 'Q&A', info: '정보공유' };
+                  return categoryMap[post.category] || '커뮤니티';
+                }
+                const contestCats = ['design','develop','planning'];
+                const isContest = contestCats.includes(post.category);
+                if (post.postType === 'recruit') return isContest ? '공모전 · 팀원 모집' : '캠퍼스 · 팀원 모집';
+                return isContest ? '공모전 · 팀 구하기' : '캠퍼스 · 팀 구하기';
+              };
+              const myUrl = (post) => {
+                if (post.postType === 'community') return `/community/${post._id}`;
+                const isContest = ['design','develop','planning'].includes(post.category);
+                if (post.postType === 'recruit') return isContest ? `/contest/${post._id}` : `/campus/${post._id}`;
+                return isContest ? `/contest/seek/${post._id}` : `/campus/seek/${post._id}`;
+              };
+            %>
             <% if (typeof myPosts !== 'undefined' && myPosts && myPosts.length > 0) { %>
-              <% 
-                const categoryMap = {
-                  'free': '자유게시판',
-                  'qna': 'Q&A',
-                  'info': '정보공유'
-                };
-              %>
               <% myPosts.forEach(post => { %>
-                <article class="post-card" onclick="window.location.href='/community/<%= post._id %>'">
+                <article class="post-card" onclick="window.location.href='<%= myUrl(post) %>'">
                   <div class="post-card-content-wrapper">
                     <div class="post-card-category-wrapper">
-                      <span class="post-card-category">
-                        <%= categoryMap[post.category] || '자유게시판' %>
-                      </span>
+                      <span class="post-card-category"><%= myLabel(post) %></span>
                     </div>
                     <h2 class="post-card-title"><%= post.title %></h2>
                     <p class="post-card-time">
@@ -78,23 +87,39 @@
                     </p>
                     <div class="post-card-body">
                       <p>
-                        <%= post.content.length > 80 ? post.content.substring(0, 80) + '...' : post.content %>
+                        <%= post.content && post.content.length > 80 ? post.content.substring(0, 80) + '...' : (post.content || '') %>
                       </p>
                     </div>
+                    <% if (post.postType !== 'community' && post.hashtags && post.hashtags.length > 0) { %>
+                      <div class="post-card-hashtags post-card-hashtags--inline">
+                        <% post.hashtags.forEach(tag => { %>
+                          <span class="post-card-hashtag">#<%= tag %></span>
+                        <% }) %>
+                      </div>
+                    <% } %>
                   </div>
                   <div class="post-card-footer" onclick="event.stopPropagation();">
                     <div class="post-card-footer-actions">
-                      <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>">
-                        <svg width="16" height="15" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= post.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isLiked ? '#1D5DFF' : 'none' %>"/>
-                        </svg>
-                        <span class="post-likes-<%= post._id %>"><%= post.likes || 0 %></span>
-                      </button>
+                      <% if (post.postType === 'community') { %>
+                        <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>">
+                          <svg width="16" height="15" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= post.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isLiked ? '#1D5DFF' : 'none' %>"/>
+                          </svg>
+                          <span class="post-likes-<%= post._id %>"><%= post.likes || 0 %></span>
+                        </button>
+                      <% } else { %>
+                        <button type="button" class="scrap-btn" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="<%= post.isScrapped ? 'true' : 'false' %>">
+                          <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="<%= post.isScrapped ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isScrapped ? '#1D5DFF' : 'none' %>"/>
+                          </svg>
+                          <span class="post-scraps-<%= post._id %>"><%= post.scraps || 0 %></span>
+                        </button>
+                      <% } %>
                       <div class="post-card-comment">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 4c4.418 0 8 2.91 8 6.5 0 1.3-.42 2.53-1.17 3.58l0.85 4.18-3.86-1.1C14.7 17.86 13.38 18 12 18c-4.418 0-8-2.91-8-6.5S7.582 4 12 4Z"
-        stroke="#818181" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
-</svg>
+                          <path d="M12 4c4.418 0 8 2.91 8 6.5 0 1.3-.42 2.53-1.17 3.58l0.85 4.18-3.86-1.1C14.7 17.86 13.38 18 12 18c-4.418 0-8-2.91-8-6.5S7.582 4 12 4Z"
+                                stroke="#818181" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+                        </svg>
                         <span><%= post.comments || 0 %></span>
                       </div>
                     </div>
@@ -233,7 +258,7 @@
                     <!-- 하단: 글쓴이 + 마감일 -->
                     <div class="post-card-footer">
                       <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
-                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
+                      <span>마감일: <%= post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
                     </div>
                   </article>
                 <% }) %>
@@ -291,7 +316,7 @@
                     <!-- 하단: 글쓴이 + 마감일 -->
                     <div class="post-card-footer">
                       <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
-                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
+                      <span>마감일: <%= post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
                     </div>
                   </article>
                 <% }) %>

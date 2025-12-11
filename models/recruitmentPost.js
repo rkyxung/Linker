@@ -1,3 +1,5 @@
+// models/recruitmentPost.js
+
 const mongoose = require("mongoose");
 
 // 팀원 모집/팀 구하기 글

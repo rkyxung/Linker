@@ -53,6 +53,12 @@
             </div>
 
             <div class="form-group">
+              <label for="deadline">모집 마감일</label>
+              <input type="date" id="deadline" name="deadline" required
+                value="<%= typeof formData !== 'undefined' && formData && formData.deadline ? new Date(formData.deadline).toISOString().split('T')[0] : '' %>">
+            </div>
+
+            <div class="form-group">
               <label for="desiredFields">원하는 분야</label>
               <input type="text" id="desiredFields" name="desiredFields" placeholder="예: 웹 개발, 모바일 앱, AI/ML (쉼표로 구분)" 
                 value="<%= typeof formData !== 'undefined' && formData && formData.desiredFields ? (Array.isArray(formData.desiredFields) ? formData.desiredFields.join(', ') : formData.desiredFields) : '' %>" />

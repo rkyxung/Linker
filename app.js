@@ -93,17 +93,23 @@ app.get("/", requireAuth, asyncHandler(async (req, res) => {
   const userId = req.session.userId;
   const userDescription = await UserDescription.findOne({ userId }).lean();
   
-  // 내가 올린 커뮤니티 글 가져오기
-  const myPosts = await CommunityPost.find({ writer: userId })
-    .populate("writer", "name nickname")
-    .sort({ createdAt: -1 })
-    .limit(10)
-    .lean();
+  // 내가 올린 글 가져오기 (커뮤니티 + 캠퍼스/공모전 모집/구하기)
+  const [myCommunity, myRecruit, mySeek] = await Promise.all([
+    CommunityPost.find({ writer: userId }).populate("writer", "name nickname").lean(),
+    RecruitmentPost.find({ writer: userId }).populate("writer", "name nickname").lean(),
+    TeamSeekingPost.find({ writer: userId }).populate("writer", "name nickname").lean(),
+  ]);
 
-  // 각 게시글에 좋아요 여부 추가
-  const myPostsWithLiked = myPosts.map(post => ({
+  const myCombined = [
+    ...myCommunity.map(p => ({ ...p, postType: "community" })),
+    ...myRecruit.map(p => ({ ...p, postType: "recruit" })),
+    ...mySeek.map(p => ({ ...p, postType: "seeking" })),
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 20);
+
+  const myPostsWithMeta = myCombined.map(post => ({
     ...post,
-    isLiked: post.likedBy && post.likedBy.some(id => id.toString() === userId)
+    isLiked: post.likedBy && post.likedBy.some(id => id.toString() === userId),
+    isScrapped: post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)
   }));
 
   // 스크랩한 글 (캠퍼스/공모전)
@@ -189,7 +195,7 @@ app.get("/", requireAuth, asyncHandler(async (req, res) => {
 
   res.render("main", {
     userDescription: userDescription || {},
-    myPosts: myPostsWithLiked || [],
+    myPosts: myPostsWithMeta || [],
     scrappedPosts: scrappedPosts || [],
     popularCampus: popularCampus || [],
     popularContest: popularContest || [],
@@ -419,10 +425,10 @@ app.get("/campus/seek/:id/edit", requireAuth, asyncHandler(async (req, res) => {
 
 // 캠퍼스 팀 구하기 글 작성 처리
 app.post("/campus/seek", requireAuth, asyncHandler(async (req, res) => {
-  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags } = req.body;
+  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags, deadline } = req.body;
   const userId = req.session.userId;
 
-  if (!title || !content || !category) {
+  if (!title || !content || !category || !deadline) {
     return res.status(400).render("campus/seek", {
       pageTitle: "팀 구하기",
       error: "필수 항목을 모두 입력해주세요.",
@@ -444,6 +450,7 @@ app.post("/campus/seek", requireAuth, asyncHandler(async (req, res) => {
     experience: experience ? experience.trim() : '',
     desiredPosition: desiredPosition ? desiredPosition.trim() : '',
     hashtags: hashtagsArray,
+    deadline: new Date(deadline),
     writer: userId,
     scraps: 0,
     comments: 0,
@@ -455,8 +462,8 @@ app.post("/campus/seek", requireAuth, asyncHandler(async (req, res) => {
 
 // 캠퍼스 팀 구하기 글 수정 처리
 app.put("/campus/seek/:id", requireAuth, asyncHandler(async (req, res) => {
-  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags } = req.body;
-  if (!title || !content || !category) {
+  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags, deadline } = req.body;
+  if (!title || !content || !category || !deadline) {
     return res.status(400).render("campus/seek", {
       pageTitle: "팀 구하기 글 수정",
       error: "필수 항목을 모두 입력해주세요.",
@@ -476,7 +483,8 @@ app.put("/campus/seek/:id", requireAuth, asyncHandler(async (req, res) => {
     skills: skillsArray,
     experience: experience ? experience.trim() : '',
     desiredPosition: desiredPosition ? desiredPosition.trim() : '',
-    hashtags: hashtagsArray
+    hashtags: hashtagsArray,
+    deadline: new Date(deadline)
   });
   res.redirect("/campus");
 }));
@@ -665,10 +673,10 @@ app.get("/contest/seek/:id/edit", requireAuth, asyncHandler(async (req, res) => 
 
 // 공모전 팀 구하기 글 작성 처리
 app.post("/contest/seek", requireAuth, asyncHandler(async (req, res) => {
-  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags } = req.body;
+  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags, deadline } = req.body;
   const userId = req.session.userId;
 
-  if (!title || !content || !category) {
+  if (!title || !content || !category || !deadline) {
     return res.status(400).render("contest/seek", {
       pageTitle: "팀 구하기",
       error: "필수 항목을 모두 입력해주세요.",
@@ -690,6 +698,7 @@ app.post("/contest/seek", requireAuth, asyncHandler(async (req, res) => {
     experience: experience ? experience.trim() : '',
     desiredPosition: desiredPosition ? desiredPosition.trim() : '',
     hashtags: hashtagsArray,
+    deadline: new Date(deadline),
     writer: userId,
     scraps: 0,
     comments: 0,
@@ -701,8 +710,8 @@ app.post("/contest/seek", requireAuth, asyncHandler(async (req, res) => {
 
 // 공모전 팀 구하기 글 수정 처리
 app.put("/contest/seek/:id", requireAuth, asyncHandler(async (req, res) => {
-  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags } = req.body;
-  if (!title || !content || !category) {
+  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags, deadline } = req.body;
+  if (!title || !content || !category || !deadline) {
     return res.status(400).render("contest/seek", {
       pageTitle: "팀 구하기 글 수정",
       error: "필수 항목을 모두 입력해주세요.",
@@ -722,7 +731,8 @@ app.put("/contest/seek/:id", requireAuth, asyncHandler(async (req, res) => {
     skills: skillsArray,
     experience: experience ? experience.trim() : '',
     desiredPosition: desiredPosition ? desiredPosition.trim() : '',
-    hashtags: hashtagsArray
+    hashtags: hashtagsArray,
+    deadline: new Date(deadline)
   });
   res.redirect("/contest");
 }));
@@ -916,119 +926,116 @@ app.get("/contest/seek/:id", requireAuth, asyncHandler(async (req, res) => {
 }));
 
 // 캠퍼스 팀원 모집하기 글 스크랩 토글
+// 캠퍼스 팀원 모집하기 글 스크랩 토글
 app.post("/campus/:id/scrap", requireAuth, asyncHandler(async (req, res) => {
-  const post = await RecruitmentPost.findById(req.params.id);
-  if (!post) {
-    return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
-  }
-
   const userId = req.session.userId;
-  const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
+  const post = await RecruitmentPost.findOneAndUpdate(
+    { _id: req.params.id },
+    [
+      {
+        $set: {
+          scrappedBy: {
+            $cond: [
+              { $in: [userId, "$scrappedBy"] },
+              { $setDifference: ["$scrappedBy", [userId]] },
+              { $concatArrays: ["$scrappedBy", [userId]] }
+            ]
+          }
+        }
+      },
+      { $set: { scraps: { $size: "$scrappedBy" } } }
+    ],
+    { new: true }
+  );
 
-  // 스크랩 전 상태 저장
-  const wasScrapped = scrappedIndex > -1;
+  if (!post) return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
 
-  if (scrappedIndex > -1) {
-    // 스크랩 제거
-    post.scrappedBy.splice(scrappedIndex, 1);
-  } else {
-    // 스크랩 추가
-    post.scrappedBy.push(userId);
-  }
-
-  // scraps를 항상 scrappedBy 배열의 길이로 동기화
-  post.scraps = post.scrappedBy.length;
-
-  await post.save();
-  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
-  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
+  const isScrapped = post.scrappedBy.some(id => id.toString() === userId);
+  res.json({ success: true, scraps: post.scraps, isScrapped });
 }));
 
 // 캠퍼스 팀 구하기 글 스크랩 토글
 app.post("/campus/seek/:id/scrap", requireAuth, asyncHandler(async (req, res) => {
-  const post = await TeamSeekingPost.findById(req.params.id);
-  if (!post) {
-    return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
-  }
-
   const userId = req.session.userId;
-  const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
+  const post = await TeamSeekingPost.findOneAndUpdate(
+    { _id: req.params.id },
+    [
+      {
+        $set: {
+          scrappedBy: {
+            $cond: [
+              { $in: [userId, "$scrappedBy"] },
+              { $setDifference: ["$scrappedBy", [userId]] },
+              { $concatArrays: ["$scrappedBy", [userId]] }
+            ]
+          }
+        }
+      },
+      { $set: { scraps: { $size: "$scrappedBy" } } }
+    ],
+    { new: true }
+  );
 
-  // 스크랩 전 상태 저장
-  const wasScrapped = scrappedIndex > -1;
+  if (!post) return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
 
-  if (scrappedIndex > -1) {
-    // 스크랩 제거
-    post.scrappedBy.splice(scrappedIndex, 1);
-  } else {
-    // 스크랩 추가
-    post.scrappedBy.push(userId);
-  }
-
-  // scraps를 항상 scrappedBy 배열의 길이로 동기화
-  post.scraps = post.scrappedBy.length;
-
-  await post.save();
-  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
-  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
+  const isScrapped = post.scrappedBy.some(id => id.toString() === userId);
+  res.json({ success: true, scraps: post.scraps, isScrapped });
 }));
 
 // 공모전 팀원 모집하기 글 스크랩 토글
 app.post("/contest/:id/scrap", requireAuth, asyncHandler(async (req, res) => {
-  const post = await RecruitmentPost.findById(req.params.id);
-  if (!post) {
-    return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
-  }
-
   const userId = req.session.userId;
-  const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
+  const post = await RecruitmentPost.findOneAndUpdate(
+    { _id: req.params.id },
+    [
+      {
+        $set: {
+          scrappedBy: {
+            $cond: [
+              { $in: [userId, "$scrappedBy"] },
+              { $setDifference: ["$scrappedBy", [userId]] },
+              { $concatArrays: ["$scrappedBy", [userId]] }
+            ]
+          }
+        }
+      },
+      { $set: { scraps: { $size: "$scrappedBy" } } }
+    ],
+    { new: true }
+  );
 
-  // 스크랩 전 상태 저장
-  const wasScrapped = scrappedIndex > -1;
+  if (!post) return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
 
-  if (scrappedIndex > -1) {
-    // 스크랩 제거
-    post.scrappedBy.splice(scrappedIndex, 1);
-  } else {
-    // 스크랩 추가
-    post.scrappedBy.push(userId);
-  }
-
-  // scraps를 항상 scrappedBy 배열의 길이로 동기화
-  post.scraps = post.scrappedBy.length;
-
-  await post.save();
-  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
-  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
+  const isScrapped = post.scrappedBy.some(id => id.toString() === userId);
+  res.json({ success: true, scraps: post.scraps, isScrapped });
 }));
 
 // 공모전 팀 구하기 글 스크랩 토글
 app.post("/contest/seek/:id/scrap", requireAuth, asyncHandler(async (req, res) => {
-  const post = await TeamSeekingPost.findById(req.params.id);
-  if (!post) {
-    return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
-  }
-
   const userId = req.session.userId;
-  const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
+  const post = await TeamSeekingPost.findOneAndUpdate(
+    { _id: req.params.id },
+    [
+      {
+        $set: {
+          scrappedBy: {
+            $cond: [
+              { $in: [userId, "$scrappedBy"] },
+              { $setDifference: ["$scrappedBy", [userId]] },
+              { $concatArrays: ["$scrappedBy", [userId]] }
+            ]
+          }
+        }
+      },
+      { $set: { scraps: { $size: "$scrappedBy" } } }
+    ],
+    { new: true }
+  );
 
-  // 스크랩 전 상태 저장
-  const wasScrapped = scrappedIndex > -1;
+  if (!post) return res.status(404).json({ success: false, message: "글을 찾을 수 없습니다." });
 
-  if (scrappedIndex > -1) {
-    // 스크랩 제거
-    post.scrappedBy.splice(scrappedIndex, 1);
-  } else {
-    // 스크랩 추가
-    post.scrappedBy.push(userId);
-  }
-
-  // scraps를 항상 scrappedBy 배열의 길이로 동기화
-  post.scraps = post.scrappedBy.length;
-
-  await post.save();
-  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
-  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
+  const isScrapped = post.scrappedBy.some(id => id.toString() === userId);
+  res.json({ success: true, scraps: post.scraps, isScrapped });
 }));
 
 // 캠퍼스 팀원 모집하기 글 댓글 작성

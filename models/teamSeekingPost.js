@@ -54,6 +54,11 @@ const teamSeekingSchema = new mongoose.Schema(
       type: String,
       trim: true,
     }],
+    // 마감일
+    deadline: {
+      type: Date,
+      required: true,
+    },
     // 스크랩 수
     scraps: {
       type: Number,
