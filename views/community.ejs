@@ -286,59 +286,78 @@
               // 패널 표시/숨김
               panels.forEach((panel) => {
                 const isActive = panel.dataset.panel === target;
-                panel.classList.toggle("is-active", isActive);
-                panel.hidden = !isActive;
+                if (isActive) {
+                  panel.classList.add("is-active");
+                  panel.removeAttribute("hidden");
+                } else {
+                  panel.classList.remove("is-active");
+                  panel.setAttribute("hidden", "");
+                }
               });
             });
           });
 
           // 좋아요 기능
-          const folders = <%- JSON.stringify(typeof folders !== 'undefined' && folders ? folders : []) %>;
+          let folders = <%- JSON.stringify(typeof folders !== 'undefined' && folders ? folders : []) %>;
           let currentLikePostId = null;
+
+          function updateFolderList() {
+            const folderList = document.getElementById('folder-list');
+            if (folders && folders.length > 0) {
+              folderList.innerHTML = folders.map(folder => `
+                <button type="button" class="folder-select-item" data-folder-id="${folder._id}">
+                  <span>${folder.name}</span>
+                  <span class="folder-select-count">${folder.posts ? folder.posts.length : 0}개</span>
+                </button>
+              `).join('');
+              
+              // 폴더 선택 이벤트 리스너 추가
+              document.querySelectorAll('.folder-select-item').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                  const folderId = this.dataset.folderId;
+                  
+                  try {
+                    const response = await fetch(`/folders/${folderId}/posts`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      credentials: 'same-origin',
+                      body: JSON.stringify({
+                        postId: currentLikePostId,
+                        postType: 'community'
+                      })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                      // 폴더 목록 업데이트
+                      const folderIndex = folders.findIndex(f => f._id === folderId);
+                      if (folderIndex !== -1) {
+                        folders[folderIndex] = data.folder;
+                        updateFolderList();
+                      }
+                      
+                      document.getElementById('folder-select-modal').close();
+                      alert('폴더에 추가되었습니다.');
+                    } else {
+                      alert(data.message || '폴더에 추가하는데 실패했습니다.');
+                    }
+                  } catch (error) {
+                    console.error('폴더에 추가 중 오류:', error);
+                    alert('폴더에 추가 중 오류가 발생했습니다.');
+                  }
+                });
+              });
+            } else {
+              folderList.innerHTML = '<p class="folder-empty-message">폴더가 없습니다. 프로필에서 폴더를 먼저 생성해주세요.</p>';
+            }
+          }
 
           function showFolderSelectModal() {
             const modal = document.getElementById('folder-select-modal');
             if (modal) {
-              const folderList = document.getElementById('folder-list');
-              if (folders && folders.length > 0) {
-                folderList.innerHTML = folders.map(folder => `
-                  <button type="button" class="folder-select-item" data-folder-id="${folder._id}">
-                    <span>${folder.name}</span>
-                    <span class="folder-select-count">${folder.posts ? folder.posts.length : 0}개</span>
-                  </button>
-                `).join('');
-                
-                document.querySelectorAll('.folder-select-item').forEach(btn => {
-                  btn.addEventListener('click', async function() {
-                    const folderId = this.dataset.folderId;
-                    
-                    try {
-                      const response = await fetch(`/folders/${folderId}/posts`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        credentials: 'same-origin',
-                        body: JSON.stringify({
-                          postId: currentLikePostId,
-                          postType: 'community'
-                        })
-                      });
-
-                      const data = await response.json();
-                      if (data.success) {
-                        document.getElementById('folder-select-modal').close();
-                        alert('폴더에 추가되었습니다.');
-                      } else {
-                        alert(data.message || '폴더에 추가하는데 실패했습니다.');
-                      }
-                    } catch (error) {
-                      console.error('폴더에 추가 중 오류:', error);
-                      alert('폴더에 추가 중 오류가 발생했습니다.');
-                    }
-                  });
-                });
-              }
+              updateFolderList();
               modal.showModal();
             }
           }
@@ -346,7 +365,10 @@
           function showCreateFolderModal() {
             const modal = document.getElementById('create-folder-modal');
             if (modal) {
+              console.log('폴더 생성 모달 열기, currentLikePostId:', currentLikePostId);
               modal.showModal();
+            } else {
+              console.error('폴더 생성 모달을 찾을 수 없습니다.');
             }
           }
 
@@ -405,6 +427,8 @@
               return;
             }
 
+            console.log('폴더 생성 시도, currentLikePostId:', currentLikePostId);
+
             try {
               const response = await fetch('/folders', {
                 method: 'POST',
@@ -416,10 +440,16 @@
               });
 
               const data = await response.json();
+              console.log('폴더 생성 응답:', data);
+              
               if (data.success && data.folder) {
-                document.getElementById('create-folder-modal').close();
+                // 폴더 목록에 새 폴더 추가
+                folders.push(data.folder);
+                console.log('폴더 추가됨, 현재 폴더 목록:', folders);
                 
+                // 생성된 폴더에 자동으로 글 추가
                 if (currentLikePostId) {
+                  console.log('글 추가 시도, postId:', currentLikePostId, 'folderId:', data.folder._id);
                   try {
                     const addResponse = await fetch(`/folders/${data.folder._id}/posts`, {
                       method: 'POST',
@@ -434,16 +464,50 @@
                     });
 
                     const addData = await addResponse.json();
+                    console.log('폴더에 글 추가 응답:', addData);
+                    
                     if (addData.success) {
-                      alert('폴더가 생성되었고 글도 추가되었습니다.');
-                      location.reload();
+                      // 폴더 목록 업데이트
+                      const folderIndex = folders.findIndex(f => f._id === data.folder._id);
+                      if (folderIndex !== -1) {
+                        folders[folderIndex] = addData.folder;
+                      }
+                      
+                      document.getElementById('create-folder-modal').close();
+                      
+                      // 폴더 목록 새로고침
+                      updateFolderList();
+                      
+                      // 폴더 선택 모달로 전환
+                      setTimeout(() => {
+                        showFolderSelectModal();
+                        alert('폴더가 생성되었고 글도 추가되었습니다.');
+                      }, 100);
                     } else {
-                      alert('폴더는 생성되었지만 글 추가에 실패했습니다.');
+                      document.getElementById('create-folder-modal').close();
+                      updateFolderList();
+                      setTimeout(() => {
+                        showFolderSelectModal();
+                        alert('폴더는 생성되었지만 글 추가에 실패했습니다: ' + (addData.message || '알 수 없는 오류'));
+                      }, 100);
                     }
                   } catch (error) {
                     console.error('폴더에 글 추가 중 오류:', error);
-                    alert('폴더는 생성되었지만 글 추가 중 오류가 발생했습니다.');
+                    document.getElementById('create-folder-modal').close();
+                    updateFolderList();
+                    setTimeout(() => {
+                      showFolderSelectModal();
+                      alert('폴더는 생성되었지만 글 추가 중 오류가 발생했습니다: ' + error.message);
+                    }, 100);
                   }
+                } else {
+                  console.warn('폴더 생성 후 자동 저장 실패: currentLikePostId가 없음', { currentLikePostId });
+                  document.getElementById('create-folder-modal').close();
+                  updateFolderList();
+                  setTimeout(() => {
+                    showFolderSelectModal();
+                    alert('폴더가 생성되었습니다. 글을 추가하려면 폴더를 선택해주세요.');
+                  }, 100);
                 }
               } else {
                 alert(data.message || '폴더 생성에 실패했습니다.');

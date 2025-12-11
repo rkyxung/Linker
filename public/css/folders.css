@@ -42,7 +42,7 @@
 
 .board-panel.folder-board-panel.is-active {
   display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr)) !important;
+  grid-template-columns: repeat(2, 1fr) !important;
   gap: 1.2vw !important;
 }
 
@@ -175,5 +175,78 @@
 
 .folder-post-card--empty {
   grid-column: 1 / -1;
+}
+
+/* 커뮤니티 글 카드 스타일 (폴더 내) */
+.community-folder-card {
+  padding: 1.5vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+}
+
+.community-folder-card .post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1vw;
+  margin-bottom: 0.5vw;
+}
+
+.community-folder-card .post-header__title {
+  flex: 1;
+}
+
+.community-folder-card .post-header__title h2 {
+  margin: 0.5vw 0 0.3vw 0;
+  font-size: 1.05vw;
+  font-weight: 700;
+  color: rgba(24, 50, 117, 0.92);
+  line-height: 1.4;
+}
+
+.community-folder-card .post-header__title p {
+  margin: 0.26vw 0 0;
+  font-size: 0.83vw;
+  color: rgba(31, 61, 122, 0.75);
+}
+
+.community-folder-card .post-body {
+  flex: 1;
+  margin-bottom: 0.5vw;
+}
+
+.community-folder-card .community-post-content {
+  margin: 0;
+  font-size: 0.83vw;
+  color: rgba(31, 61, 122, 0.75);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.community-folder-card .folder-remove-section {
+  padding-top: 0.5vw;
+  border-top: 0.05vw solid rgba(31, 61, 122, 0.1);
+  margin-top: auto;
+}
+
+.community-folder-card .folder-like-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.2vw;
+  font-size: 0.78vw;
+  color: rgba(31, 61, 122, 0.75);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.community-folder-card .folder-like-btn svg {
+  width: 1vw;
+  height: auto;
 }
 

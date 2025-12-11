@@ -240,7 +240,19 @@ const logoutUser = (req, res) => {
 // @route DELETE /users/:id
 const deleteUser = asyncHandler(async (req, res) => {
   await User.findByIdAndDelete(req.params.id);
-  res.redirect("/");
+  
+  // 세션 제거
+  if (req.session) {
+    req.session.destroy((error) => {
+      if (error) {
+        console.error("세션 종료 중 오류가 발생했습니다:", error);
+      }
+      res.clearCookie("connect.sid");
+      res.redirect("/login");
+    });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 const loginUser = asyncHandler(async (req, res) => {

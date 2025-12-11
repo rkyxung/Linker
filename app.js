@@ -11,6 +11,7 @@ const CommunityPost = require("./models/communityPost");
 const CommunityComment = require("./models/communityComment");
 const RecruitmentPost = require("./models/recruitmentPost");
 const TeamSeekingPost = require("./models/teamSeekingPost");
+const mongoose = require("mongoose");
 const session = require("express-session");
 const userRoutes = require("./routes/userRoutes");
 const asyncHandler = require("express-async-handler");
@@ -124,23 +125,35 @@ app.get("/", requireAuth, asyncHandler(async (req, res) => {
     ...scrappedSeekingPosts.map(post => ({ ...post, postType: "seeking" }))
   ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  // 인기글: 캠퍼스 / 공모전 (스크랩 + 조회수 기준)
-  const popularCampusRecruit = await RecruitmentPost.find({ category: { $in: ["project", "study"] } })
+  // 인기글: 캠퍼스 / 공모전 (스크랩 2개 이상 + 조회수 기준)
+  const popularCampusRecruit = await RecruitmentPost.find({ 
+    category: { $in: ["project", "study"] },
+    scraps: { $gte: 2 }
+  })
     .populate("writer", "name nickname")
     .sort({ scraps: -1, views: -1, createdAt: -1 })
     .limit(8)
     .lean();
-  const popularCampusSeek = await TeamSeekingPost.find({ category: { $in: ["project", "study"] } })
+  const popularCampusSeek = await TeamSeekingPost.find({ 
+    category: { $in: ["project", "study"] },
+    scraps: { $gte: 2 }
+  })
     .populate("writer", "name nickname")
     .sort({ scraps: -1, views: -1, createdAt: -1 })
     .limit(8)
     .lean();
-  const popularContestRecruit = await RecruitmentPost.find({ category: { $in: ["design", "develop", "planning"] } })
+  const popularContestRecruit = await RecruitmentPost.find({ 
+    category: { $in: ["design", "develop", "planning"] },
+    scraps: { $gte: 2 }
+  })
     .populate("writer", "name nickname")
     .sort({ scraps: -1, views: -1, createdAt: -1 })
     .limit(8)
     .lean();
-  const popularContestSeek = await TeamSeekingPost.find({ category: { $in: ["design", "develop", "planning"] } })
+  const popularContestSeek = await TeamSeekingPost.find({ 
+    category: { $in: ["design", "develop", "planning"] },
+    scraps: { $gte: 2 }
+  })
     .populate("writer", "name nickname")
     .sort({ scraps: -1, views: -1, createdAt: -1 })
     .limit(8)
@@ -226,26 +239,49 @@ app.get("/campus", requireAuth, asyncHandler(async (req, res) => {
   const sort = req.query.sort || 'all'; // all, latest, popular
   let sortOption = { createdAt: -1 };
   
+  const userId = req.session.userId;
+  let recruitPosts, seekingPosts;
+  
   if (sort === 'latest') {
     sortOption = { createdAt: -1 };
+    recruitPosts = await RecruitmentPost.find({ category: { $in: ['project', 'study'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+    seekingPosts = await TeamSeekingPost.find({ category: { $in: ['project', 'study'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
   } else if (sort === 'popular') {
     sortOption = { scraps: -1, views: -1 };
+    // 인기 탭: 스크랩 2개 이상만 표시
+    recruitPosts = await RecruitmentPost.find({ 
+      category: { $in: ['project', 'study'] },
+      scraps: { $gte: 2 }
+    })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+    seekingPosts = await TeamSeekingPost.find({ 
+      category: { $in: ['project', 'study'] },
+      scraps: { $gte: 2 }
+    })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+  } else {
+    sortOption = { createdAt: -1 };
+    recruitPosts = await RecruitmentPost.find({ category: { $in: ['project', 'study'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+    seekingPosts = await TeamSeekingPost.find({ category: { $in: ['project', 'study'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
   }
   
-  // 캠퍼스 팀원 모집하기 글 (category가 'project' 또는 'study')
-  const recruitPosts = await RecruitmentPost.find({ category: { $in: ['project', 'study'] } })
-    .populate("writer", "name nickname")
-    .sort(sortOption)
-    .lean();
-  
-  // 캠퍼스 팀 구하기 글 (category가 'project' 또는 'study')
-  const seekingPosts = await TeamSeekingPost.find({ category: { $in: ['project', 'study'] } })
-    .populate("writer", "name nickname")
-    .sort(sortOption)
-    .lean();
-  
   // 두 타입의 글을 합치고 날짜순 정렬
-  const userId = req.session.userId;
   const allPosts = [...recruitPosts.map(p => ({ ...p, postType: 'recruit' })), ...seekingPosts.map(p => ({ ...p, postType: 'seeking' }))];
   allPosts.sort((a, b) => {
     if (sort === 'latest') {
@@ -316,6 +352,7 @@ app.post("/campus/add", requireAuth, asyncHandler(async (req, res) => {
   await RecruitmentPost.create({
     title: title.trim(),
     content: content.trim(),
+    type: "recruit",
     category: category,
     deadline: new Date(deadline),
     recruitCount: parseInt(recruitCount),
@@ -447,28 +484,50 @@ app.put("/campus/seek/:id", requireAuth, asyncHandler(async (req, res) => {
 // 공모전 페이지
 app.get("/contest", requireAuth, asyncHandler(async (req, res) => {
   const sort = req.query.sort || 'all'; // all, latest, popular
+  const userId = req.session.userId;
+  let recruitPosts, seekingPosts;
   let sortOption = { createdAt: -1 };
   
   if (sort === 'latest') {
     sortOption = { createdAt: -1 };
+    recruitPosts = await RecruitmentPost.find({ category: { $in: ['design', 'develop', 'planning'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+    seekingPosts = await TeamSeekingPost.find({ category: { $in: ['design', 'develop', 'planning'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
   } else if (sort === 'popular') {
     sortOption = { scraps: -1, views: -1 };
+    // 인기 탭: 스크랩 2개 이상만 표시
+    recruitPosts = await RecruitmentPost.find({ 
+      category: { $in: ['design', 'develop', 'planning'] },
+      scraps: { $gte: 2 }
+    })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+    seekingPosts = await TeamSeekingPost.find({ 
+      category: { $in: ['design', 'develop', 'planning'] },
+      scraps: { $gte: 2 }
+    })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+  } else {
+    sortOption = { createdAt: -1 };
+    recruitPosts = await RecruitmentPost.find({ category: { $in: ['design', 'develop', 'planning'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
+    seekingPosts = await TeamSeekingPost.find({ category: { $in: ['design', 'develop', 'planning'] } })
+      .populate("writer", "name nickname")
+      .sort(sortOption)
+      .lean();
   }
   
-  // 공모전 팀원 모집하기 글 (category가 'design', 'develop', 'planning')
-  const recruitPosts = await RecruitmentPost.find({ category: { $in: ['design', 'develop', 'planning'] } })
-    .populate("writer", "name nickname")
-    .sort(sortOption)
-    .lean();
-  
-  // 공모전 팀 구하기 글 (category가 'design', 'develop', 'planning')
-  const seekingPosts = await TeamSeekingPost.find({ category: { $in: ['design', 'develop', 'planning'] } })
-    .populate("writer", "name nickname")
-    .sort(sortOption)
-    .lean();
-  
   // 두 타입의 글을 합치고 날짜순 정렬
-  const userId = req.session.userId;
   const allPosts = [...recruitPosts.map(p => ({ ...p, postType: 'recruit' })), ...seekingPosts.map(p => ({ ...p, postType: 'seeking' }))];
   allPosts.sort((a, b) => {
     if (sort === 'latest') {
@@ -539,6 +598,7 @@ app.post("/contest/add", requireAuth, asyncHandler(async (req, res) => {
   await RecruitmentPost.create({
     title: title.trim(),
     content: content.trim(),
+    type: "recruit",
     category: category,
     deadline: new Date(deadline),
     recruitCount: parseInt(recruitCount),
@@ -865,16 +925,23 @@ app.post("/campus/:id/scrap", requireAuth, asyncHandler(async (req, res) => {
   const userId = req.session.userId;
   const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
 
+  // 스크랩 전 상태 저장
+  const wasScrapped = scrappedIndex > -1;
+
   if (scrappedIndex > -1) {
+    // 스크랩 제거
     post.scrappedBy.splice(scrappedIndex, 1);
-    post.scraps = Math.max(0, post.scraps - 1);
   } else {
+    // 스크랩 추가
     post.scrappedBy.push(userId);
-    post.scraps += 1;
   }
 
+  // scraps를 항상 scrappedBy 배열의 길이로 동기화
+  post.scraps = post.scrappedBy.length;
+
   await post.save();
-  res.json({ success: true, scraps: post.scraps, isScrapped: scrappedIndex === -1 });
+  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
+  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
 }));
 
 // 캠퍼스 팀 구하기 글 스크랩 토글
@@ -887,16 +954,23 @@ app.post("/campus/seek/:id/scrap", requireAuth, asyncHandler(async (req, res) =>
   const userId = req.session.userId;
   const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
 
+  // 스크랩 전 상태 저장
+  const wasScrapped = scrappedIndex > -1;
+
   if (scrappedIndex > -1) {
+    // 스크랩 제거
     post.scrappedBy.splice(scrappedIndex, 1);
-    post.scraps = Math.max(0, post.scraps - 1);
   } else {
+    // 스크랩 추가
     post.scrappedBy.push(userId);
-    post.scraps += 1;
   }
 
+  // scraps를 항상 scrappedBy 배열의 길이로 동기화
+  post.scraps = post.scrappedBy.length;
+
   await post.save();
-  res.json({ success: true, scraps: post.scraps, isScrapped: scrappedIndex === -1 });
+  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
+  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
 }));
 
 // 공모전 팀원 모집하기 글 스크랩 토글
@@ -909,16 +983,23 @@ app.post("/contest/:id/scrap", requireAuth, asyncHandler(async (req, res) => {
   const userId = req.session.userId;
   const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
 
+  // 스크랩 전 상태 저장
+  const wasScrapped = scrappedIndex > -1;
+
   if (scrappedIndex > -1) {
+    // 스크랩 제거
     post.scrappedBy.splice(scrappedIndex, 1);
-    post.scraps = Math.max(0, post.scraps - 1);
   } else {
+    // 스크랩 추가
     post.scrappedBy.push(userId);
-    post.scraps += 1;
   }
 
+  // scraps를 항상 scrappedBy 배열의 길이로 동기화
+  post.scraps = post.scrappedBy.length;
+
   await post.save();
-  res.json({ success: true, scraps: post.scraps, isScrapped: scrappedIndex === -1 });
+  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
+  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
 }));
 
 // 공모전 팀 구하기 글 스크랩 토글
@@ -931,16 +1012,23 @@ app.post("/contest/seek/:id/scrap", requireAuth, asyncHandler(async (req, res) =
   const userId = req.session.userId;
   const scrappedIndex = post.scrappedBy.findIndex(id => id.toString() === userId);
 
+  // 스크랩 전 상태 저장
+  const wasScrapped = scrappedIndex > -1;
+
   if (scrappedIndex > -1) {
+    // 스크랩 제거
     post.scrappedBy.splice(scrappedIndex, 1);
-    post.scraps = Math.max(0, post.scraps - 1);
   } else {
+    // 스크랩 추가
     post.scrappedBy.push(userId);
-    post.scraps += 1;
   }
 
+  // scraps를 항상 scrappedBy 배열의 길이로 동기화
+  post.scraps = post.scrappedBy.length;
+
   await post.save();
-  res.json({ success: true, scraps: post.scraps, isScrapped: scrappedIndex === -1 });
+  // 스크랩 후 상태를 반환 (wasScrapped가 false면 스크랩 추가, true면 제거)
+  res.json({ success: true, scraps: post.scraps, isScrapped: !wasScrapped });
 }));
 
 // 캠퍼스 팀원 모집하기 글 댓글 작성
@@ -1468,8 +1556,10 @@ app.post("/folders", requireAuth, asyncHandler(async (req, res) => {
 
   await user.save();
 
-  const newFolder = user.folders[user.folders.length - 1];
-  res.json({ success: true, folder: newFolder });
+  // 저장 후 다시 조회하여 제대로 직렬화된 폴더 가져오기
+  const updatedUser = await User.findById(userId);
+  const newFolder = updatedUser.folders[updatedUser.folders.length - 1];
+  res.json({ success: true, folder: newFolder.toObject() });
 }));
 
 // 폴더 이름 수정
@@ -1501,7 +1591,10 @@ app.put("/folders/:folderId", requireAuth, asyncHandler(async (req, res) => {
   folder.name = name.trim();
   await user.save();
 
-  res.json({ success: true, folder });
+  // 저장 후 다시 조회하여 업데이트된 폴더 가져오기
+  const updatedUser = await User.findById(userId);
+  const updatedFolder = updatedUser.folders.id(folderId);
+  res.json({ success: true, folder: updatedFolder.toObject() });
 }));
 
 // 폴더 삭제
@@ -1550,8 +1643,13 @@ app.post("/folders/:folderId/posts", requireAuth, asyncHandler(async (req, res) 
     return res.status(404).json({ success: false, message: "폴더를 찾을 수 없습니다." });
   }
 
+  // postId를 ObjectId로 변환
+  const postObjectId = mongoose.Types.ObjectId.isValid(postId) 
+    ? new mongoose.Types.ObjectId(postId) 
+    : postId;
+
   // 이미 폴더에 있는지 확인
-  const existingPost = folder.posts.find(p => p.postId.toString() === postId && p.postType === postType);
+  const existingPost = folder.posts.find(p => p.postId.toString() === postObjectId.toString() && p.postType === postType);
   if (existingPost) {
     return res.status(400).json({ success: false, message: "이미 폴더에 추가된 글입니다." });
   }
@@ -1559,18 +1657,18 @@ app.post("/folders/:folderId/posts", requireAuth, asyncHandler(async (req, res) 
   // 스크랩한 글인지 또는 좋아요한 글인지 확인
   let canAdd = false;
   if (postType === 'recruit') {
-    const post = await RecruitmentPost.findById(postId);
-    if (post && post.scrappedBy.some(id => id.toString() === userId)) {
+    const post = await RecruitmentPost.findById(postObjectId);
+    if (post && post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)) {
       canAdd = true;
     }
   } else if (postType === 'seeking') {
-    const post = await TeamSeekingPost.findById(postId);
-    if (post && post.scrappedBy.some(id => id.toString() === userId)) {
+    const post = await TeamSeekingPost.findById(postObjectId);
+    if (post && post.scrappedBy && post.scrappedBy.some(id => id.toString() === userId)) {
       canAdd = true;
     }
   } else if (postType === 'community') {
-    const post = await CommunityPost.findById(postId);
-    if (post && post.likedBy.some(id => id.toString() === userId)) {
+    const post = await CommunityPost.findById(postObjectId);
+    if (post && post.likedBy && post.likedBy.some(id => id.toString() === userId)) {
       canAdd = true;
     }
   }
@@ -1580,14 +1678,17 @@ app.post("/folders/:folderId/posts", requireAuth, asyncHandler(async (req, res) 
   }
 
   folder.posts.push({
-    postId,
+    postId: postObjectId,
     postType,
     addedAt: new Date()
   });
 
   await user.save();
 
-  res.json({ success: true, folder });
+  // 저장 후 다시 조회하여 업데이트된 폴더 가져오기
+  const updatedUser = await User.findById(userId);
+  const updatedFolder = updatedUser.folders.id(folderId);
+  res.json({ success: true, folder: updatedFolder.toObject() });
 }));
 
 // 폴더에서 글 제거
@@ -1618,7 +1719,10 @@ app.delete("/folders/:folderId/posts/:postId", requireAuth, asyncHandler(async (
   folder.posts.splice(postIndex, 1);
   await user.save();
 
-  res.json({ success: true, folder });
+  // 저장 후 다시 조회하여 업데이트된 폴더 가져오기
+  const updatedUser = await User.findById(userId);
+  const updatedFolder = updatedUser.folders.id(folderId);
+  res.json({ success: true, folder: updatedFolder.toObject() });
 }));
 
 // 폴더별 글 보기
@@ -1645,32 +1749,46 @@ app.get("/folders/:folderId", requireAuth, asyncHandler(async (req, res) => {
   // 폴더에 있는 글들 가져오기
   const recruitPostIds = folder.posts.filter(p => p.postType === 'recruit').map(p => p.postId);
   const seekingPostIds = folder.posts.filter(p => p.postType === 'seeking').map(p => p.postId);
+  const communityPostIds = folder.posts.filter(p => p.postType === 'community').map(p => p.postId);
 
-  const [recruitPosts, seekingPosts] = await Promise.all([
-    RecruitmentPost.find({ _id: { $in: recruitPostIds } })
+  const [recruitPosts, seekingPosts, communityPosts] = await Promise.all([
+    recruitPostIds.length > 0 ? RecruitmentPost.find({ _id: { $in: recruitPostIds } })
       .populate("writer", "name nickname")
-      .lean(),
-    TeamSeekingPost.find({ _id: { $in: seekingPostIds } })
+      .lean() : [],
+    seekingPostIds.length > 0 ? TeamSeekingPost.find({ _id: { $in: seekingPostIds } })
       .populate("writer", "name nickname")
-      .lean()
+      .lean() : [],
+    communityPostIds.length > 0 ? CommunityPost.find({ _id: { $in: communityPostIds } })
+      .populate("writer", "name nickname")
+      .lean() : []
   ]);
 
   // 원래 순서 유지
   const allPosts = folder.posts.map(folderPost => {
     if (folderPost.postType === 'recruit') {
       return recruitPosts.find(p => p._id.toString() === folderPost.postId.toString());
-    } else {
+    } else if (folderPost.postType === 'seeking') {
       return seekingPosts.find(p => p._id.toString() === folderPost.postId.toString());
+    } else if (folderPost.postType === 'community') {
+      return communityPosts.find(p => p._id.toString() === folderPost.postId.toString());
     }
+    return null;
   }).filter(Boolean).map(post => {
     const folderPost = folder.posts.find(p => 
-      p.postId.toString() === post._id.toString() && 
-      p.postType === (post.deadline ? 'recruit' : 'seeking')
+      p.postId.toString() === post._id.toString()
     );
+    
+    let postType = folderPost.postType;
+    if (!postType) {
+      // postType이 없으면 글의 특성으로 판단
+      postType = post.deadline ? 'recruit' : (post.category ? 'seeking' : 'community');
+    }
+    
     return {
       ...post,
-      postType: folderPost.postType,
-      isScrapped: true
+      postType: postType,
+      isScrapped: postType !== 'community',
+      isLiked: postType === 'community'
     };
   });
 

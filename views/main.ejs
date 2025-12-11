@@ -140,11 +140,13 @@
                     <p class="post-card-time post-card-time--no-padding">
                       <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
                     </p>
-                    <div class="post-card-body post-card-body--no-padding">
-                      <p>
-                        <%= post.content && post.content.length > 80 ? post.content.substring(0, 80) + '...' : (post.content || '') %>
-                      </p>
-                    </div>
+                    <% if (post.hashtags && post.hashtags.length > 0) { %>
+                      <div class="post-card-hashtags post-card-hashtags--inline">
+                        <% post.hashtags.forEach(tag => { %>
+                          <span class="post-card-hashtag">#<%= tag %></span>
+                        <% }) %>
+                      </div>
+                    <% } %>
                   </div>
                   <div class="post-card-footer" onclick="event.stopPropagation();">
                     <div class="post-card-footer-actions">
@@ -584,8 +586,11 @@
               
               const data = await response.json();
               if (data.success) {
+                // 숫자와 색상을 항상 함께 업데이트
                 scrapsSpan.textContent = data.scraps;
+                
                 if (data.isScrapped) {
+                  // 활성화: 컬러 채우고 숫자 올라감
                   svg.setAttribute('stroke', '#1D5DFF');
                   svg.setAttribute('fill', '#1D5DFF');
                   svg.removeAttribute('fill-opacity');
@@ -597,10 +602,14 @@
                     showCreateFolderModal();
                   }
                 } else {
+                  // 비활성화: fill 비우고 숫자 내려감
                   svg.setAttribute('stroke', '#818181');
                   svg.setAttribute('fill', 'none');
                   svg.removeAttribute('fill-opacity');
                 }
+              } else {
+                console.error('스크랩 처리 실패:', data);
+                alert(data.message || '스크랩 처리에 실패했습니다.');
               }
             } catch (error) {
               console.error('스크랩 처리 중 오류:', error);

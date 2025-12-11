@@ -260,8 +260,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5vw;
-  margin-bottom: 0.8vw;
-  padding-bottom: 0.8vw;
+  padding: 1.2vh 0;
   border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);
 }
 
@@ -274,8 +273,7 @@
 }
 
 .post-card-hashtags-empty {
-  margin-bottom: 0.8vw;
-  padding-bottom: 0.8vw;
+  padding: 1.2vh 0;
   border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);
 }
 
