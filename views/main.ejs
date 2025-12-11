@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/css/main.css" />
 </head>
 
-<body>
+<body class="page-home">
   <% const displayName=currentUser && currentUser.nickname ? currentUser.nickname : currentUser && currentUser.name ?
     currentUser.name : "링커" ; %>
 
@@ -55,7 +55,7 @@
 
         <div class="board-panels">
           <div class="board-panel is-active" data-panel="posted" role="tabpanel" id="panel-posted"
-            aria-labelledby="tab-posted" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2vw;">
+            aria-labelledby="tab-posted">
             <% if (typeof myPosts !== 'undefined' && myPosts && myPosts.length > 0) { %>
               <% 
                 const categoryMap = {
@@ -65,32 +65,32 @@
                 };
               %>
               <% myPosts.forEach(post => { %>
-                <article class="post-card" style="cursor: pointer; position: relative; padding: 1.2vw; display: flex; flex-direction: column; gap: 0.8vw; min-height: auto;" onclick="window.location.href='/community/<%= post._id %>'">
-                  <div style="display: flex; flex-direction: column; gap: 0.6vw; flex: 1;">
-                    <div style="display: flex; align-items: center; gap: 0.5vw; flex-wrap: wrap;">
-                      <span style="padding: 0.35vw 0.65vw; border-radius: 0.65vw; background: rgba(43, 107, 255, 0.12); color: #2f6bff; font-size: 0.65vw; font-weight: 600;">
+                <article class="post-card" onclick="window.location.href='/community/<%= post._id %>'">
+                  <div class="post-card-content-wrapper">
+                    <div class="post-card-category-wrapper">
+                      <span class="post-card-category">
                         <%= categoryMap[post.category] || '자유게시판' %>
                       </span>
                     </div>
-                    <h2 style="font-size: 0.9vw; font-weight: 700; color: rgba(24, 50, 117, 0.92); padding-left: 0.4vw; margin: 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><%= post.title %></h2>
-                    <p style="font-size: 0.7vw; color: rgba(31, 61, 122, 0.75); padding-left: 0.4vw; margin: 0;">
+                    <h2 class="post-card-title"><%= post.title %></h2>
+                    <p class="post-card-time">
                       <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
                     </p>
-                    <div class="post-body" style="margin-top: 0.5vw; padding-left: 0.4vw; flex: 1;">
-                      <p style="margin: 0; font-size: 0.7vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    <div class="post-card-body">
+                      <p>
                         <%= post.content.length > 80 ? post.content.substring(0, 80) + '...' : post.content %>
                       </p>
                     </div>
                   </div>
-                  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.8vw; padding-top: 0.8vw; border-top: 0.05vw solid rgba(44, 120, 255, 0.1);" onclick="event.stopPropagation();">
-                    <div style="display: flex; align-items: center; gap: 1vw;">
-                      <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.65vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                  <div class="post-card-footer" onclick="event.stopPropagation();">
+                    <div class="post-card-footer-actions">
+                      <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>">
                         <svg width="16" height="15" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= post.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isLiked ? '#1D5DFF' : 'none' %>"/>
                         </svg>
                         <span class="post-likes-<%= post._id %>"><%= post.likes || 0 %></span>
                       </button>
-                      <div style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.65vw; color: rgba(31, 61, 122, 0.75);">
+                      <div class="post-card-comment">
                         <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <mask id="path-1-inside-1_389_1164" fill="white">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
@@ -104,7 +104,7 @@
                 </article>
               <% }) %>
             <% } else { %>
-              <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+              <article class="post-card post-card--empty" aria-live="polite">
               <div class="post-empty__message">
                 <strong>등록된 글이 없습니다</strong>
                 새로운 글을 등록하면 순서대로 보여드릴게요.
@@ -130,34 +130,33 @@
               };
             %>
             <% if (typeof scrappedPosts !== 'undefined' && scrappedPosts && scrappedPosts.length > 0) { %>
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2vw;">
-                <% scrappedPosts.forEach(post => { %>
-                  <article class="post-card" style="cursor: pointer; position: relative; padding: 1.2vw; display: flex; flex-direction: column; gap: 0.8vw; min-height: auto;" onclick="window.location.href='<%= scrapUrl(post) %>'">
-                    <div style="display: flex; flex-direction: column; gap: 0.6vw; flex: 1;">
-                      <div style="display: flex; align-items: center; gap: 0.5vw; flex-wrap: wrap;">
-                        <span style="padding: 0.35vw 0.65vw; border-radius: 0.65vw; background: rgba(43, 107, 255, 0.12); color: #2f6bff; font-size: 0.65vw; font-weight: 600;">
-                          <%= renderScrapLabel(post) %>
-                        </span>
-                      </div>
-                      <h2 style="font-size: 0.9vw; font-weight: 700; color: rgba(24, 50, 117, 0.92); margin: 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><%= post.title %></h2>
-                      <p style="font-size: 0.7vw; color: rgba(31, 61, 122, 0.75); margin: 0;">
-                        <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
-                      </p>
-                      <div class="post-body" style="margin-top: 0.5vw; flex: 1;">
-                        <p style="margin: 0; font-size: 0.7vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                          <%= post.content && post.content.length > 80 ? post.content.substring(0, 80) + '...' : (post.content || '') %>
-                        </p>
-                      </div>
+              <% scrappedPosts.forEach(post => { %>
+                <article class="post-card" onclick="window.location.href='<%= scrapUrl(post) %>'">
+                  <div class="post-card-content-wrapper">
+                    <div class="post-card-category-wrapper">
+                      <span class="post-card-category">
+                        <%= renderScrapLabel(post) %>
+                      </span>
                     </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.8vw; padding-top: 0.8vw; border-top: 0.05vw solid rgba(44, 120, 255, 0.1);" onclick="event.stopPropagation();">
-                      <div style="display: flex; align-items: center; gap: 1vw;">
-                        <div style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.65vw; color: rgba(31, 61, 122, 0.75);">
-                          <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="#1D5DFF" stroke-width="2" stroke-linejoin="round" fill="#1D5DFF"/>
-                          </svg>
-                          <span><%= post.scraps || 0 %></span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.65vw; color: rgba(31, 61, 122, 0.75);">
+                    <h2 class="post-card-title post-card-title--no-padding"><%= post.title %></h2>
+                    <p class="post-card-time post-card-time--no-padding">
+                      <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
+                    </p>
+                    <div class="post-card-body post-card-body--no-padding">
+                      <p>
+                        <%= post.content && post.content.length > 80 ? post.content.substring(0, 80) + '...' : (post.content || '') %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="post-card-footer" onclick="event.stopPropagation();">
+                    <div class="post-card-footer-actions">
+                      <div class="post-card-scrap">
+                        <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="#1D5DFF" stroke-width="2" stroke-linejoin="round" fill="#1D5DFF"/>
+                        </svg>
+                        <span><%= post.scraps || 0 %></span>
+                      </div>
+                        <div class="post-card-comment">
                           <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="path-1-inside-1_389_1164_<%= post._id %>_scrap" fill="white">
                               <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
@@ -170,7 +169,6 @@
                     </div>
                   </article>
                 <% }) %>
-              </div>
             <% } else { %>
               <article class="post-card post-card--empty" aria-live="polite">
                 <div class="post-empty__message">
@@ -196,16 +194,16 @@
         <div class="trend-panels">
           <div class="trend-panel is-active" data-trend-panel="campus">
             <% if (typeof popularCampus !== 'undefined' && popularCampus && popularCampus.length > 0) { %>
-              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(16vw, 1fr)); gap: 1vw;">
+              <div class="trend-panel-grid">
                 <% popularCampus.forEach(post => { %>
-                  <article class="post-card post-card--trend" style="cursor: pointer; padding: 1.2vw; display: flex; flex-direction: column; gap: 0.7vw; min-height: auto;" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
-                    <div style="display: flex; flex-direction: column; gap: 0.4vw; flex: 1;">
-                      <h3 style="font-size: 0.95vw; font-weight: 700; color: rgba(24, 50, 117, 0.92); margin: 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><%= post.title %></h3>
-                      <p style="font-size: 0.75vw; color: rgba(31, 61, 122, 0.75); margin: 0;">
+                  <article class="post-card post-card--trend" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
+                    <div class="post-card--trend-content">
+                      <h3 class="post-card--trend-title"><%= post.title %></h3>
+                      <p class="post-card--trend-meta">
                         <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
                         · 스크랩 <%= post.scraps || 0 %>
                       </p>
-                      <p style="margin: 0; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                      <p class="post-card--trend-content-text">
                         <%= post.content.length > 90 ? post.content.substring(0, 90) + '...' : post.content %>
                       </p>
                     </div>
@@ -224,16 +222,16 @@
 
           <div class="trend-panel" data-trend-panel="contest" hidden>
             <% if (typeof popularContest !== 'undefined' && popularContest && popularContest.length > 0) { %>
-              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(16vw, 1fr)); gap: 1vw;">
+              <div class="trend-panel-grid">
                 <% popularContest.forEach(post => { %>
-                  <article class="post-card post-card--trend" style="cursor: pointer; padding: 1.2vw; display: flex; flex-direction: column; gap: 0.7vw; min-height: auto;" onclick="window.location.href='<%= post.postType === 'recruit' ? '/contest/' : '/contest/seek/' %><%= post._id %>'">
-                    <div style="display: flex; flex-direction: column; gap: 0.4vw; flex: 1;">
-                      <h3 style="font-size: 0.95vw; font-weight: 700; color: rgba(24, 50, 117, 0.92); margin: 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><%= post.title %></h3>
-                      <p style="font-size: 0.75vw; color: rgba(31, 61, 122, 0.75); margin: 0;">
+                  <article class="post-card post-card--trend" onclick="window.location.href='<%= post.postType === 'recruit' ? '/contest/' : '/contest/seek/' %><%= post._id %>'">
+                    <div class="post-card--trend-content">
+                      <h3 class="post-card--trend-title"><%= post.title %></h3>
+                      <p class="post-card--trend-meta">
                         <span class="time-ago" data-timestamp="<%= post.createdAt.toISOString() %>"></span>
                         · 스크랩 <%= post.scraps || 0 %>
                       </p>
-                      <p style="margin: 0; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                      <p class="post-card--trend-content-text">
                         <%= post.content.length > 90 ? post.content.substring(0, 90) + '...' : post.content %>
                       </p>
                     </div>

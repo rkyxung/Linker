@@ -1,0 +1,359 @@
+/* 공통 상세 페이지 스타일 */
+
+.post-detail-container {
+  background: transparent;
+  border-radius: 1.67vw;
+  padding: 1.5vw 2vw;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5vw;
+  padding-bottom: 1vw;
+  border-bottom: 0.05vw solid rgba(44, 120, 255, 0.15);
+}
+
+.post-header-left {
+  flex: 1;
+}
+
+.post-category {
+  display: inline-block;
+  padding: 0.42vw 0.78vw;
+  border-radius: 0.78vw;
+  background: rgba(43, 107, 255, 0.12);
+  color: #2f6bff;
+  font-size: 0.74vw;
+  font-weight: 600;
+  margin-right: 0.5vw;
+  margin-bottom: 0.8vw;
+}
+
+.post-title {
+  font-size: 1.46vw;
+  font-weight: 700;
+  color: rgba(24, 50, 117, 0.92);
+  margin: 0 0 0.8vw 0;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  font-size: 0.83vw;
+  color: rgba(31, 61, 122, 0.75);
+  margin-bottom: 1vw;
+}
+
+.post-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+  margin-top: 1vw;
+  padding: 1.5vw;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0.94vw;
+}
+
+.post-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5vw;
+  font-size: 0.88vw;
+  color: rgba(24, 50, 117, 0.85);
+}
+
+.post-info-label {
+  font-weight: 600;
+  color: rgba(31, 61, 122, 0.75);
+  min-width: 6vw;
+}
+
+.post-info-value {
+  flex: 1;
+}
+
+.post-info-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5vw;
+}
+
+.post-info-tag {
+  padding: 0.3vw 0.6vw;
+  border-radius: 0.5vw;
+  background: rgba(44, 120, 255, 0.1);
+  color: #2f6bff;
+  font-size: 0.78vw;
+}
+
+.post-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5vw;
+  font-size: 0.98vw;
+  color: rgba(31, 61, 122, 0.75);
+  position: relative;
+}
+
+.more-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(31, 61, 122, 0.75);
+  transition: color 0.2s ease;
+}
+
+.more-menu-btn:hover {
+  color: rgba(31, 61, 122, 1);
+}
+
+.more-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5vw;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 0.94vw;
+  box-shadow: 0 0.52vw 1.56vw rgba(0, 0, 0, 0.15);
+  padding: 0.5vw 0;
+  min-width: 8vw;
+  z-index: 100;
+  display: none;
+}
+
+.more-menu.show {
+  display: block;
+}
+
+.more-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.73vw 1.04vw;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 0.88vw;
+  color: rgba(24, 50, 117, 0.85);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-family: "Pretendard", sans-serif;
+}
+
+.more-menu-item:hover {
+  background: rgba(44, 120, 255, 0.1);
+}
+
+.more-menu-item.danger {
+  color: #ff3b3b;
+}
+
+.post-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+
+.post-content {
+  font-size: 1.05vw;
+  line-height: 1.8;
+  color: rgba(24, 50, 117, 0.85);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin-bottom: 1.5vw;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+/* 커뮤니티 상세 페이지 전용 */
+.page-community .post-content {
+  margin: 0;
+  margin-left: -2vw;
+}
+
+.hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5vw;
+  margin-top: 1.5vw;
+  padding-top: 1.5vw;
+  border-top: 0.05vw solid rgba(44, 120, 255, 0.15);
+}
+
+.hashtag {
+  padding: 0.3vw 0.6vw;
+  border-radius: 0.5vw;
+  background: rgba(44, 120, 255, 0.1);
+  color: #2f6bff;
+  font-size: 0.95vw;
+  font-weight: 600;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  color: rgba(24, 50, 117, 0.8);
+  text-decoration: none;
+  font-size: 0.94vw;
+  font-weight: 600;
+  margin-bottom: 1.5vw;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #1d5dff;
+}
+
+.post-actions {
+  display: flex;
+  gap: 1vw;
+  margin-top: 2vw;
+  padding-top: 1.5vw;
+  border-top: 0.05vw solid rgba(44, 120, 255, 0.15);
+}
+
+.btn-edit {
+  padding: 0.73vw 1.46vw;
+  border-radius: 0.94vw;
+  border: none;
+  font-size: 0.94vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Pretendard", sans-serif;
+  background: linear-gradient(120deg, #2f6bff, #4ea6ff);
+  color: #ffffff;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  box-shadow: 0 0.52vw 1.04vw rgba(47, 107, 255, 0.25);
+}
+
+.btn-edit:hover {
+  background: linear-gradient(120deg, #2560e6, #3d96e6);
+  box-shadow: 0 0.62vw 1.25vw rgba(47, 107, 255, 0.35);
+}
+
+.comments-section {
+  margin-top: 2vw;
+  padding-top: 1.5vw;
+  border-top: 0.05vw solid rgba(44, 120, 255, 0.15);
+}
+
+.comment-form {
+  margin-bottom: 2vw;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 0.83vw 1.04vw;
+  border-radius: 0.94vw;
+  border: 0.05vw solid rgba(44, 120, 255, 0.25);
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 1.00vw;
+  color: #1f3d7a;
+  font-family: "Pretendard", sans-serif;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 4vw;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #2f6bff;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: none;
+}
+
+.comment-submit {
+  margin-top: 1vw;
+  padding: 0.73vw 1.46vw;
+  border-radius: 0.94vw;
+  border: none;
+  font-size: 1.00vw;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(120deg, #2f6bff, #4ea6ff);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.comment-submit:hover {
+  background: linear-gradient(120deg, #2560e6, #3d96e6);
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vw;
+}
+
+.comment-item {
+  padding: 1.5vw;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0.94vw;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8vw;
+  position: relative;
+}
+
+.comment-author {
+  font-weight: 700;
+  font-size: 1.02vw;
+  color: rgba(24, 50, 117, 0.92);
+}
+
+.comment-date {
+  font-size: 0.90vw;
+  color: rgba(31, 61, 122, 0.6);
+}
+
+.comment-content {
+  font-size: 1.00vw;
+  line-height: 1.65;
+  color: rgba(24, 50, 117, 0.88);
+  margin-bottom: 0.8vw;
+  white-space: pre-wrap;
+}
+
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.comment-like-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3vw 0.6vw;
+  border-radius: 0.5vw;
+  font-size: 0.78vw;
+  color: rgba(31, 61, 122, 0.75);
+  transition: background 0.2s ease;
+}
+
+.comment-like-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+

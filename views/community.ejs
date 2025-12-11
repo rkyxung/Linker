@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/community.css" />
 </head>
 
 <body>
@@ -18,8 +19,8 @@
 
       <main class="main-content" aria-label="메인 콘텐츠">
         <section class="my-board" aria-label="게시판">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5vw;">
-            <div class="board-tabs" role="tablist" aria-label="활동 유형" style="display: flex; gap: 0.5vw;">
+          <div class="community-header">
+            <div class="board-tabs community-tabs" role="tablist" aria-label="활동 유형">
               <button class="tab-btn is-active" type="button" role="tab" id="tab-all" aria-controls="panel-all"
                 aria-selected="true" data-tab="all">전체</button>
               <button class="tab-btn" type="button" role="tab" id="tab-free" aria-controls="panel-free"
@@ -29,7 +30,7 @@
               <button class="tab-btn" type="button" role="tab" id="tab-info" aria-controls="panel-info"
                 aria-selected="false" data-tab="info">정보공유</button>
             </div>
-            <a href="/community/add" style="padding: 0.55vw 1.35vw; background: linear-gradient(120deg, #2f6bff, #4ea6ff); color: #ffffff; border-radius: 52.03vw; text-decoration: none; font-size: 0.85vw; font-weight: 600; transition: all 0.2s ease;">
+            <a href="/community/add" class="community-add-btn">
               + 글 작성하기
             </a>
           </div>
@@ -57,14 +58,14 @@
                         <h2><%= post.title %></h2>
                         <p><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %> · <%= typeof getRelativeTime !== 'undefined' ? getRelativeTime(post.createdAt) : new Date(post.createdAt).toLocaleDateString('ko-KR') %></p>
                       </div>
-                      <div style="display: flex; align-items: center; gap: 1.5vw; margin-left: 1vw;" onclick="event.stopPropagation();">
-                        <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                      <div class="community-post-actions" onclick="event.stopPropagation();">
+                        <button type="button" class="like-btn community-like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>">
                           <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= post.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isLiked ? '#1D5DFF' : 'none' %>"/>
                           </svg>
                           <span class="post-likes-<%= post._id %>"><%= post.likes || 0 %></span>
                         </button>
-                        <div style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                        <div class="community-comment-count">
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
                               <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
@@ -76,14 +77,14 @@
                       </div>
                     </div>
                     <div class="post-body">
-                      <p style="margin: 0; font-size: 0.83vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                      <p class="community-post-content">
                         <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
                       </p>
                     </div>
                   </article>
                 <% }) %>
               <% } else { %>
-                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                <article class="post-card post-card--empty community-post-card--empty" aria-live="polite">
                   <div class="post-empty__message">
                     <strong>등록된 글이 없습니다</strong>
                     새로운 커뮤니티 글을 작성하면 순서대로 보여드릴게요.
@@ -92,30 +93,30 @@
               <% } %>
             </div>
 
-            <div class="board-panel" data-panel="free" role="tabpanel" id="panel-free"
-              aria-labelledby="tab-free" hidden style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2vw;">
+            <div class="board-panel community-board-panel" data-panel="free" role="tabpanel" id="panel-free"
+              aria-labelledby="tab-free" hidden>
               <% 
                 const freePosts = typeof posts !== 'undefined' && posts ? posts.filter(p => p.category === 'free') : [];
               %>
               <% if (freePosts.length > 0) { %>
                 <% freePosts.forEach(post => { %>
-                  <article class="post-card" style="cursor: pointer; position: relative;" onclick="window.location.href='/community/<%= post._id %>'">
+                  <article class="post-card community-post-card" onclick="window.location.href='/community/<%= post._id %>'">
                     <div class="post-header">
-                      <div class="post-header__title" style="flex: 1;">
-                        <div style="display: flex; align-items: center; gap: 0.52vw; margin-bottom: 0.5vw;">
-                          <span style="padding: 0.42vw 0.78vw; border-radius: 0.78vw; background: rgba(43, 107, 255, 0.12); color: #2f6bff; font-size: 0.74vw; font-weight: 600;">자유게시판</span>
+                      <div class="post-header__title community-post-header-title">
+                        <div class="community-post-category-wrapper">
+                          <span class="community-post-category">자유게시판</span>
                         </div>
                         <h2><%= post.title %></h2>
                         <p><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %> · <%= typeof getRelativeTime !== 'undefined' ? getRelativeTime(post.createdAt) : new Date(post.createdAt).toLocaleDateString('ko-KR') %></p>
                       </div>
-                      <div style="display: flex; align-items: center; gap: 1.5vw; margin-left: 1vw;" onclick="event.stopPropagation();">
-                        <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                      <div class="community-post-actions" onclick="event.stopPropagation();">
+                        <button type="button" class="like-btn community-like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>">
                           <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= post.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isLiked ? '#1D5DFF' : 'none' %>"/>
                           </svg>
                           <span class="post-likes-<%= post._id %>"><%= post.likes || 0 %></span>
                         </button>
-                        <div style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                        <div class="community-comment-count">
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
                               <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
@@ -127,14 +128,14 @@
                       </div>
                     </div>
                     <div class="post-body">
-                      <p style="margin: 0; font-size: 0.83vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                      <p class="community-post-content">
                         <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
                       </p>
                     </div>
                   </article>
                 <% }) %>
               <% } else { %>
-                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                <article class="post-card post-card--empty community-post-card--empty" aria-live="polite">
                   <div class="post-empty__message">
                     <strong>자유게시판 글이 없습니다</strong>
                     자유롭게 이야기를 나눠보세요.
@@ -150,23 +151,23 @@
               %>
               <% if (qnaPosts.length > 0) { %>
                 <% qnaPosts.forEach(post => { %>
-                  <article class="post-card" style="cursor: pointer; position: relative;" onclick="window.location.href='/community/<%= post._id %>'">
+                  <article class="post-card community-post-card" onclick="window.location.href='/community/<%= post._id %>'">
                     <div class="post-header">
-                      <div class="post-header__title" style="flex: 1;">
-                        <div style="display: flex; align-items: center; gap: 0.52vw; margin-bottom: 0.5vw;">
-                          <span style="padding: 0.42vw 0.78vw; border-radius: 0.78vw; background: rgba(43, 107, 255, 0.12); color: #2f6bff; font-size: 0.74vw; font-weight: 600;">Q&A</span>
+                      <div class="post-header__title community-post-header-title">
+                        <div class="community-post-category-wrapper">
+                          <span class="community-post-category">Q&A</span>
                         </div>
                         <h2><%= post.title %></h2>
                         <p><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %> · <%= typeof getRelativeTime !== 'undefined' ? getRelativeTime(post.createdAt) : new Date(post.createdAt).toLocaleDateString('ko-KR') %></p>
                       </div>
-                      <div style="display: flex; align-items: center; gap: 1.5vw; margin-left: 1vw;" onclick="event.stopPropagation();">
-                        <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                      <div class="community-post-actions" onclick="event.stopPropagation();">
+                        <button type="button" class="like-btn community-like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>">
                           <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= post.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isLiked ? '#1D5DFF' : 'none' %>"/>
                           </svg>
                           <span class="post-likes-<%= post._id %>"><%= post.likes || 0 %></span>
                         </button>
-                        <div style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                        <div class="community-comment-count">
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
                               <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
@@ -178,14 +179,14 @@
                       </div>
                     </div>
                     <div class="post-body">
-                      <p style="margin: 0; font-size: 0.83vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                      <p class="community-post-content">
                         <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
                       </p>
                     </div>
                   </article>
                 <% }) %>
               <% } else { %>
-                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                <article class="post-card post-card--empty community-post-card--empty" aria-live="polite">
                   <div class="post-empty__message">
                     <strong>Q&A 글이 없습니다</strong>
                     궁금한 점을 질문해보세요.
@@ -201,23 +202,23 @@
               %>
               <% if (infoPosts.length > 0) { %>
                 <% infoPosts.forEach(post => { %>
-                  <article class="post-card" style="cursor: pointer; position: relative;" onclick="window.location.href='/community/<%= post._id %>'">
+                  <article class="post-card community-post-card" onclick="window.location.href='/community/<%= post._id %>'">
                     <div class="post-header">
-                      <div class="post-header__title" style="flex: 1;">
-                        <div style="display: flex; align-items: center; gap: 0.52vw; margin-bottom: 0.5vw;">
-                          <span style="padding: 0.42vw 0.78vw; border-radius: 0.78vw; background: rgba(43, 107, 255, 0.12); color: #2f6bff; font-size: 0.74vw; font-weight: 600;">정보공유</span>
+                      <div class="post-header__title community-post-header-title">
+                        <div class="community-post-category-wrapper">
+                          <span class="community-post-category">정보공유</span>
                         </div>
                         <h2><%= post.title %></h2>
                         <p><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %> · <%= typeof getRelativeTime !== 'undefined' ? getRelativeTime(post.createdAt) : new Date(post.createdAt).toLocaleDateString('ko-KR') %></p>
                       </div>
-                      <div style="display: flex; align-items: center; gap: 1.5vw; margin-left: 1vw;" onclick="event.stopPropagation();">
-                        <button type="button" class="like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                      <div class="community-post-actions" onclick="event.stopPropagation();">
+                        <button type="button" class="like-btn community-like-btn" data-post-id="<%= post._id %>" data-is-liked="<%= post.isLiked ? 'true' : 'false' %>">
                           <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= post.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isLiked ? '#1D5DFF' : 'none' %>"/>
                           </svg>
                           <span class="post-likes-<%= post._id %>"><%= post.likes || 0 %></span>
                         </button>
-                        <div style="display: flex; align-items: center; gap: 0.4vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                        <div class="community-comment-count">
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
                               <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
@@ -229,14 +230,14 @@
                       </div>
                     </div>
                     <div class="post-body">
-                      <p style="margin: 0; font-size: 0.83vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                      <p class="community-post-content">
                         <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
                       </p>
                     </div>
                   </article>
                 <% }) %>
               <% } else { %>
-                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                <article class="post-card post-card--empty community-post-card--empty" aria-live="polite">
                   <div class="post-empty__message">
                     <strong>정보공유 글이 없습니다</strong>
                     유용한 정보를 공유해보세요.

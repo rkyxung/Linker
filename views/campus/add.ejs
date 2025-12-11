@@ -8,132 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/main.css" />
-  <style>
-    .form-container {
-      background: transparent;
-      border-radius: 1.67vw;
-      padding: 1.5vw 2vw;
-      border: none;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-    }
-
-    .form-group {
-      margin-bottom: 1.5vw;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5vw;
-      font-size: 1.04vw;
-      font-weight: 600;
-      color: rgba(24, 50, 117, 0.92);
-    }
-
-    .form-group input[type="text"],
-    .form-group input[type="date"],
-    .form-group input[type="number"],
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 0.83vw 1.04vw;
-      border-radius: 0.94vw;
-      border: 0.05vw solid rgba(44, 120, 255, 0.25);
-      background: rgba(255, 255, 255, 0.8);
-      font-size: 0.94vw;
-      color: #1f3d7a;
-      font-family: "Pretendard", sans-serif;
-      box-sizing: border-box;
-    }
-
-    .form-group input[type="text"]:focus,
-    .form-group input[type="date"]:focus,
-    .form-group input[type="number"]:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #2f6bff;
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: none;
-    }
-
-    .form-group textarea {
-      min-height: 15vw;
-      resize: vertical;
-    }
-
-    .form-group small {
-      display: block;
-      margin-top: 0.3vw;
-      font-size: 0.78vw;
-      color: rgba(31, 61, 122, 0.6);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 1vw;
-      justify-content: flex-end;
-      margin-top: 2vw;
-    }
-
-    .btn {
-      padding: 0.73vw 1.46vw;
-      border-radius: 0.94vw;
-      border: none;
-      font-size: 0.94vw;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: "Pretendard", sans-serif;
-    }
-
-    .btn-primary {
-      background: linear-gradient(120deg, #2f6bff, #4ea6ff);
-      color: #ffffff;
-      box-shadow: none;
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(120deg, #2560e6, #3d96e6);
-      box-shadow: none;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.6);
-      color: #1f3d7a;
-      border: 0.05vw solid rgba(44, 120, 255, 0.25);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.8);
-    }
-
-    .error-message {
-      background: rgba(255, 59, 59, 0.1);
-      color: #ff3b3b;
-      padding: 0.83vw 1.04vw;
-      border-radius: 0.94vw;
-      margin-bottom: 1.5vw;
-      font-size: 0.88vw;
-      border: 0.05vw solid rgba(255, 59, 59, 0.2);
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5vw;
-      color: rgba(24, 50, 117, 0.8);
-      text-decoration: none;
-      font-size: 0.94vw;
-      font-weight: 600;
-      margin-bottom: 1.5vw;
-      transition: color 0.2s ease;
-    }
-
-    .back-link:hover {
-      color: #1d5dff;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/forms.css" />
 </head>
 
 <body>
@@ -151,8 +26,8 @@
             뒤로가기
           </a>
 
-          <h1 style="font-size: 1.46vw; font-weight: 700; color: rgba(24, 50, 117, 0.92); margin-bottom: 2vw;">
-            팀원 모집하기
+          <h1 class="form-title">
+            <%= typeof editMode !== 'undefined' && editMode ? '팀원 모집 글 수정' : '팀원 모집하기' %>
           </h1>
 
           <% if (typeof error !== "undefined" && error) { %>
@@ -161,7 +36,7 @@
             </div>
           <% } %>
 
-          <form action="/campus/add" method="POST">
+          <form action="<%= typeof formAction !== 'undefined' ? formAction : '/campus/add' %>" method="POST">
             <div class="form-group">
               <label for="title">제목</label>
               <input type="text" id="title" name="title" placeholder="모집글 제목을 입력하세요" 

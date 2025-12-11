@@ -17,9 +17,12 @@ const asyncHandler = require("express-async-handler");
 
 const app = express();
 // const router = express.Router();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
+// EJS 설정
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
 
 app.use(express.static("./public"));
 app.use(express.json());
@@ -253,6 +256,22 @@ app.get("/campus/add", requireAuth, (req, res) => {
   });
 });
 
+// 캠퍼스 팀원 모집하기 글 수정 폼
+app.get("/campus/:id/edit", requireAuth, asyncHandler(async (req, res) => {
+  const post = await RecruitmentPost.findById(req.params.id).lean();
+  if (!post) return res.status(404).send("Not found");
+  res.render("campus/add", {
+    pageTitle: "팀원 모집 글 수정",
+    editMode: true,
+    formAction: `/campus/${post._id}?_method=PUT`,
+    formData: {
+      ...post,
+      positions: post.positions ? post.positions.join(", ") : "",
+      hashtags: post.hashtags ? post.hashtags.map(h => `#${h}`).join(", ") : ""
+    }
+  });
+}));
+
 // 캠퍼스 팀원 모집하기 글 작성 처리
 app.post("/campus/add", requireAuth, asyncHandler(async (req, res) => {
   const { title, content, category, deadline, recruitCount, positions, hashtags } = req.body;
@@ -287,12 +306,55 @@ app.post("/campus/add", requireAuth, asyncHandler(async (req, res) => {
   res.redirect("/campus");
 }));
 
+// 캠퍼스 팀원 모집하기 글 수정 처리
+app.put("/campus/:id", requireAuth, asyncHandler(async (req, res) => {
+  const { title, content, category, deadline, recruitCount, positions, hashtags } = req.body;
+  if (!title || !content || !category || !deadline || !recruitCount) {
+    return res.status(400).render("campus/add", {
+      pageTitle: "팀원 모집 글 수정",
+      error: "필수 항목을 모두 입력해주세요.",
+      editMode: true,
+      formAction: `/campus/${req.params.id}?_method=PUT`,
+      formData: req.body
+    });
+  }
+  const positionsArray = positions ? positions.split(',').map(p => p.trim()).filter(p => p) : [];
+  const hashtagsArray = hashtags ? hashtags.split(',').map(h => h.trim().replace(/^#/, '')).filter(h => h) : [];
+  await RecruitmentPost.findByIdAndUpdate(req.params.id, {
+    title: title.trim(),
+    content: content.trim(),
+    category,
+    deadline: new Date(deadline),
+    recruitCount: parseInt(recruitCount),
+    positions: positionsArray,
+    hashtags: hashtagsArray
+  });
+  res.redirect("/campus");
+}));
+
 // 캠퍼스 팀 구하기 글 작성 폼
 app.get("/campus/seek", requireAuth, (req, res) => {
   res.render("campus/seek", {
     pageTitle: "팀 구하기"
   });
 });
+
+// 캠퍼스 팀 구하기 글 수정 폼
+app.get("/campus/seek/:id/edit", requireAuth, asyncHandler(async (req, res) => {
+  const post = await TeamSeekingPost.findById(req.params.id).lean();
+  if (!post) return res.status(404).send("Not found");
+  res.render("campus/seek", {
+    pageTitle: "팀 구하기 글 수정",
+    editMode: true,
+    formAction: `/campus/seek/${post._id}?_method=PUT`,
+    formData: {
+      ...post,
+      desiredFields: post.desiredFields ? post.desiredFields.join(", ") : "",
+      skills: post.skills ? post.skills.join(", ") : "",
+      hashtags: post.hashtags ? post.hashtags.map(h => `#${h}`).join(", ") : ""
+    }
+  });
+}));
 
 // 캠퍼스 팀 구하기 글 작성 처리
 app.post("/campus/seek", requireAuth, asyncHandler(async (req, res) => {
@@ -327,6 +389,34 @@ app.post("/campus/seek", requireAuth, asyncHandler(async (req, res) => {
     views: 0
   });
 
+  res.redirect("/campus");
+}));
+
+// 캠퍼스 팀 구하기 글 수정 처리
+app.put("/campus/seek/:id", requireAuth, asyncHandler(async (req, res) => {
+  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags } = req.body;
+  if (!title || !content || !category) {
+    return res.status(400).render("campus/seek", {
+      pageTitle: "팀 구하기 글 수정",
+      error: "필수 항목을 모두 입력해주세요.",
+      editMode: true,
+      formAction: `/campus/seek/${req.params.id}?_method=PUT`,
+      formData: req.body
+    });
+  }
+  const desiredFieldsArray = desiredFields ? desiredFields.split(',').map(f => f.trim()).filter(f => f) : [];
+  const skillsArray = skills ? skills.split(',').map(s => s.trim()).filter(s => s) : [];
+  const hashtagsArray = hashtags ? hashtags.split(',').map(h => h.trim().replace(/^#/, '')).filter(h => h) : [];
+  await TeamSeekingPost.findByIdAndUpdate(req.params.id, {
+    title: title.trim(),
+    content: content.trim(),
+    category,
+    desiredFields: desiredFieldsArray,
+    skills: skillsArray,
+    experience: experience ? experience.trim() : '',
+    desiredPosition: desiredPosition ? desiredPosition.trim() : '',
+    hashtags: hashtagsArray
+  });
   res.redirect("/campus");
 }));
 
@@ -385,6 +475,22 @@ app.get("/contest/add", requireAuth, (req, res) => {
   });
 });
 
+// 공모전 팀원 모집하기 글 수정 폼
+app.get("/contest/:id/edit", requireAuth, asyncHandler(async (req, res) => {
+  const post = await RecruitmentPost.findById(req.params.id).lean();
+  if (!post) return res.status(404).send("Not found");
+  res.render("contest/add", {
+    pageTitle: "팀원 모집 글 수정",
+    editMode: true,
+    formAction: `/contest/${post._id}?_method=PUT`,
+    formData: {
+      ...post,
+      positions: post.positions ? post.positions.join(", ") : "",
+      hashtags: post.hashtags ? post.hashtags.map(h => `#${h}`).join(", ") : ""
+    }
+  });
+}));
+
 // 공모전 팀원 모집하기 글 작성 처리
 app.post("/contest/add", requireAuth, asyncHandler(async (req, res) => {
   const { title, content, category, deadline, recruitCount, positions, hashtags } = req.body;
@@ -419,12 +525,55 @@ app.post("/contest/add", requireAuth, asyncHandler(async (req, res) => {
   res.redirect("/contest");
 }));
 
+// 공모전 팀원 모집하기 글 수정 처리
+app.put("/contest/:id", requireAuth, asyncHandler(async (req, res) => {
+  const { title, content, category, deadline, recruitCount, positions, hashtags } = req.body;
+  if (!title || !content || !category || !deadline || !recruitCount) {
+    return res.status(400).render("contest/add", {
+      pageTitle: "팀원 모집 글 수정",
+      error: "필수 항목을 모두 입력해주세요.",
+      editMode: true,
+      formAction: `/contest/${req.params.id}?_method=PUT`,
+      formData: req.body
+    });
+  }
+  const positionsArray = positions ? positions.split(',').map(p => p.trim()).filter(p => p) : [];
+  const hashtagsArray = hashtags ? hashtags.split(',').map(h => h.trim().replace(/^#/, '')).filter(h => h) : [];
+  await RecruitmentPost.findByIdAndUpdate(req.params.id, {
+    title: title.trim(),
+    content: content.trim(),
+    category,
+    deadline: new Date(deadline),
+    recruitCount: parseInt(recruitCount),
+    positions: positionsArray,
+    hashtags: hashtagsArray
+  });
+  res.redirect("/contest");
+}));
+
 // 공모전 팀 구하기 글 작성 폼
 app.get("/contest/seek", requireAuth, (req, res) => {
   res.render("contest/seek", {
     pageTitle: "팀 구하기"
   });
 });
+
+// 공모전 팀 구하기 글 수정 폼
+app.get("/contest/seek/:id/edit", requireAuth, asyncHandler(async (req, res) => {
+  const post = await TeamSeekingPost.findById(req.params.id).lean();
+  if (!post) return res.status(404).send("Not found");
+  res.render("contest/seek", {
+    pageTitle: "팀 구하기 글 수정",
+    editMode: true,
+    formAction: `/contest/seek/${post._id}?_method=PUT`,
+    formData: {
+      ...post,
+      desiredFields: post.desiredFields ? post.desiredFields.join(", ") : "",
+      skills: post.skills ? post.skills.join(", ") : "",
+      hashtags: post.hashtags ? post.hashtags.map(h => `#${h}`).join(", ") : ""
+    }
+  });
+}));
 
 // 공모전 팀 구하기 글 작성 처리
 app.post("/contest/seek", requireAuth, asyncHandler(async (req, res) => {
@@ -459,6 +608,34 @@ app.post("/contest/seek", requireAuth, asyncHandler(async (req, res) => {
     views: 0
   });
 
+  res.redirect("/contest");
+}));
+
+// 공모전 팀 구하기 글 수정 처리
+app.put("/contest/seek/:id", requireAuth, asyncHandler(async (req, res) => {
+  const { title, content, category, desiredFields, skills, experience, desiredPosition, hashtags } = req.body;
+  if (!title || !content || !category) {
+    return res.status(400).render("contest/seek", {
+      pageTitle: "팀 구하기 글 수정",
+      error: "필수 항목을 모두 입력해주세요.",
+      editMode: true,
+      formAction: `/contest/seek/${req.params.id}?_method=PUT`,
+      formData: req.body
+    });
+  }
+  const desiredFieldsArray = desiredFields ? desiredFields.split(',').map(f => f.trim()).filter(f => f) : [];
+  const skillsArray = skills ? skills.split(',').map(s => s.trim()).filter(s => s) : [];
+  const hashtagsArray = hashtags ? hashtags.split(',').map(h => h.trim().replace(/^#/, '')).filter(h => h) : [];
+  await TeamSeekingPost.findByIdAndUpdate(req.params.id, {
+    title: title.trim(),
+    content: content.trim(),
+    category,
+    desiredFields: desiredFieldsArray,
+    skills: skillsArray,
+    experience: experience ? experience.trim() : '',
+    desiredPosition: desiredPosition ? desiredPosition.trim() : '',
+    hashtags: hashtagsArray
+  });
   res.redirect("/contest");
 }));
 

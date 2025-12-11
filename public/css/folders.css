@@ -1,0 +1,164 @@
+/* 폴더 상세 페이지 스타일 */
+
+.folder-hero-card {
+  min-height: 8vw;
+  padding: 2vw 4vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.folder-hero-text {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.folder-hero-nickname {
+  font-size: 2vw;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.folder-hero-description {
+  font-size: 0.9vw;
+  margin: 0.5vw 0 0 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.folder-board-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr));
+  gap: 1.2vw;
+}
+
+.folder-post-card {
+  cursor: pointer;
+  position: relative;
+  padding: 1.5vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+}
+
+.folder-post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5vw;
+}
+
+.folder-post-title {
+  margin: 0;
+  font-size: 1.04vw;
+  font-weight: 600;
+  color: rgba(24, 50, 117, 0.92);
+  flex: 1;
+  line-height: 1.4;
+}
+
+.folder-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  margin-left: 1vw;
+  flex-shrink: 0;
+}
+
+.folder-scrap-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3vw;
+  font-size: 0.78vw;
+  color: rgba(31, 61, 122, 0.75);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.folder-comment-count {
+  display: flex;
+  align-items: center;
+  gap: 0.3vw;
+  font-size: 0.78vw;
+  color: rgba(31, 61, 122, 0.75);
+}
+
+.folder-post-body {
+  flex: 1;
+  margin-bottom: 0.5vw;
+}
+
+.folder-post-content {
+  margin: 0;
+  font-size: 0.88vw;
+  color: rgba(31, 61, 122, 0.75);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.folder-post-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5vw;
+  margin-bottom: 0.8vw;
+  padding-bottom: 0.8vw;
+  border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);
+}
+
+.folder-post-hashtag {
+  padding: 0.3vw 0.6vw;
+  border-radius: 0.5vw;
+  background: rgba(44, 120, 255, 0.1);
+  color: #2f6bff;
+  font-size: 0.7vw;
+}
+
+.folder-post-hashtags-empty {
+  margin-bottom: 0.8vw;
+  padding-bottom: 0.8vw;
+  border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);
+}
+
+.folder-post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78vw;
+  color: rgba(31, 61, 122, 0.75);
+}
+
+.folder-remove-section {
+  margin-top: 0.5vw;
+  padding-top: 0.5vw;
+  border-top: 0.05vw solid rgba(31, 61, 122, 0.1);
+}
+
+.remove-from-folder-btn {
+  width: 100%;
+  padding: 0.5vw;
+  background: rgba(255, 59, 59, 0.1);
+  border: 0.05vw solid rgba(255, 59, 59, 0.3);
+  border-radius: 0.5vw;
+  color: #FF3B3B;
+  font-size: 0.75vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.remove-from-folder-btn:hover {
+  background: rgba(255, 59, 59, 0.2);
+}
+
+.folder-post-card--empty {
+  grid-column: 1 / -1;
+}
+

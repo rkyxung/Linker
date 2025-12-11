@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/folders.css" />
 </head>
 
 <body>
@@ -17,15 +18,15 @@
     <%- include('../include/_nav', { active: 'profile', displayName: displayName }) %>
 
       <main class="main-content" aria-label="메인 콘텐츠">
-        <section class="hero-card" style="min-height: 8vw; padding: 2vw 4vw; display: flex; justify-content: space-between; align-items: center;">
-          <div class="hero-text" style="flex: 1; position: relative; z-index: 2;">
-            <h1 class="hero-nickname" style="font-size: 2vw; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 1vw;">
+        <section class="hero-card folder-hero-card">
+          <div class="hero-text folder-hero-text">
+            <h1 class="hero-nickname folder-hero-nickname">
               <svg width="28" height="23" viewBox="0 0 23 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.3 18C1.6675 18 1.12623 17.7799 0.6762 17.3396C0.226167 16.8994 0.000766667 16.3695 0 15.75V2.25C0 1.63125 0.2254 1.10175 0.6762 0.6615C1.127 0.22125 1.66827 0.00075 2.3 0H9.2L11.5 2.25H20.7C21.3325 2.25 21.8741 2.4705 22.3249 2.9115C22.7757 3.3525 23.0008 3.882 23 4.5V15.75C23 16.3687 22.775 16.8986 22.3249 17.3396C21.8749 17.7806 21.3333 18.0007 20.7 18H2.3Z" fill="#ffffff"/>
               </svg>
               <span><%= folder.name %></span>
             </h1>
-            <p style="font-size: 0.9vw; margin: 0.5vw 0 0 0; color: rgba(255, 255, 255, 0.8);">
+            <p class="folder-hero-description">
               총 <%= posts ? posts.length : 0 %>개의 스크랩한 글
             </p>
           </div>
@@ -33,21 +34,21 @@
 
         <section class="my-board" aria-label="게시판">
           <div class="board-panels">
-            <div class="board-panel is-active" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr)); gap: 1.2vw;">
+            <div class="board-panel is-active folder-board-panel">
               <% if (typeof posts !== 'undefined' && posts && posts.length > 0) { %>
                 <% posts.forEach(post => { %>
-                  <article class="post-card" style="cursor: pointer; position: relative; padding: 1.5vw; display: flex; flex-direction: column; gap: 1vw;" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
+                  <article class="post-card folder-post-card" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
                     <!-- 상단: 제목 + 스크랩/댓글 -->
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5vw;">
-                      <h2 style="margin: 0; font-size: 1.04vw; font-weight: 600; color: rgba(24, 50, 117, 0.92); flex: 1; line-height: 1.4;"><%= post.title %></h2>
-                      <div style="display: flex; align-items: center; gap: 1vw; margin-left: 1vw; flex-shrink: 0;" onclick="event.stopPropagation();">
-                        <button type="button" class="scrap-btn-preview" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="true" style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                    <div class="folder-post-header">
+                      <h2 class="folder-post-title"><%= post.title %></h2>
+                      <div class="folder-post-actions" onclick="event.stopPropagation();">
+                        <button type="button" class="scrap-btn-preview folder-scrap-btn" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="true">
                           <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="#1D5DFF" stroke-width="2" stroke-linejoin="round" fill="#1D5DFF"/>
                           </svg>
                           <span class="post-scraps-preview-<%= post._id %>"><%= post.scraps || 0 %></span>
                         </button>
-                        <div style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                        <div class="folder-comment-count">
                           <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
                               <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
@@ -59,31 +60,29 @@
                       </div>
                     </div>
                     <!-- 본문: 내용 -->
-                    <div style="flex: 1; margin-bottom: 0.5vw;">
-                      <p style="margin: 0; font-size: 0.88vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    <div class="folder-post-body">
+                      <p class="folder-post-content">
                         <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
                       </p>
                     </div>
                     <!-- 해시태그 -->
                     <% if (post.hashtags && post.hashtags.length > 0) { %>
-                      <div style="display: flex; flex-wrap: wrap; gap: 0.5vw; margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);">
+                      <div class="folder-post-hashtags">
                         <% post.hashtags.forEach(tag => { %>
-                          <span style="padding: 0.3vw 0.6vw; border-radius: 0.5vw; background: rgba(44, 120, 255, 0.1); color: #2f6bff; font-size: 0.7vw;">#<%= tag %></span>
+                          <span class="folder-post-hashtag">#<%= tag %></span>
                         <% }) %>
                       </div>
                     <% } else { %>
-                      <div style="margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);"></div>
+                      <div class="folder-post-hashtags-empty"></div>
                     <% } %>
                     <!-- 하단: 글쓴이 + 마감일 -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                    <div class="folder-post-footer">
                       <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
                       <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
                     </div>
                     <!-- 폴더에서 제거 버튼 -->
-                    <div style="margin-top: 0.5vw; padding-top: 0.5vw; border-top: 0.05vw solid rgba(31, 61, 122, 0.1);">
-                      <button type="button" class="remove-from-folder-btn" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" style="width: 100%; padding: 0.5vw; background: rgba(255, 59, 59, 0.1); border: 0.05vw solid rgba(255, 59, 59, 0.3); border-radius: 0.5vw; color: #FF3B3B; font-size: 0.75vw; font-weight: 600; cursor: pointer; transition: all 0.2s;" 
-                        onmouseover="this.style.background='rgba(255, 59, 59, 0.2)'" 
-                        onmouseout="this.style.background='rgba(255, 59, 59, 0.1)'"
+                    <div class="folder-remove-section">
+                      <button type="button" class="remove-from-folder-btn" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>"
                         onclick="event.stopPropagation(); removeFromFolder('<%= post._id %>', '<%= post.postType %>')">
                         폴더에서 제거
                       </button>
@@ -91,7 +90,7 @@
                   </article>
                 <% }) %>
               <% } else { %>
-                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                <article class="post-card post-card--empty folder-post-card--empty" aria-live="polite">
                   <div class="post-empty__message">
                     <strong>이 폴더에 저장된 글이 없습니다</strong>
                     스크랩한 글을 이 폴더에 추가해보세요.
