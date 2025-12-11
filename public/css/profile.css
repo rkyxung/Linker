@@ -180,6 +180,7 @@
 
 .sheet-action--danger {
   color: #FF3B3B;
+  margin-bottom: 3.3vh;
 }
 
 .sheet-action--danger:hover {
