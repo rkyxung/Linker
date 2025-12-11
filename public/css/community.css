@@ -56,14 +56,14 @@
 .community-post-actions {
   display: flex;
   align-items: center;
-  gap: 1.5vw;
+  gap: 0.5vw;
   margin-left: 1vw;
 }
 
 .community-like-btn {
   display: flex;
   align-items: center;
-  gap: 0.4vw;
+  gap: 0.2vw;
   font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
   background: none;
@@ -72,16 +72,22 @@
   padding: 0;
 }
 
+.community-like-btn svg {
+  width: 1vw;
+  height: auto;
+}
+
+
 .community-comment-count {
   display: flex;
   align-items: center;
-  gap: 0.4vw;
+  gap: 0.2vw;
   font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
 }
 
 .community-comment-count svg {
-  width: 1.04167vw;
+  width: 1.4vw;
   height: auto;
 }
 

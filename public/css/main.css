@@ -560,7 +560,7 @@ body {
 .page-home .post-card-footer-actions {
   display: flex;
   align-items: center;
-  gap: 1vw;
+  gap: 0.5vw;
 }
 
 .page-home .like-btn,
@@ -579,13 +579,13 @@ body {
 .page-home .post-card-comment {
   display: flex;
   align-items: center;
-  gap: 0.4vw;
+  gap: 0.1vw;
   font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
 }
 
 .page-home .post-card-comment svg {
-  width: 1.04167vw;
+  width: 1.2vw;
   height: auto;
 }
 
@@ -1030,7 +1030,7 @@ select:not([multiple]) {
 .page-home .trend-panel-grid .post-card-actions {
   display: flex;
   align-items: center;
-  gap: 1vw;
+  gap: 0.5vw;
   margin-left: 1vw;
   flex-shrink: 0;
 }
@@ -1050,13 +1050,13 @@ select:not([multiple]) {
 .page-home .trend-panel-grid .post-card-comment {
   display: flex;
   align-items: center;
-  gap: 0.4vw;
+  gap: 0.1vw;
   font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
 }
 
 .page-home .trend-panel-grid .post-card-comment svg {
-  width: 1.04167vw;
+  width: 1.2vw;
   height: auto;
 }
 

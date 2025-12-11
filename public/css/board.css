@@ -210,7 +210,7 @@
 .post-card-actions {
   display: flex;
   align-items: center;
-  gap: 1vw;
+  gap: 0.5vw;
   margin-left: 1vw;
   flex-shrink: 0;
 }
@@ -230,13 +230,13 @@
 .post-card-comment {
   display: flex;
   align-items: center;
-  gap: 0.4vw;
+  gap: 0.1vw;
   font-size: 0.78vw;
   color: rgba(31, 61, 122, 0.75);
 }
 
 .post-card-comment svg {
-  width: 1.04167vw;
+  width: 1.2vw;
   height: auto;
 }
 

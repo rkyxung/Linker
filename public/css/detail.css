@@ -161,6 +161,30 @@
   display: flex;
   align-items: center;
   gap: 0.4vw;
+  font-size: 0.98vw;
+  color: rgba(31, 61, 122, 0.75);
+}
+
+.post-stat-item svg {
+  width: 1.4vw;
+  height: auto;
+}
+
+.post-stat-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+  font-size: 0.98vw;
+  color: rgba(31, 61, 122, 0.75);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.post-stat-item-btn svg {
+  width: 1vw;
+  height: auto;
 }
 
 .post-content {
@@ -358,15 +382,6 @@
 }
 
 /* 상세 페이지 버튼 및 제목 스타일 */
-.post-stat-item-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.4vw;
-}
 
 .comments-title {
   font-size: 1.25vw;
