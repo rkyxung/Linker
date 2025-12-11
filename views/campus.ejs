@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linker</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .hero-cta-btn {
+      padding: 0.9vw 2vw;
+      background: rgba(255, 255, 255, 0.2);
+      border: 0.1vw solid rgba(255, 255, 255, 0.5);
+      border-radius: 0.94vw;
+      color: #ffffff;
+      font-size: 1vw;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+      display: inline-block;
+    }
+    .hero-cta-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.7);
+      transform: translateY(-0.1vw);
+    }
+    .hero-cta-btn:active {
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.9);
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body class="page-campus">
+  <% const displayName=currentUser && currentUser.nickname ? currentUser.nickname : currentUser && currentUser.name ?
+    currentUser.name : "링커" ; %>
+
+    <%- include('include/_nav', { active: 'campus', displayName: displayName }) %>
+
+      <main class="main-content" aria-label="메인 콘텐츠">
+        <section class="hero-card" style="min-height: 18vw; padding: 3.5vw 4vw; display: flex; justify-content: space-between; align-items: flex-start;">
+          <div class="hero-text" style="flex: 1; position: relative; z-index: 2;">
+            <h1 class="hero-nickname" style="font-size: 2vw; font-weight: 600; margin: 0 0 1vw 0;">
+              <span>아이디어 구현부터 팀원 매칭까지</span>
+            </h1>
+            <p class="hero-job" style="font-size: 1.1vw; margin: 0 0 2vw 0; line-height: 1.6; color: rgba(255, 255, 255, 0.9);">
+              Linker는 여러분의 프로젝트 성공을 응원합니다<br>
+              여러분을 도와 줄 인재가 기다리고 있습니다
+            </p>
+            <div style="display: flex; gap: 1vw;">
+              <a href="/campus/add" class="hero-cta-btn">
+                팀원 모집하기
+              </a>
+              <a href="/campus/seek" class="hero-cta-btn">
+                팀 구하기
+              </a>
+            </div>
+          </div>
+          <div class="hero-decoration" style="position: absolute; right: 0; top: 0; width: 100%; height: 100%; pointer-events: none;">
+            <div class="line-top"></div>
+            <div class="dots-top"></div>
+            <div class="circleBig-bottom"></div>
+          </div>
+        </section>
+
+        <section class="my-board" aria-label="게시판">
+          <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 1.5vw;">
+            <div class="board-tabs" role="tablist" aria-label="활동 유형" style="display: flex; gap: 0.5vw;">
+              <button class="tab-btn is-active" type="button" role="tab" id="tab-latest" aria-controls="panel-latest"
+                aria-selected="true" data-tab="latest">최신</button>
+              <button class="tab-btn" type="button" role="tab" id="tab-popular" aria-controls="panel-popular"
+                aria-selected="false" data-tab="popular">인기</button>
+            </div>
+          </div>
+
+          <div class="board-panels">
+            <div class="board-panel is-active" data-panel="all" role="tabpanel" id="panel-all"
+              aria-labelledby="tab-all" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr)); gap: 1.2vw;">
+              <% if (typeof posts !== 'undefined' && posts && posts.length > 0) { %>
+                <% posts.forEach(post => { %>
+                  <article class="post-card" style="cursor: pointer; position: relative; padding: 1.5vw; display: flex; flex-direction: column; gap: 1vw;" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
+                    <!-- 상단: 제목 + 스크랩/댓글 -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5vw;">
+                      <h2 style="margin: 0; font-size: 1.04vw; font-weight: 600; color: rgba(24, 50, 117, 0.92); flex: 1; line-height: 1.4;"><%= post.title %></h2>
+                      <div style="display: flex; align-items: center; gap: 1vw; margin-left: 1vw; flex-shrink: 0;" onclick="event.stopPropagation();">
+                        <button type="button" class="scrap-btn-preview" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="<%= post.isScrapped ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                          <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="<%= post.isScrapped ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isScrapped ? '#1D5DFF' : 'none' %>"/>
+                          </svg>
+                          <span class="post-scraps-preview-<%= post._id %>"><%= post.scraps || 0 %></span>
+                        </button>
+                        <div style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
+                            </mask>
+                            <path d="M20 10.001L18 10.0021V10.001H20ZM19.049 14.263L17.0897 14.6646L16.9562 14.0133L17.2392 13.4117L19.049 14.263ZM19.979 18.8L21.9383 18.3984L21.9385 18.3995L19.979 18.8ZM18.799 19.98L18.3985 21.9395L18.3974 21.9393L18.799 19.98ZM14.262 19.05L13.4092 17.2409L14.0114 16.957L14.6636 17.0907L14.262 19.05ZM10 0.00100005V-1.999C16.6276 -1.999 22 3.37343 22 10.001H20H18C18 5.58257 14.4184 2.001 10 2.001V0.00100005ZM20 10.001L22 9.99985C22.001 11.7679 21.6113 13.5143 20.8588 15.1142L19.049 14.263L17.2392 13.4117C17.7409 12.3451 18.0007 11.1809 18 10.0021L20 10.001ZM19.049 14.263L21.0083 13.8614L21.9383 18.3984L19.979 18.8L18.0197 19.2016L17.0897 14.6646L19.049 14.263ZM19.979 18.8L21.9385 18.3995C22.0378 18.8855 22.0151 19.3885 21.8724 19.8635L19.957 19.288L18.0416 18.7125C17.994 18.8708 17.9864 19.0385 18.0195 19.2005L19.979 18.8ZM19.957 19.288L21.8724 19.8635C21.7296 20.3386 21.4713 20.7708 21.1206 21.1216L19.7064 19.7074L18.2921 18.2931C18.1752 18.4101 18.0891 18.5541 18.0416 18.7125L19.957 19.288ZM19.7064 19.7074L21.1206 21.1216C20.7698 21.4723 20.3376 21.7306 19.8625 21.8734L19.287 19.958L18.7115 18.0426C18.5531 18.0901 18.4091 18.1762 18.2921 18.2931L19.7064 19.7074ZM19.287 19.958L19.8625 21.8734C19.3875 22.0161 18.8845 22.0388 18.3985 21.9395L18.799 19.98L19.1995 18.0205C19.0375 17.9874 18.8698 17.995 18.7115 18.0426L19.287 19.958ZM18.799 19.98L18.3974 21.9393L13.8604 21.0093L14.262 19.05L14.6636 17.0907L19.2006 18.0207L18.799 19.98ZM14.262 19.05L15.1148 20.8591C13.5591 21.5924 11.8223 22 10 22V20V18C11.2217 18 12.3769 17.7275 13.4092 17.2409L14.262 19.05ZM10 20V22C3.37256 22 -2 16.6287 -2 10H0H2C2 14.4193 5.58144 18 10 18V20ZM0 10H-2C-2 3.37356 3.3723 -2 10 -2V0V2C5.5817 2 2 5.58244 2 10H0Z" fill="#818181" mask="url(#path-1-inside-1_389_1164_<%= post._id %>)"/>
+                          </svg>
+                          <span><%= post.comments || 0 %></span>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 본문: 내용 -->
+                    <div style="flex: 1; margin-bottom: 0.5vw;">
+                      <p style="margin: 0; font-size: 0.88vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
+                      </p>
+                    </div>
+                    <!-- 해시태그 -->
+                    <% if (post.hashtags && post.hashtags.length > 0) { %>
+                      <div style="display: flex; flex-wrap: wrap; gap: 0.5vw; margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);">
+                        <% post.hashtags.forEach(tag => { %>
+                          <span style="padding: 0.3vw 0.6vw; border-radius: 0.5vw; background: rgba(44, 120, 255, 0.1); color: #2f6bff; font-size: 0.7vw;">#<%= tag %></span>
+                        <% }) %>
+                      </div>
+                    <% } else { %>
+                      <div style="margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);"></div>
+                    <% } %>
+                    <!-- 하단: 글쓴이 + 마감일 -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                      <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
+                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
+                    </div>
+                  </article>
+                <% }) %>
+              <% } else { %>
+                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                  <div class="post-empty__message">
+                    <strong>등록된 글이 없습니다</strong>
+                    새로운 글을 등록하면 순서대로 보여드릴게요.
+                  </div>
+                </article>
+              <% } %>
+            </div>
+
+            <div class="board-panel" data-panel="latest" role="tabpanel" id="panel-latest"
+              aria-labelledby="tab-latest" hidden style="display: grid; grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr)); gap: 1.2vw;">
+              <%
+                const latestPosts = typeof posts !== 'undefined' && posts ? posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
+              %>
+              <% if (latestPosts.length > 0) { %>
+                <% latestPosts.forEach(post => { %>
+                  <article class="post-card" style="cursor: pointer; position: relative; padding: 1.5vw; display: flex; flex-direction: column; gap: 1vw;" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
+                    <!-- 상단: 제목 + 스크랩/댓글 -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5vw;">
+                      <h2 style="margin: 0; font-size: 1.04vw; font-weight: 600; color: rgba(24, 50, 117, 0.92); flex: 1; line-height: 1.4;"><%= post.title %></h2>
+                      <div style="display: flex; align-items: center; gap: 1vw; margin-left: 1vw; flex-shrink: 0;" onclick="event.stopPropagation();">
+                        <button type="button" class="scrap-btn-preview" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="<%= post.isScrapped ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                          <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="<%= post.isScrapped ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isScrapped ? '#1D5DFF' : 'none' %>"/>
+                          </svg>
+                          <span class="post-scraps-preview-<%= post._id %>"><%= post.scraps || 0 %></span>
+                        </button>
+                        <div style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
+                            </mask>
+                            <path d="M20 10.001L18 10.0021V10.001H20ZM19.049 14.263L17.0897 14.6646L16.9562 14.0133L17.2392 13.4117L19.049 14.263ZM19.979 18.8L21.9383 18.3984L21.9385 18.3995L19.979 18.8ZM18.799 19.98L18.3985 21.9395L18.3974 21.9393L18.799 19.98ZM14.262 19.05L13.4092 17.2409L14.0114 16.957L14.6636 17.0907L14.262 19.05ZM10 0.00100005V-1.999C16.6276 -1.999 22 3.37343 22 10.001H20H18C18 5.58257 14.4184 2.001 10 2.001V0.00100005ZM20 10.001L22 9.99985C22.001 11.7679 21.6113 13.5143 20.8588 15.1142L19.049 14.263L17.2392 13.4117C17.7409 12.3451 18.0007 11.1809 18 10.0021L20 10.001ZM19.049 14.263L21.0083 13.8614L21.9383 18.3984L19.979 18.8L18.0197 19.2016L17.0897 14.6646L19.049 14.263ZM19.979 18.8L21.9385 18.3995C22.0378 18.8855 22.0151 19.3885 21.8724 19.8635L19.957 19.288L18.0416 18.7125C17.994 18.8708 17.9864 19.0385 18.0195 19.2005L19.979 18.8ZM19.957 19.288L21.8724 19.8635C21.7296 20.3386 21.4713 20.7708 21.1206 21.1216L19.7064 19.7074L18.2921 18.2931C18.1752 18.4101 18.0891 18.5541 18.0416 18.7125L19.957 19.288ZM19.7064 19.7074L21.1206 21.1216C20.7698 21.4723 20.3376 21.7306 19.8625 21.8734L19.287 19.958L18.7115 18.0426C18.5531 18.0901 18.4091 18.1762 18.2921 18.2931L19.7064 19.7074ZM19.287 19.958L19.8625 21.8734C19.3875 22.0161 18.8845 22.0388 18.3985 21.9395L18.799 19.98L19.1995 18.0205C19.0375 17.9874 18.8698 17.995 18.7115 18.0426L19.287 19.958ZM18.799 19.98L18.3974 21.9393L13.8604 21.0093L14.262 19.05L14.6636 17.0907L19.2006 18.0207L18.799 19.98ZM14.262 19.05L15.1148 20.8591C13.5591 21.5924 11.8223 22 10 22V20V18C11.2217 18 12.3769 17.7275 13.4092 17.2409L14.262 19.05ZM10 20V22C3.37256 22 -2 16.6287 -2 10H0H2C2 14.4193 5.58144 18 10 18V20ZM0 10H-2C-2 3.37356 3.3723 -2 10 -2V0V2C5.5817 2 2 5.58244 2 10H0Z" fill="#818181" mask="url(#path-1-inside-1_389_1164_<%= post._id %>)"/>
+                          </svg>
+                          <span><%= post.comments || 0 %></span>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 본문: 내용 -->
+                    <div style="flex: 1; margin-bottom: 0.5vw;">
+                      <p style="margin: 0; font-size: 0.88vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
+                      </p>
+                    </div>
+                    <!-- 해시태그 -->
+                    <% if (post.hashtags && post.hashtags.length > 0) { %>
+                      <div style="display: flex; flex-wrap: wrap; gap: 0.5vw; margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);">
+                        <% post.hashtags.forEach(tag => { %>
+                          <span style="padding: 0.3vw 0.6vw; border-radius: 0.5vw; background: rgba(44, 120, 255, 0.1); color: #2f6bff; font-size: 0.7vw;">#<%= tag %></span>
+                        <% }) %>
+                      </div>
+                    <% } else { %>
+                      <div style="margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);"></div>
+                    <% } %>
+                    <!-- 하단: 글쓴이 + 마감일 -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                      <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
+                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
+                    </div>
+                  </article>
+                <% }) %>
+              <% } else { %>
+                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                  <div class="post-empty__message">
+                    <strong>최신 글이 없습니다</strong>
+                    새로운 글을 등록하면 순서대로 보여드릴게요.
+                  </div>
+                </article>
+              <% } %>
+            </div>
+
+            <div class="board-panel" data-panel="popular" role="tabpanel" id="panel-popular"
+              aria-labelledby="tab-popular" hidden style="display: grid; grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr)); gap: 1.2vw;">
+              <%
+                const popularPosts = typeof posts !== 'undefined' && posts ? posts.sort((a, b) => (b.scraps || 0) - (a.scraps || 0) || (b.views || 0) - (a.views || 0)) : [];
+              %>
+              <% if (popularPosts.length > 0) { %>
+                <% popularPosts.forEach(post => { %>
+                  <article class="post-card" style="cursor: pointer; position: relative; padding: 1.5vw; display: flex; flex-direction: column; gap: 1vw;" onclick="window.location.href='<%= post.postType === 'recruit' ? '/campus/' : '/campus/seek/' %><%= post._id %>'">
+                    <!-- 상단: 제목 + 스크랩/댓글 -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5vw;">
+                      <h2 style="margin: 0; font-size: 1.04vw; font-weight: 600; color: rgba(24, 50, 117, 0.92); flex: 1; line-height: 1.4;"><%= post.title %></h2>
+                      <div style="display: flex; align-items: center; gap: 1vw; margin-left: 1vw; flex-shrink: 0;" onclick="event.stopPropagation();">
+                        <button type="button" class="scrap-btn-preview" data-post-id="<%= post._id %>" data-post-type="<%= post.postType %>" data-is-scrapped="<%= post.isScrapped ? 'true' : 'false' %>" style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75); background: none; border: none; cursor: pointer; padding: 0;">
+                          <svg width="14" height="17" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="<%= post.isScrapped ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= post.isScrapped ? '#1D5DFF' : 'none' %>"/>
+                          </svg>
+                          <span class="post-scraps-preview-<%= post._id %>"><%= post.scraps || 0 %></span>
+                        </button>
+                        <div style="display: flex; align-items: center; gap: 0.3vw; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <mask id="path-1-inside-1_389_1164_<%= post._id %>" fill="white">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
+                            </mask>
+                            <path d="M20 10.001L18 10.0021V10.001H20ZM19.049 14.263L17.0897 14.6646L16.9562 14.0133L17.2392 13.4117L19.049 14.263ZM19.979 18.8L21.9383 18.3984L21.9385 18.3995L19.979 18.8ZM18.799 19.98L18.3985 21.9395L18.3974 21.9393L18.799 19.98ZM14.262 19.05L13.4092 17.2409L14.0114 16.957L14.6636 17.0907L14.262 19.05ZM10 0.00100005V-1.999C16.6276 -1.999 22 3.37343 22 10.001H20H18C18 5.58257 14.4184 2.001 10 2.001V0.00100005ZM20 10.001L22 9.99985C22.001 11.7679 21.6113 13.5143 20.8588 15.1142L19.049 14.263L17.2392 13.4117C17.7409 12.3451 18.0007 11.1809 18 10.0021L20 10.001ZM19.049 14.263L21.0083 13.8614L21.9383 18.3984L19.979 18.8L18.0197 19.2016L17.0897 14.6646L19.049 14.263ZM19.979 18.8L21.9385 18.3995C22.0378 18.8855 22.0151 19.3885 21.8724 19.8635L19.957 19.288L18.0416 18.7125C17.994 18.8708 17.9864 19.0385 18.0195 19.2005L19.979 18.8ZM19.957 19.288L21.8724 19.8635C21.7296 20.3386 21.4713 20.7708 21.1206 21.1216L19.7064 19.7074L18.2921 18.2931C18.1752 18.4101 18.0891 18.5541 18.0416 18.7125L19.957 19.288ZM19.7064 19.7074L21.1206 21.1216C20.7698 21.4723 20.3376 21.7306 19.8625 21.8734L19.287 19.958L18.7115 18.0426C18.5531 18.0901 18.4091 18.1762 18.2921 18.2931L19.7064 19.7074ZM19.287 19.958L19.8625 21.8734C19.3875 22.0161 18.8845 22.0388 18.3985 21.9395L18.799 19.98L19.1995 18.0205C19.0375 17.9874 18.8698 17.995 18.7115 18.0426L19.287 19.958ZM18.799 19.98L18.3974 21.9393L13.8604 21.0093L14.262 19.05L14.6636 17.0907L19.2006 18.0207L18.799 19.98ZM14.262 19.05L15.1148 20.8591C13.5591 21.5924 11.8223 22 10 22V20V18C11.2217 18 12.3769 17.7275 13.4092 17.2409L14.262 19.05ZM10 20V22C3.37256 22 -2 16.6287 -2 10H0H2C2 14.4193 5.58144 18 10 18V20ZM0 10H-2C-2 3.37356 3.3723 -2 10 -2V0V2C5.5817 2 2 5.58244 2 10H0Z" fill="#818181" mask="url(#path-1-inside-1_389_1164_<%= post._id %>)"/>
+                          </svg>
+                          <span><%= post.comments || 0 %></span>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 본문: 내용 -->
+                    <div style="flex: 1; margin-bottom: 0.5vw;">
+                      <p style="margin: 0; font-size: 0.88vw; color: rgba(31, 61, 122, 0.75); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
+                      </p>
+                    </div>
+                    <!-- 해시태그 -->
+                    <% if (post.hashtags && post.hashtags.length > 0) { %>
+                      <div style="display: flex; flex-wrap: wrap; gap: 0.5vw; margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);">
+                        <% post.hashtags.forEach(tag => { %>
+                          <span style="padding: 0.3vw 0.6vw; border-radius: 0.5vw; background: rgba(44, 120, 255, 0.1); color: #2f6bff; font-size: 0.7vw;">#<%= tag %></span>
+                        <% }) %>
+                      </div>
+                    <% } else { %>
+                      <div style="margin-bottom: 0.8vw; padding-bottom: 0.8vw; border-bottom: 0.05vw solid rgba(31, 61, 122, 0.1);"></div>
+                    <% } %>
+                    <!-- 하단: 글쓴이 + 마감일 -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78vw; color: rgba(31, 61, 122, 0.75);">
+                      <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
+                      <span>마감일: <%= post.postType === 'recruit' && post.deadline ? new Date(post.deadline).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').replace(/\s/g, '') : '-' %></span>
+                    </div>
+                  </article>
+                <% }) %>
+              <% } else { %>
+                <article class="post-card post-card--empty" aria-live="polite" style="grid-column: 1 / -1;">
+                  <div class="post-empty__message">
+                    <strong>인기 글이 없습니다</strong>
+                    인기 글이 준비되면 이곳에 알려드릴게요.
+                  </div>
+                </article>
+              <% } %>
+            </div>
+          </div>
+        </section>
+
+        <p class="main-footer">Linker와 함께 더 많은 협업 기회를 만들어보세요.</p>
+      </main>
+
+      <script>
+        (function () {
+          const tabButtons = document.querySelectorAll(".tab-btn[role='tab']");
+          const panels = document.querySelectorAll("[data-panel]");
+
+          tabButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const target = button.dataset.tab;
+
+              tabButtons.forEach((btn) => {
+                const isActive = btn === button;
+                btn.classList.toggle("is-active", isActive);
+                btn.setAttribute("aria-selected", isActive ? "true" : "false");
+              });
+
+              panels.forEach((panel) => {
+                const isActive = panel.dataset.panel === target;
+                panel.classList.toggle("is-active", isActive);
+                panel.hidden = !isActive;
+              });
+            });
+          });
+
+          // 스크랩 기능
+          document.querySelectorAll('.scrap-btn-preview').forEach(btn => {
+            btn.addEventListener('click', async function(e) {
+              e.stopPropagation();
+              const postId = this.dataset.postId;
+              const postType = this.dataset.postType;
+              const scrapsSpan = this.querySelector(`.post-scraps-preview-${postId}`);
+              const svg = this.querySelector('svg path');
+              
+              try {
+                const url = postType === 'recruit' 
+                  ? `/campus/${postId}/scrap`
+                  : `/campus/seek/${postId}/scrap`;
+                
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  credentials: 'same-origin'
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                  scrapsSpan.textContent = data.scraps;
+                  if (data.isScrapped) {
+                    svg.setAttribute('stroke', '#1D5DFF');
+                    svg.setAttribute('fill', '#1D5DFF');
+                    svg.removeAttribute('fill-opacity');
+                  } else {
+                    svg.setAttribute('stroke', '#818181');
+                    svg.setAttribute('fill', 'none');
+                    svg.removeAttribute('fill-opacity');
+                  }
+                }
+              } catch (error) {
+                console.error('스크랩 처리 중 오류:', error);
+              }
+            });
+          });
+        })();
+      </script>
+</body>
+
+</html>
+

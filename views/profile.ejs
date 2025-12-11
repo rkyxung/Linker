@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linker</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+</head>
+
+<body class="profile-page">
+  <% const displayName=currentUser && currentUser.nickname ? currentUser.nickname : currentUser && currentUser.name ?
+    currentUser.name : "링커" ; %>
+    <%- include('include/_nav', { active: 'profile' , displayName: displayName }) %>
+
+      <main class="main-content" aria-label="메인 콘텐츠">
+        <section class="sheet">
+          <header class="sheet-row sheet-row--title">
+            <h1 class="sheet-title">
+              <span>
+                <%= currentUser.nickname || displayName %>님
+              </span>
+              <a class="hero-edit" href="#" data-modal="profile-edit" aria-label="프로필 편집">
+                <svg class="icon-hero-edit" viewBox="0 0 33 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M30.1705 1.70959C29.1668 0.614941 27.8055 0 26.3862 0C24.9669 0 23.6057 0.614941 22.6019 1.70959L21.3405 3.0876L30.1723 12.722L31.4319 11.346C31.9291 10.8037 32.3234 10.16 32.5925 9.45151C32.8615 8.74302 33 7.98366 33 7.21678C33 6.4499 32.8615 5.69054 32.5925 4.98205C32.3234 4.27356 31.9291 3.62982 31.4319 3.0876L30.1705 1.70959ZM27.6477 15.4742L18.8159 5.83974L2.5975 23.534C2.24259 23.9212 1.99466 24.4095 1.88203 24.9431L0.0460935 33.6141C-0.0223145 33.936 -0.0144678 34.2716 0.0688942 34.5893C0.152256 34.907 0.308389 35.1963 0.52258 35.4299C0.736771 35.6636 1.00197 35.8339 1.29318 35.9248C1.5844 36.0158 1.89205 36.0243 2.18713 35.9497L10.1375 33.9489C10.626 33.8257 11.073 33.5552 11.4275 33.1684L27.6477 15.4742Z"
+                    fill="#1D5DFF" fill-opacity="0.6" />
+                </svg>
+
+
+
+              </a>
+            </h1>
+          </header>
+
+          <hr class="sheet-divider" />
+
+          <div class="sheet-row">
+            <span class="sheet-icon" aria-hidden="true">
+              <svg class="icon-role" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M24.9871 5.55269H19.4344V2.77635C19.4344 1.23547 18.1989 0 16.6581 0H11.1054C9.56451 0 8.32904 1.23547 8.32904 2.77635V5.55269H2.77635C1.23547 5.55269 0.0138817 6.78816 0.0138817 8.32904L0 23.5989C0 25.1398 1.23547 26.3753 2.77635 26.3753H24.9871C26.528 26.3753 27.7635 25.1398 27.7635 23.5989V8.32904C27.7635 6.78816 26.528 5.55269 24.9871 5.55269ZM16.6581 5.55269H11.1054V2.77635H16.6581V5.55269Z"
+                  fill="#1D5DFF" />
+              </svg>
+
+            </span>
+            <span class="sheet-text">
+              <%= userDescription && userDescription.role ? userDescription.role : '직무를 입력해 주세요' %>
+            </span>
+          </div>
+
+          <hr class="sheet-divider" />
+
+          <div class="sheet-row">
+            <span class="sheet-icon" aria-hidden="true">
+              <svg class="icon-school" viewBox="0 0 30 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M26.2365 17.6645V9.4743L15.0617 15.5476C14.6452 15.7789 14.2056 15.8946 13.7429 15.8946C13.2802 15.8946 12.8406 15.7789 12.4242 15.5476L0.694098 9.16196C0.4396 9.02314 0.260063 8.84962 0.155487 8.6414C0.0509118 8.43317 -0.000913271 8.20181 1.2177e-05 7.94731C0.000937625 7.69281 0.0532257 7.46145 0.156876 7.25322C0.260526 7.045 0.4396 6.87148 0.694098 6.73266L12.4242 0.347065C12.6324 0.231384 12.8466 0.144391 13.0669 0.0860881C13.2871 0.0277849 13.5125 -0.000903758 13.7429 2.16904e-05C13.9734 0.000947139 14.1992 0.0300987 14.4203 0.0874765C14.6415 0.144854 14.8553 0.231384 15.0617 0.347065L28.284 7.56556C28.5154 7.68124 28.6949 7.84921 28.8226 8.06947C28.9504 8.28973 29.0137 8.52664 29.0128 8.78021V17.6645C29.0128 18.0578 28.8796 18.3878 28.613 18.6543C28.3465 18.9208 28.017 19.0536 27.6246 19.0527C27.2323 19.0518 26.9028 18.9185 26.6363 18.6529C26.3697 18.3873 26.2365 18.0578 26.2365 17.6645ZM12.4242 23.8766L5.48329 20.1285C5.02057 19.874 4.66196 19.527 4.40746 19.0874C4.15296 18.6478 4.02571 18.1735 4.02571 17.6645V12.3895L12.4242 16.9357C12.8406 17.1671 13.2802 17.2828 13.7429 17.2828C14.2056 17.2828 14.6452 17.1671 15.0617 16.9357L23.4601 12.3895V17.6645C23.4601 18.1735 23.3329 18.6478 23.0784 19.0874C22.8239 19.527 22.4653 19.874 22.0025 20.1285L15.0617 23.8766C14.8535 23.9923 14.6397 24.0793 14.4203 24.1376C14.201 24.1959 13.9752 24.2246 13.7429 24.2236C13.5106 24.2227 13.2848 24.194 13.0655 24.1376C12.8462 24.0811 12.6324 23.9941 12.4242 23.8766Z"
+                  fill="#1D5DFF" />
+              </svg>
+
+            </span>
+            <span class="sheet-text">
+              <%= userDescription && userDescription.school ? userDescription.school : '소속 정보를 입력해 주세요' %>
+            </span>
+          </div>
+
+          <hr class="sheet-divider" />
+
+          <div class="sheet-row">
+            <span class="sheet-icon" aria-hidden="true">
+              <svg class="icon-intro" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M2.3 23C1.6675 23 1.12623 22.775 0.6762 22.3249C0.226166 21.8749 0.000766667 21.3333 0 20.7V2.3C0 1.6675 0.2254 1.12623 0.6762 0.6762C1.127 0.226167 1.66827 0.000766667 2.3 0H11.5L18.4 6.9V20.7C18.4 21.3325 18.175 21.8741 17.7249 22.3249C17.2749 22.7757 16.7333 23.0008 16.1 23H2.3ZM10.35 8.05H16.1L10.35 2.3V8.05Z"
+                  fill="#1D5DFF" />
+              </svg>
+
+            </span>
+            <span class="sheet-label">자기소개</span>
+          </div>
+          <div class="sheet-row sheet-row--body">
+            <span class="sheet-text">
+              <%= userDescription && userDescription.bio ? userDescription.bio : '자기소개를 입력해 보세요' %>
+            </span>
+          </div>
+
+          <hr class="sheet-divider" />
+
+          <div class="sheet-row">
+            <span class="sheet-icon" aria-hidden="true">
+              <svg class="icon-folder-label" viewBox="0 0 23 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M2.3 18C1.6675 18 1.12623 17.7799 0.6762 17.3396C0.226167 16.8994 0.000766667 16.3695 0 15.75V2.25C0 1.63125 0.2254 1.10175 0.6762 0.6615C1.127 0.22125 1.66827 0.00075 2.3 0H9.2L11.5 2.25H20.7C21.3325 2.25 21.8741 2.4705 22.3249 2.9115C22.7757 3.3525 23.0008 3.882 23 4.5V15.75C23 16.3687 22.775 16.8986 22.3249 17.3396C21.8749 17.7806 21.3333 18.0007 20.7 18H2.3Z"
+                  fill="#1D5DFF" />
+              </svg>
+
+            </span>
+            <span class="sheet-label">폴더</span>
+            <button type="button" class="folder-add-btn" onclick="openCreateFolderModal()">+ 추가</button>
+          </div>
+          <div class="sheet-row sheet-row--folder">
+            <% if (typeof folders !== 'undefined' && folders && folders.length > 0) { %>
+              <div class="profile-folder-grid">
+                <% folders.forEach(folder => { %>
+                  <div class="profile-folder-card" onclick="window.location.href='/folders/<%= folder._id %>'">
+                    <div class="profile-folder-card__header">
+                      <div class="profile-folder-card__icon">
+                        <svg class="icon-folder-card" viewBox="0 0 23 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M2.3 18C1.6675 18 1.12623 17.7799 0.6762 17.3396C0.226167 16.8994 0.000766667 16.3695 0 15.75V2.25C0 1.63125 0.2254 1.10175 0.6762 0.6615C1.127 0.22125 1.66827 0.00075 2.3 0H9.2L11.5 2.25H20.7C21.3325 2.25 21.8741 2.4705 22.3249 2.9115C22.7757 3.3525 23.0008 3.882 23 4.5V15.75C23 16.3687 22.775 16.8986 22.3249 17.3396C21.8749 17.7806 21.3333 18.0007 20.7 18H2.3Z" fill="#1D5DFF"/>
+                        </svg>
+                      </div>
+                      <div class="profile-folder-card__name"><%= folder.name %></div>
+                    </div>
+                    <div class="profile-folder-card__meta"><%= folder.posts ? folder.posts.length : 0 %>개의 글</div>
+                    <div class="profile-folder-card__actions" onclick="event.stopPropagation()">
+                      <button type="button" class="folder-edit-btn" data-folder-id="<%= folder._id %>" data-folder-name="<%= folder.name %>" onclick="openEditFolderModal(this.dataset.folderId, this.dataset.folderName)">
+                        <svg class="icon-folder-edit" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                      <button type="button" class="folder-delete-btn" onclick="deleteFolder('<%= folder._id %>')">
+                        <svg class="icon-folder-delete" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <div class="sheet-empty-state">
+                <div class="folder-thumb" aria-hidden="true">
+                </div>
+                <p class="sheet-empty-text">스크랩한 글들을 폴더로 정리해 보세요</p>
+              </div>
+            <% } %>
+          </div>
+
+          <hr class="sheet-divider" />
+
+                    <div class="sheet-row sheet-row--action">
+                      <button type="button" class="sheet-action" data-modal="info-edit">
+                        <span class="sheet-icon" aria-hidden="true">
+                          <svg class="icon-action" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M11.668 9.33317C12.2042 9.33317 12.7352 9.22755 13.2306 9.02235C13.726 8.81714 14.1761 8.51636 14.5553 8.13719C14.9345 7.75802 15.2353 7.30787 15.4405 6.81246C15.6457 6.31705 15.7513 5.78607 15.7513 5.24984C15.7513 4.71361 15.6457 4.18263 15.4405 3.68721C15.2353 3.1918 14.9345 2.74166 14.5553 2.36248C14.1761 1.98331 13.726 1.68254 13.2306 1.47733C12.7352 1.27212 12.2042 1.1665 11.668 1.1665C10.585 1.1665 9.54639 1.59671 8.78062 2.36248C8.01484 3.12826 7.58464 4.16687 7.58464 5.24984C7.58464 6.3328 8.01484 7.37142 8.78062 8.13719C9.54639 8.90296 10.585 9.33317 11.668 9.33317ZM1.16797 21.4665V22.1665H22.168V21.4665C22.168 18.8532 22.168 17.5465 21.6593 16.5478C21.2119 15.6698 20.498 14.9559 19.62 14.5085C18.6213 13.9998 17.3146 13.9998 14.7013 13.9998H8.63463C6.0213 13.9998 4.71464 13.9998 3.71597 14.5085C2.83792 14.9559 2.12404 15.6698 1.67664 16.5478C1.16797 17.5465 1.16797 18.8532 1.16797 21.4665Z"
+                              fill="#1D5DFF" stroke="#1D5DFF" stroke-width="2.33333" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                          </svg>
+                        </span>
+                        <span>개인정보 수정</span>
+                      </button>
+                    </div>
+                    <hr class="sheet-divider" />
+                    <div class="sheet-row sheet-row--action">
+                      <form action="/logout" method="POST" style="width: 100%;">
+                        <button type="submit" class="sheet-action">
+                          <span class="sheet-icon" aria-hidden="true">
+                            <svg class="icon-logout" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M2.52273 20.25C1.89773 20.25 1.36288 20.0326 0.918182 19.5978C0.473485 19.1629 0.250758 18.6396 0.25 18.0278V2.47222C0.25 1.86111 0.472727 1.33815 0.918182 0.903333C1.36364 0.468518 1.89848 0.250741 2.52273 0.25H9.34091C9.66288 0.25 9.93295 0.356667 10.1511 0.57C10.3693 0.783333 10.478 1.04704 10.4773 1.36111C10.4765 1.67518 10.3674 1.93926 10.15 2.15333C9.93258 2.36741 9.66288 2.4737 9.34091 2.47222H2.52273V18.0278H9.34091C9.66288 18.0278 9.93295 18.1344 10.1511 18.3478C10.3693 18.5611 10.478 18.8248 10.4773 19.1389C10.4765 19.4529 10.3674 19.717 10.15 19.9311C9.93258 20.1452 9.66288 20.2515 9.34091 20.25H2.52273ZM16.358 11.3611H8.20455C7.88258 11.3611 7.61288 11.2544 7.39545 11.0411C7.17803 10.8278 7.06894 10.5641 7.06818 10.25C7.06742 9.93592 7.17652 9.67222 7.39545 9.45888C7.61439 9.24555 7.88409 9.13888 8.20455 9.13888H16.358L14.2273 7.05555C14.0189 6.85185 13.9148 6.60185 13.9148 6.30555C13.9148 6.00925 14.0189 5.75 14.2273 5.52777C14.4356 5.30555 14.7008 5.18963 15.0227 5.18C15.3447 5.17037 15.6193 5.27703 15.8466 5.5L19.9091 9.47222C20.1364 9.69444 20.25 9.9537 20.25 10.25C20.25 10.5463 20.1364 10.8055 19.9091 11.0278L15.8466 15C15.6193 15.2222 15.3496 15.3289 15.0375 15.32C14.7254 15.3111 14.4553 15.1952 14.2273 14.9722C14.0189 14.75 13.9197 14.4863 13.9295 14.1811C13.9394 13.8759 14.0481 13.6211 14.2557 13.4167L16.358 11.3611Z"
+                                fill="#1D5DFF" stroke="#1D5DFF" stroke-width="0.5" />
+                            </svg>
+                          </span>
+                          <span>로그아웃</span>
+                        </button>
+                      </form>
+                    </div>
+                    <hr class="sheet-divider" />
+                    <% if (currentUser && currentUser.id) { %>
+                      <div class="sheet-row sheet-row--action">
+                        <button type="button" class="sheet-action sheet-action--danger" data-modal="delete-account">
+                          <span class="sheet-icon" aria-hidden="true">
+                            <svg class="icon-danger" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M16.2917 2.71429H12.0417V1.69643C12.0417 1.24651 11.8551 0.815014 11.523 0.496872C11.1909 0.17873 10.7405 0 10.2708 0H6.72917C6.25951 0 5.80909 0.17873 5.477 0.496872C5.1449 0.815014 4.95833 1.24651 4.95833 1.69643V2.71429H0.708333C0.520472 2.71429 0.340304 2.78578 0.207466 2.91303C0.0746279 3.04029 0 3.21289 0 3.39286C0 3.57283 0.0746279 3.74542 0.207466 3.87268C0.340304 3.99994 0.520472 4.07143 0.708333 4.07143H1.46094L2.30208 17.0033C2.36495 18.142 3.27604 19 4.42708 19H12.5729C13.7297 19 14.6227 18.1611 14.6979 17.0067L15.5391 4.07143H16.2917C16.4795 4.07143 16.6597 3.99994 16.7925 3.87268C16.9254 3.74542 17 3.57283 17 3.39286C17 3.21289 16.9254 3.04029 16.7925 2.91303C16.6597 2.78578 16.4795 2.71429 16.2917 2.71429ZM5.6919 16.2857H5.66667C5.4831 16.2858 5.30665 16.2177 5.17451 16.0956C5.04238 15.9735 4.96487 15.8071 4.95833 15.6313L4.60417 6.13132C4.59747 5.95135 4.66568 5.7762 4.79379 5.64441C4.92189 5.51262 5.0994 5.43498 5.28727 5.42857C5.47513 5.42216 5.65795 5.4875 5.79552 5.61023C5.93309 5.73295 6.01414 5.903 6.02083 6.08297L6.375 15.583C6.37837 15.6721 6.36337 15.761 6.33086 15.8445C6.29835 15.9281 6.24896 16.0047 6.18551 16.07C6.12207 16.1353 6.04582 16.1879 5.96112 16.2249C5.87642 16.2619 5.78494 16.2826 5.6919 16.2857ZM9.20833 15.6071C9.20833 15.7871 9.13371 15.9597 9.00087 16.087C8.86803 16.2142 8.68786 16.2857 8.5 16.2857C8.31214 16.2857 8.13197 16.2142 7.99913 16.087C7.86629 15.9597 7.79167 15.7871 7.79167 15.6071V6.10714C7.79167 5.92717 7.86629 5.75458 7.99913 5.62732C8.13197 5.50006 8.31214 5.42857 8.5 5.42857C8.68786 5.42857 8.86803 5.50006 9.00087 5.62732C9.13371 5.75458 9.20833 5.92717 9.20833 6.10714V15.6071ZM10.625 2.71429H6.375V1.69643C6.37447 1.65173 6.38326 1.60738 6.40087 1.56599C6.41848 1.52459 6.44455 1.48699 6.47754 1.45538C6.51054 1.42377 6.54979 1.3988 6.593 1.38193C6.63621 1.36506 6.68251 1.35663 6.72917 1.35714H10.2708C10.3175 1.35663 10.3638 1.36506 10.407 1.38193C10.4502 1.3988 10.4895 1.42377 10.5225 1.45538C10.5555 1.48699 10.5815 1.52459 10.5991 1.56599C10.6167 1.60738 10.6255 1.65173 10.625 1.69643V2.71429ZM12.0417 15.6313C12.0351 15.8071 11.9576 15.9735 11.8255 16.0956C11.6933 16.2177 11.5169 16.2858 11.3333 16.2857H11.3077C11.2147 16.2825 11.1232 16.2618 11.0386 16.2248C10.9539 16.1878 10.8777 16.1351 10.8143 16.0698C10.7509 16.0046 10.7016 15.928 10.6691 15.8445C10.6366 15.7609 10.6216 15.6721 10.625 15.583L10.9792 6.08297C10.9825 5.99386 11.0041 5.90624 11.0427 5.82513C11.0814 5.74402 11.1364 5.67099 11.2045 5.61023C11.2726 5.54946 11.3525 5.50214 11.4397 5.47097C11.527 5.43981 11.6197 5.4254 11.7127 5.42857C11.8058 5.43175 11.8972 5.45244 11.9819 5.48948C12.0666 5.52651 12.1428 5.57916 12.2062 5.64441C12.2696 5.70967 12.319 5.78626 12.3516 5.8698C12.3841 5.95334 12.3991 6.04221 12.3958 6.13132L12.0417 15.6313Z"
+                                fill="#FF3B3B" />
+                            </svg>
+                          </span>
+                          <span>회원탈퇴</span>
+                        </button>
+                      </div>
+                      <% } %>        </section>
+
+        <dialog class="modal" id="profile-edit-modal">
+          <form method="POST" action="/user-description/update" class="modal-form" autocomplete="off">
+            <h2>프로필 정보 수정</h2>
+            <div class="form-group">
+              <label for="nickname">닉네임</label>
+              <input type="text" id="nickname" name="nickname" value="<%= currentUser.nickname %>" required autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="role">직무</label>
+              <input type="text" id="role" name="role" value="<%= userDescription ? userDescription.role : '' %>" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="school">소속</label>
+              <input type="text" id="school" name="school"
+                value="<%= userDescription ? userDescription.school : '' %>" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="bio">자기소개</label>
+              <textarea id="bio" name="bio" rows="3" autocomplete="off"><%= userDescription ? userDescription.bio : '' %></textarea>
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary">저장</button>
+              <button type="button" class="btn" onclick="this.closest('dialog').close()">취소</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog class="modal" id="info-edit-modal">
+          <form method="POST" action="/users/<%= currentUser.id %>?_method=PUT" class="modal-form" autocomplete="off">
+            <h2>개인정보 수정</h2>
+            <p class="modal-error" role="alert" hidden></p>
+            <input type="hidden" name="nickname" value="<%= currentUser.nickname %>" />
+            <div class="form-group">
+              <label for="name">이름</label>
+              <input type="text" id="name" name="name" value="<%= currentUser.name %>" required autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="email">이메일</label>
+              <input type="email" id="email" name="email" value="<%= currentUser.email %>" required autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="new-password">새 비밀번호</label>
+              <input type="password" id="new-password" name="newPassword" autocomplete="new-password" />
+            </div>
+            <div class="form-group">
+              <label for="current-password">현재 비밀번호</label>
+              <input type="password" id="current-password" name="currentPassword" required autocomplete="new-password" />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary">저장</button>
+              <button type="button" class="btn" onclick="this.closest('dialog').close()">취소</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog class="modal" id="delete-account-modal">
+          <form method="POST" action="/users/<%= currentUser.id %>?_method=DELETE" class="modal-form" autocomplete="off">
+            <h2>회원탈퇴</h2>
+            <p class="modal-description">정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+            <div class="form-group">
+              <label for="confirm-password">비밀번호 확인</label>
+              <!-- visible input uses a non-standard name so browser won't match saved credentials -->
+              <input type="password" id="confirm-password" name="temp_password" required autocomplete="off" />
+              <!-- hidden input holds the real 'password' name for server processing; value is copied before submit -->
+              <input type="hidden" id="hidden-confirm-password" name="password" value="" />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-danger">탈퇴하기</button>
+              <button type="button" class="btn" onclick="this.closest('dialog').close()">취소</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog class="modal" id="create-folder-modal">
+          <form id="create-folder-form" class="modal-form" autocomplete="off">
+            <h2>폴더 생성</h2>
+            <div class="form-group">
+              <label for="folder-name">폴더 이름</label>
+              <input type="text" id="folder-name" name="name" required autocomplete="off" placeholder="폴더 이름을 입력하세요" />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary">생성</button>
+              <button type="button" class="btn" onclick="this.closest('dialog').close()">취소</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog class="modal" id="edit-folder-modal">
+          <form id="edit-folder-form" class="modal-form" autocomplete="off">
+            <h2>폴더 수정</h2>
+            <div class="form-group">
+              <label for="edit-folder-name">폴더 이름</label>
+              <input type="text" id="edit-folder-name" name="name" required autocomplete="off" placeholder="폴더 이름을 입력하세요" />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary">수정</button>
+              <button type="button" class="btn" onclick="this.closest('dialog').close()">취소</button>
+            </div>
+          </form>
+        </dialog>
+      </main>
+
+      <script>
+        // Open modal, clear inputs and enforce autocomplete to avoid showing previous values
+        document.querySelectorAll("[data-modal]").forEach((trigger) => {
+          trigger.addEventListener("click", () => {
+            // 다른 열린 모달 모두 닫기
+            document.querySelectorAll('dialog[open]').forEach(d => d.close());
+            const modal = document.getElementById(`${trigger.dataset.modal}-modal`);
+            if (modal) {
+              // Clear and set secure autocomplete attributes for any input/textarea inside the modal
+              modal.querySelectorAll('input, textarea').forEach((el) => {
+                try {
+                  if (el.type === 'password') el.setAttribute('autocomplete', 'new-password');
+                  else el.setAttribute('autocomplete', 'off');
+                  // clear any lingering value so the browser won't show previous input
+                  el.value = '';
+                } catch (e) {
+                  // ignore
+                }
+              });
+
+              // ensure inputs are also cleared when modal is closed
+              modal.addEventListener('close', () => {
+                modal.querySelectorAll('input, textarea').forEach((el) => { el.value = ''; });
+              }, { once: true });
+
+              modal.showModal();
+            }
+          });
+        });
+
+        // Handle profile info edits through fetch to keep the modal context and show inline errors
+        (function () {
+          const infoModal = document.getElementById('info-edit-modal');
+          if (!infoModal) return;
+          const infoForm = infoModal.querySelector('form');
+          if (!infoForm) return;
+          const errorBox = infoModal.querySelector('.modal-error');
+
+          const clearError = () => {
+            if (!errorBox) return;
+            errorBox.textContent = '';
+            errorBox.hidden = true;
+          };
+
+          const showError = (message) => {
+            if (errorBox) {
+              errorBox.textContent = message;
+              errorBox.hidden = false;
+            } else {
+              alert(message);
+            }
+          };
+
+          infoModal.addEventListener('close', clearError);
+          infoModal.addEventListener('cancel', clearError);
+
+          infoForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            clearError();
+
+            const formData = new FormData(infoForm);
+
+            const newPassword = formData.get('newPassword');
+            if (newPassword !== null) {
+              if (newPassword) {
+                formData.set('password', newPassword);
+              } else {
+                formData.delete('password');
+              }
+              formData.delete('newPassword');
+            }
+
+            const payload = new URLSearchParams();
+            formData.forEach((value, key) => {
+              if (typeof value === 'string') {
+                payload.append(key, value);
+              }
+            });
+
+            try {
+              const response = await fetch(infoForm.action, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                },
+                body: payload,
+              });
+
+              if (response.ok) {
+                try {
+                  infoModal.close();
+                } catch (closeError) {
+                  console.warn('모달을 자동으로 닫지 못했습니다.', closeError);
+                }
+                window.location.reload();
+                return;
+              }
+
+              let message = `정보 수정에 실패했습니다. (오류 코드: ${response.status})`;
+              try {
+                const payload = await response.json();
+                if (payload && payload.message) {
+                  message = payload.message;
+                }
+              } catch (_) {
+                // ignore JSON parse issues
+              }
+              showError(message);
+            } catch (error) {
+              console.error('개인정보 수정 요청 처리 중 오류가 발생했습니다.', error);
+              showError('요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+            }
+          });
+        })();
+
+        // Intercept account-deletion form to copy visible temp password into hidden real input,
+        // submit via fetch and redirect to login on success
+        (function () {
+          const deleteModal = document.getElementById('delete-account-modal');
+          if (!deleteModal) return;
+          const deleteForm = deleteModal.querySelector('form');
+          if (!deleteForm) return;
+
+          deleteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // copy visible password value (temp_password) into the hidden real password field
+            const visible = deleteForm.querySelector('#confirm-password');
+            const hidden = deleteForm.querySelector('#hidden-confirm-password');
+            if (visible && hidden) hidden.value = visible.value;
+
+            // Build form data after copying the password
+            const url = deleteForm.action;
+            const fd = new FormData(deleteForm);
+
+            try {
+              const resp = await fetch(url, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                  'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: fd
+              });
+
+              if (resp.ok || resp.redirected) {
+                // 성공적으로 탈퇴되면 로그인 페이지로 이동
+                try { deleteModal.close(); } catch (e) {}
+                // replace를 사용해 뒤로가기로 탈퇴 전 페이지에 접근하지 못하도록 처리
+                window.location.replace('/login');
+                return;
+              }
+
+              // If server returned an error, try to show a message (fallback to status)
+              let msg = `탈퇴 실패 (오류 코드: ${resp.status})`;
+              try { const j = await resp.json(); if (j && j.message) msg = j.message; } catch (_) {}
+              alert(msg);
+            } catch (err) {
+              console.error('회원 탈퇴 요청 중 오류가 발생했습니다.', err);
+              alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.');
+            }
+          });
+        })();
+
+        // 폴더 생성 모달 열기
+        function openCreateFolderModal() {
+          const modal = document.getElementById('create-folder-modal');
+          const form = document.getElementById('create-folder-form');
+          form.reset();
+          modal.showModal();
+        }
+
+        // 폴더 수정 모달 열기
+        function openEditFolderModal(folderId, folderName) {
+          const modal = document.getElementById('edit-folder-modal');
+          const form = document.getElementById('edit-folder-form');
+          const input = document.getElementById('edit-folder-name');
+          input.value = folderName;
+          form.dataset.folderId = folderId;
+          modal.showModal();
+        }
+
+        // 폴더 생성
+        document.getElementById('create-folder-form')?.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const name = formData.get('name');
+
+          try {
+            const response = await fetch('/folders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'same-origin',
+              body: JSON.stringify({ name })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+              document.getElementById('create-folder-modal').close();
+              window.location.reload();
+            } else {
+              alert(data.message || '폴더 생성에 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('폴더 생성 중 오류:', error);
+            alert('폴더 생성 중 오류가 발생했습니다.');
+          }
+        });
+
+        // 폴더 수정
+        document.getElementById('edit-folder-form')?.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const folderId = this.dataset.folderId;
+          const formData = new FormData(this);
+          const name = formData.get('name');
+
+          try {
+            const response = await fetch(`/folders/${folderId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'same-origin',
+              body: JSON.stringify({ name })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+              document.getElementById('edit-folder-modal').close();
+              window.location.reload();
+            } else {
+              alert(data.message || '폴더 수정에 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('폴더 수정 중 오류:', error);
+            alert('폴더 수정 중 오류가 발생했습니다.');
+          }
+        });
+
+        // 폴더 삭제
+        function deleteFolder(folderId) {
+          if (!confirm('정말 이 폴더를 삭제하시겠습니까? 폴더 안의 글은 삭제되지 않습니다.')) {
+            return;
+          }
+
+          fetch(`/folders/${folderId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin'
+          })
+          .then(async response => {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              return response.json();
+            } else {
+              const text = await response.text();
+              throw new Error(text || `HTTP ${response.status}`);
+            }
+          })
+          .then(data => {
+            if (data.success) {
+              window.location.reload();
+            } else {
+              alert(data.message || '폴더 삭제에 실패했습니다.');
+            }
+          })
+          .catch(error => {
+            console.error('폴더 삭제 중 오류:', error);
+            alert('폴더 삭제 중 오류가 발생했습니다: ' + error.message);
+          });
+        }
+      </script>
+</body>
+
+</html>

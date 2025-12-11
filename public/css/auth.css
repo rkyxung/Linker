@@ -1,0 +1,575 @@
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Thin.woff2")
+    format("woff2");
+  font-weight: 100;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraLight.woff2")
+    format("woff2");
+  font-weight: 200;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Light.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Black.woff2")
+    format("woff2");
+  font-weight: 900;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  background: linear-gradient(180deg, #1d5dff 0%, #55e9c6 185.19%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.background-shapes > div {
+  position: absolute;
+}
+
+.line-top {
+  width: 23.54vw;
+  height: 23.54vw;
+  top: -8vw;
+  left: -6vw;
+  transform: rotate(156.377deg);
+  border-radius: 50%;
+
+  /* 테두리 색 그라데이션을 배경으로 채움 */
+  background: linear-gradient(
+    to bottom,
+    rgba(251, 251, 251, 0.1),
+    rgba(251, 251, 251, 0.7)
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4.17vw),
+    black calc(100% - 3.9vw)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4.17vw),
+    black calc(100% - 3.9vw)
+  );
+}
+
+.dots-top {
+  width: 18.8vw;
+  height: 18.8vw;
+  top: 3vw;
+  left: 3vw;
+  border-radius: 50%;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.5) 10%,
+    transparent 11%
+  );
+  background-size: 1.3vw 1.3vw;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(circle, #000 70%, transparent 71%);
+  mask-image: radial-gradient(circle, #000 70%, transparent 71%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.dots-line {
+  width: 20vw;
+  height: 20vw;
+  top: 2vw;
+  right: 8vw;
+  border-radius: 50%;
+  background: radial-gradient(rgba(255, 255, 255, 0.5) 10%, transparent 11%)
+    center/1.3vw 1.3vw; /* 도트 크기 및 간격 설정 및 중앙 정렬 */
+
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4.17vw),
+    black calc(100% - 3.9vw)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4.17vw),
+    black calc(100% - 3.9vw)
+  );
+}
+
+.circle-top {
+  width: 13.7vw;
+  height: 13.7vw;
+  top: 10vw;
+  right: 3vw;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(77, 212, 207, 0.5) 0%,
+    rgba(30, 95, 254, 0.5) 103.03%
+  );
+}
+
+.circleBig-bottom {
+  width: 21.46vw;
+  height: 21.46vw;
+  bottom: 2vw;
+  left: 5vw;
+  border-radius: 50%;
+  transform: rotate(47.843deg);
+  background: linear-gradient(
+    180deg,
+    rgba(77, 212, 207, 0.5) 0%,
+    rgba(30, 95, 254, 0.5) 103.03%
+  );
+}
+
+.circle-bottom {
+  width: 14.63vw;
+  height: 14.63vw;
+  bottom: 5vw;
+  right: 4vw;
+  border-radius: 50%;
+  transform: rotate(37.981deg);
+  background: linear-gradient(
+    90deg,
+    rgba(251, 251, 251, 0.06) 0%,
+    rgba(251, 251, 251, 0.42) 100%
+  );
+}
+
+.line-bottom {
+  width: 21.54vw;
+  height: 21.54vw;
+  bottom: -3vw;
+  right: 12vw;
+  transform: rotate(-45deg);
+  border-radius: 50%;
+
+  /* 테두리 색 그라데이션을 배경으로 채움 */
+  background: linear-gradient(
+    to bottom,
+    rgba(77, 212, 207, 0.5),
+    rgba(30, 90, 254, 0.5)
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4.17vw),
+    black calc(100% - 3.9vw)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4.17vw),
+    black calc(100% - 3.9vw)
+  );
+}
+
+.card {
+  width: 57.97vw;
+  padding: 7.66vw 14.74vw;
+  border-radius: 3.125vw;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0.21vw 1.56vw rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(0.27vw);
+  -webkit-backdrop-filter: blur(0.27vw);
+  border: 0.05vw solid rgba(255, 255, 255, 0.25);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.txt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+  margin: 0 auto;
+  filter: drop-shadow(0 0.1vw 0.1vw rgba(0, 0, 0, 0.25));
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  color: #ffffff;
+}
+
+.logo .icon {
+  width: 2.34vw;
+}
+
+.logo .linker {
+  font-size: 2.08vw;
+  font-weight: 600;
+}
+
+.signup-logo {
+  gap: 0.4vw;
+}
+
+.signup-logo .logo-prefix {
+  font-size: 2.08vw;
+  font-weight: 600;
+  padding-right: 0.7vw;
+}
+
+.signup-logo .linker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25vw;
+}
+
+.signup-logo .logo-bang {
+  display: inline-block;
+  transform: rotate(12deg);
+  margin-left: 0.1vw;
+}
+
+.title {
+  margin: 0.73vw 0 1.98vw;
+  font-size: 1.35vw;
+}
+
+.title-one-line {
+  white-space: nowrap;
+}
+
+.form-alert {
+  margin: 0 0 1.2vw;
+  width: 100%;
+  padding: 0.9vw 1.1vw;
+  border-radius: 0.83vw;
+  border: 0.05vw solid rgba(255, 64, 64, 0.35);
+  background: rgba(255, 64, 64, 0.16);
+  box-shadow: 0 0.55vw 1.1vw rgba(255, 64, 64, 0.18);
+  color: rgba(255, 48, 48, 0.94);
+  font-size: 0.88vw;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+}
+
+.form-alert::before {
+  content: "!";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7vw;
+  height: 1.7vw;
+  min-width: 1.5vw;
+  min-height: 1.5vw;
+  border-radius: 50%;
+  background: rgba(255, 64, 64, 0.22);
+  color: rgba(255, 48, 48, 0.95);
+  font-weight: 700;
+  font-size: 0.95vw;
+}
+
+.form-alert + .form {
+  margin-top: 0.5vw;
+}
+
+.card-error {
+  animation: cardShake 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-0.6vw); }
+  40% { transform: translateX(0.5vw); }
+  60% { transform: translateX(-0.35vw); }
+  80% { transform: translateX(0.2vw); }
+}
+
+.form {
+  display: grid;
+  gap: 1.2vw;
+  margin-bottom: 1.35vw;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vw;
+  width: 100%;
+}
+
+.form-group.double {
+  display: flex;
+  flex-direction: row;
+  gap: 1vw;
+}
+
+.form-group.double .field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vw;
+}
+
+[data-field-group][data-error] .label {
+  color: #ff2f2f;
+}
+
+.label[data-error]::after {
+  content: " * " attr(data-error);
+  color: #ff2f2f;
+  /* 더 읽기 쉬운 크기로 조정 (기존 0.41vw -> 0.9vw) */
+  font-size: 0.7vw;
+  font-weight: 400;
+  margin-left: 0.25vw;
+  opacity: 0.95;
+}
+
+[data-field-group][data-error] .input {
+  background: rgba(255, 59, 59, 0.3);
+  color: #ffffff;
+}
+
+[data-field-group][data-error] .input::placeholder {
+  color: rgba(255, 204, 204, 0.9);
+}
+
+.label {
+  font-size: 1.04vw;
+  font-weight: 500;
+  padding-left: 0.4vw;
+}
+
+.input {
+  width: 100%;
+  padding: 0.83vw 1.04vw;
+  border-radius: 1.46vw;
+  border: none;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 0.83vw;
+  outline: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  filter: drop-shadow(0 0.5vw 0.5vw rgba(0, 0, 0, 0.25));
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.input:focus {
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 0 0.09vw rgba(255, 255, 255, 0.28);
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-with-icon .input {
+  padding-right: 3.33vw;
+}
+
+
+.input:-webkit-autofill::first-line {
+  color: #ffffff;
+}
+
+
+
+.password-toggle {
+  position: absolute;
+  right: 1.04vw;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-icon {
+  width: 1.25vw;
+  height: 1.25vw;
+  fill: white;
+}
+
+.password-show {
+  display: none;
+}
+
+.password-toggle.show .password-hide {
+  display: none;
+}
+
+.password-toggle.show .password-show {
+  display: block;
+}
+
+.btn {
+  margin-top: 0.52vw;
+  padding: 0.83vw 0;
+  border-radius: 1.56vw;
+  border: none;
+  background: linear-gradient(90deg, #2f6bff 0%, #1d5dff 100%);
+  color: #ffffff;
+  font-size: 0.94vw;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-0.05vw);
+  box-shadow: 0 1.04vw 2.19vw rgba(0, 72, 255, 0.35);
+}
+
+.error {
+  margin-bottom: 1.96vw;
+  padding: 0.625vw 0.83vw;
+  border-radius: 0.83vw;
+  background: rgba(255, 89, 89, 0.25);
+  color: #ffecec;
+  font-size: 0.73vw;
+  text-align: left;
+}
+
+.switch {
+  font-size: 0.94vw;
+  font-weight: 400;
+  display: flex;
+  gap: 0.7vw;
+  justify-content: center;
+}
+
+.switch a {
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #1d5dff;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  gap: 0.83vw;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 52.08vw rgba(255, 255, 255, 0.22) inset;
+  -webkit-text-fill-color: #ffffff;
+  transition: background-color 9999s ease-out 0s;
+}
+
+
+.input:autofill,
+.input:autofill:hover,
+.input:autofill:focus,
+.input:autofill:active {
+  box-shadow: 0 0 0 52.08vw rgba(255, 255, 255, 0.22) inset;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-field-group][data-error] .label::after {
+  content: " * " attr(data-error);
+  color: #ff2f2f;
+  /* 더 읽기 쉬운 크기로 조정 (기존 0.41vw -> 0.9vw) */
+  font-size: 0.7vw;
+  font-weight: 500;
+  margin-left: 0.25vw;
+  opacity: 0.95;
+}
+
+[data-field-group][data-error] .input {
+  background: rgba(255, 59, 59, 0.3);
+  color: #ffffff;
+}
+
+[data-field-group][data-error] .input::placeholder {
+  color: rgba(255, 204, 204, 0.9);
+}

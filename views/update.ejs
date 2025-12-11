@@ -1,0 +1,48 @@
+<%-include('./include/_header') %>
+
+<main id="site-main">
+    <div class="button-box">
+        <a href="/users" class="btn btn-light"><i class="fa-solid fa-user-plus"></i>회원 목록</a>
+    </div>
+
+    <h2>회원정보 수정</h2>
+    <p>회원정보를 수정합니다.</p>
+    <% const fieldValues = (typeof formData !== "undefined" && formData)
+        ? formData
+        : (user ? { name: user.name, nickname: user.nickname, email: user.email } : {}); %>
+    <% if (typeof error !== "undefined" && error) { %>
+        <div class="alert alert-danger user-alert"><%= error %></div>
+    <% } %>
+    <form action="/users/<%= user._id %>?_method=PUT" method="POST" id="add-user">
+        <div class="user-info">
+            <div class="col-12">
+                <label for="name" class="col-form-label">이름(Full Name)</label>
+                <div>
+                    <input type="text" class="form-control" name="name" id="name" value="<%= fieldValues.name || '' %>" required>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="nickname" class="col-form-label">닉네임(Nickname)</label>
+                <div>
+                    <input type="text" class="form-control" name="nickname" id="nickname" value="<%= fieldValues.nickname || '' %>" required>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="email" class="col-form-label">메일 주소(E-mail)</label>
+                <div>
+                    <input type="email" class="form-control" name="email" id="email" value="<%= fieldValues.email || '' %>" required>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="password" class="col-form-label">비밀번호(Password)</label>
+                <div>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="변경 시 입력">
+                    <small class="form-text text-muted">비밀번호를 변경하지 않으려면 비워 두세요.</small>
+                </div>
+            </div>
+            <button type="submit">수정하기</button>
+        </div>
+    </form>
+</main>
+
+<%-include('./include/_footer') %>

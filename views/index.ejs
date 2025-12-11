@@ -1,0 +1,49 @@
+
+<%- include("./include/_header") %>
+  <!-- Main -->
+  <main id="site-main">
+    <div class="button-box">
+      <!--밑에 경로명에 점 사용하지 않기-->    
+      <a href="/users/add" class="btn btn-light">
+        <i class="fa-solid fa-user-plus"></i>회원 추가</a>
+    </div>
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>닉네임</th>
+          <th>이메일</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach (user => { %>
+           
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.nickname %></td>
+          <td><%= user.email %></td>
+          <td>
+            <!-- 몽고디비에서는 id에 언더바 붙인다 -->
+            <a href="/users/<%= user._id %>" class="btn update" title="수정">
+              <i class="fas fa-pencil-alt"></i>
+            </a>
+            <!-- a태그에서는 요청을 보낼수 없기 때문에 form태그로 바꾸어준다. -->
+            <!-- <a href="#" class="btn delete" title="삭제">
+              <i class="fas fa-times"></i>
+            </a>                 -->
+            <!-- 웹문서에서 서버로 어떤 요청을 보내야 할때는 form태그를 사용한다. 
+             method는 기본값 그냥 POST로 둔다 POST없어도 됨 -->
+             <form action="/users/<%= user._id %>?_method=DELETE" method="POST" style="display:inline">
+              <input type="submit" class="btn delete" title="삭제" value="X" >
+            </form>
+          </td>
+        </tr>
+        <%})%>
+      </tbody>
+    </table>
+  </main>
+  <!-- /Main -->
+
+  <%- include("./include/_footer") %>

@@ -1,0 +1,24 @@
+<div class="admin-title">
+    <h2>
+        <%=locals.title %>
+    </h2>
+    <a href="/add" class="button">+ 새 게시물</a>
+</div>
+
+<ul class="admin-posts">
+    <!-- post 전체를 반복하면서 목록의 각 항목으로 표시하기 -->
+    <% data.forEach(post=> { %>
+        <li>
+            <!-- 제목 부분을 클릭하면 해당 게시물 내용 표시하기 -->
+             <a href="/post/<%= post._id%>">
+                <%= post.title %>
+             </a>
+             <div class="admin-post-controls">
+                <a href="/edit/<%= post._id %>" class="btn">편집</a>
+                <form action="/delete/<%= post._id %>?_method=DELETE" method="POST">
+                    <input type="submit" value="삭제" class="btn-delete btn">
+                </form>
+             </div>
+        </li>
+       <% }) %>
+</ul>

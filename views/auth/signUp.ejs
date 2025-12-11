@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linker</title>
+  <link rel="stylesheet" href="/css/auth.css" />
+  <script src="/js/passwordToggle.js" defer></script>
+</head>
+
+<body>
+  <div class="background-shapes">
+    <div class="line-top"></div>
+    <div class="dots-top"></div>
+    <div class="dots-line"></div>
+    <div class="circle-top"></div>
+    <div class="circleBig-bottom"></div>
+    <div class="circle-bottom"></div>
+    <div class="line-bottom"></div>
+  </div>
+  <section class="card">
+    <div class="txt">
+      <div class="logo signup-logo">
+        <span class="logo-prefix">Welcome to</span>
+        <div class="icon">
+          <svg viewBox="0 0 45 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M45.002 12.9033C45.002 20.0297 39.225 25.8066 32.0986 25.8066H32.0957C30.3141 25.8066 28.8691 24.3617 28.8691 22.5801C28.8693 20.7986 30.3142 19.3545 32.0957 19.3545C32.1029 19.3545 32.11 19.3544 32.1172 19.3545C35.6718 19.3445 38.5508 16.4603 38.5508 12.9033C38.5508 9.36687 35.705 6.49602 32.1787 6.45312C28.6524 6.49602 25.8066 9.36687 25.8066 12.9033H25.8018V22.9033H25.8066C25.8064 29.9181 20.2086 35.6251 13.2363 35.8018L12.9033 35.8066C5.77712 35.8066 0.000262545 30.0295 0 22.9033C6.55251e-07 15.777 5.77696 9.99902 12.9033 9.99902L12.9043 10C14.6858 10.0001 16.1299 11.4441 16.1299 13.2256C16.1298 15.007 14.6857 16.451 12.9043 16.4512L12.5713 16.46C9.16242 16.6328 6.45117 19.4515 6.45117 22.9033C6.45143 26.3549 9.16258 29.1729 12.5713 29.3457L12.9033 29.3545C16.4341 29.3545 19.3016 26.5184 19.3535 23H19.3516V12.8555L19.3564 12.8545C19.3826 5.80401 25.0623 0.0875442 32.0986 0.00195312V0L32.2588 7.00129e-09V0.00195313C39.3113 0.0877413 45.002 5.83042 45.002 12.9033Z"
+              fill="white" />
+          </svg>
+        </div>
+        <div class="linker">
+          Linker
+          <span class="logo-bang">!</span>
+        </div>
+      </div>
+      <div class="title title-one-line">당신의 아이디어와 열정을 이어줄 팀, LINKER에서 만나보세요.</div>
+    </div>
+
+    <% if (typeof error !=="undefined" && error) { %>
+      <div class="form-alert" role="alert">
+        <%= error %>
+      </div>
+      <% } %>
+
+        <form class="form" action="/register" method="POST" autocomplete="off" spellcheck="false" novalidate>
+          <input type="hidden" name="redirectTo" value="/login" />
+
+          <div class="form-group double">
+            <div class="field" data-field-group>
+              <label class="label" for="signup-name">이름</label>
+              <input class="input" type="text" id="signup-name" name="name" autocomplete="off" autocapitalize="none"
+                value="<%= formData && formData.name ? formData.name : '' %>" placeholder="홍길동"
+                data-placeholder="홍길동" required />
+            </div>
+            <div class="field" data-field-group>
+              <label class="label" for="signup-nickname">닉네임</label>
+              <input class="input" type="text" id="signup-nickname" name="nickname" autocomplete="off"
+                autocapitalize="none"
+                value="<%= formData && formData.nickname ? formData.nickname : '' %>" placeholder="별명"
+                data-placeholder="별명" required />
+            </div>
+          </div>
+
+          <div class="form-group" data-field-group>
+            <label class="label" for="signup-email">이메일</label>
+            <input class="input" type="email" id="signup-email" name="email" autocomplete="off" autocapitalize="none"
+              value="<%= formData && formData.email ? formData.email : '' %>" placeholder="kim@example.com"
+              data-placeholder="kim@example.com" required />
+          </div>
+
+          <div class="form-group" data-field-group>
+            <label class="label" for="signup-password">비밀번호</label>
+            <div class="input-with-icon">
+              <input type="password" name="password" autocomplete="new-password" data-password="real"
+                style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+              <input class="input" type="text" id="signup-password" placeholder="******" autocomplete="new-password"
+                autocapitalize="none" data-password="masked" data-placeholder="******" required />
+              <button type="button" class="password-toggle" aria-label="비밀번호 보기">
+                <svg class="password-icon password-hide" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.8946 17.5115L22.5394 22.9644C22.6363 23.0613 22.7513 23.1381 22.8779 23.1906C23.0045 23.243 23.1401 23.27 23.2771 23.27C23.4141 23.27 23.5498 23.243 23.6764 23.1906C23.803 23.1381 23.918 23.0613 24.0148 22.9644C24.1117 22.8675 24.1886 22.7525 24.241 22.626C24.2934 22.4994 24.3204 22.3637 24.3204 22.2267C24.3204 22.0897 24.2934 21.954 24.241 21.8275C24.1886 21.7009 24.1117 21.5859 24.0148 21.489L2.4425 0.305567C2.34562 0.208691 2.23061 0.131844 2.10404 0.0794143C1.97746 0.026985 1.8418 1.02076e-09 1.70479 0C1.56779 -1.02076e-09 1.43213 0.026985 1.30555 0.0794143C1.17897 0.131844 1.06396 0.208691 0.967088 0.305567C0.870211 0.402444 0.793364 0.517453 0.740935 0.644029C0.688506 0.770605 0.661521 0.906267 0.661521 1.04327C0.661521 1.18028 0.688506 1.31594 0.740935 1.44251C0.793364 1.56909 0.870211 1.6841 0.967088 1.78098L4.92463 5.54358C4.00871 6.19282 3.18441 6.96244 2.47395 7.83172C1.46825 9.06572 0.680995 10.4626 0.14622 11.962C0.102458 12.0891 0.0482761 12.2642 0.0482761 12.2642L0.0107657 12.3934C0.0107657 12.3934 -0.147611 13.4291 0.750554 13.6667C1.0175 13.7372 1.30153 13.6989 1.54026 13.5602C1.779 13.4215 1.95292 13.1937 2.02383 12.9269L2.02591 12.9206L2.04258 12.8685L2.11552 12.6414C2.56972 11.3755 3.23562 10.1959 4.08481 9.15292C4.75381 8.33376 5.54363 7.62123 6.42712 7.03983L9.71554 10.3282C9.05194 10.7442 8.49066 11.3043 8.07343 11.9671C7.6562 12.6299 7.39376 13.3782 7.30563 14.1564C7.21751 14.9346 7.30596 15.7226 7.56441 16.4619C7.82287 17.2012 8.24467 17.8727 8.79845 18.4265C9.35223 18.9802 10.0237 19.4021 10.763 19.6605C11.5023 19.919 12.2904 20.0074 13.0686 19.9193C13.8467 19.8312 14.5951 19.5687 15.2578 19.1515C15.9206 18.7343 16.4808 18.173 16.8967 17.5094M8.97783 3.69724L10.7575 5.4769C11.2979 5.40466 11.871 5.36854 12.4767 5.36854C16.7362 5.36854 19.3245 7.26906 20.8707 9.155C21.7199 10.1979 22.3858 11.3775 22.84 12.6435C22.8748 12.7449 22.8991 12.8206 22.913 12.8706L22.9296 12.9227V12.929L22.9317 12.931C23.0088 13.1911 23.1843 13.4109 23.4209 13.5436C23.6574 13.6763 23.9364 13.7115 24.1986 13.6418C24.4607 13.5721 24.6853 13.4028 24.8247 13.1701C24.964 12.9374 25.0071 12.6595 24.9448 12.3955V12.3892L24.9427 12.3809L24.9344 12.3538C24.8991 12.2219 24.8574 12.0919 24.8093 11.9641C24.2745 10.4647 23.4873 9.0678 22.4816 7.8338C20.6144 5.554 17.4698 3.28462 12.4809 3.28462C11.193 3.28462 10.0281 3.43258 8.97783 3.69724Z" fill="white"/>
+                </svg>
+                <svg class="password-icon password-show" viewBox="0 0 25 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.02591 9.63809V9.64434C1.99081 9.7767 1.92997 9.90084 1.84686 10.0097C1.76376 10.1185 1.66002 10.2099 1.54157 10.2786C1.42312 10.3473 1.2923 10.392 1.15657 10.4101C1.02084 10.4282 0.882871 10.4194 0.750554 10.3841C-0.147611 10.1466 0.0107657 9.11086 0.0107657 9.11086L0.0482764 8.98166C0.0482764 8.98166 0.102458 8.80661 0.14622 8.67949C0.680995 7.18009 1.46825 5.78318 2.47395 4.54918C4.34322 2.26938 7.48784 0 12.4788 0C17.4698 0 20.6144 2.26938 22.4857 4.54918C23.4914 5.78318 24.2787 7.18009 24.8135 8.67949C24.8583 8.80834 24.9 8.93828 24.9385 9.06918L24.9448 9.09627V9.10461L24.9468 9.10878C25.0129 9.37399 24.9722 9.65455 24.8334 9.88999C24.6945 10.1254 24.4687 10.2969 24.2047 10.3674C23.9406 10.438 23.6594 10.4019 23.4217 10.267C23.1839 10.1322 23.0087 9.90927 22.9338 9.64642L22.9317 9.63809L22.915 9.58599L22.8421 9.35884C22.3879 8.09292 21.722 6.91333 20.8728 5.87038C19.3265 3.98444 16.7404 2.08391 12.4788 2.08391C8.21721 2.08391 5.63316 3.98444 4.08481 5.87038C3.23562 6.91333 2.56972 8.09292 2.11552 9.35884L2.04258 9.58599L2.02591 9.63809ZM7.26903 11.4615C7.26903 10.0798 7.81791 8.75466 8.79494 7.77764C9.77196 6.80062 11.0971 6.25173 12.4788 6.25173C13.8605 6.25173 15.1857 6.80062 16.1627 7.77764C17.1397 8.75466 17.6886 10.0798 17.6886 11.4615C17.6886 12.8432 17.1397 14.1684 16.1627 15.1454C15.1857 16.1224 13.8605 16.6713 12.4788 16.6713C11.0971 16.6713 9.77196 16.1224 8.79494 15.1454C7.81791 14.1684 7.26903 12.8432 7.26903 11.4615Z" fill="white"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn" type="submit">회원가입</button>
+        </form>
+
+        <p class="switch">
+          이미 계정이 있으신가요?
+          <span>|</span>
+          <a href="/login">로그인</a>
+        </p>
+  </section>
+
+</body>
+
+</html>

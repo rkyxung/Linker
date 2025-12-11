@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linker</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .post-detail-container {
+      background: transparent;
+      border-radius: 1.67vw;
+      padding: 1.5vw 2vw;
+      border: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5vw;
+      padding-bottom: 1vw;
+      border-bottom: 0.05vw solid rgba(44, 120, 255, 0.15);
+    }
+
+    .post-header-left {
+      flex: 1;
+    }
+
+    .post-category {
+      display: inline-block;
+      padding: 0.42vw 0.78vw;
+      border-radius: 0.78vw;
+      background: rgba(43, 107, 255, 0.12);
+      color: #2f6bff;
+      font-size: 0.74vw;
+      font-weight: 600;
+      margin-right: 0.5vw;
+      margin-bottom: 0.8vw;
+    }
+
+    .post-title {
+      font-size: 1.46vw;
+      font-weight: 700;
+      color: rgba(24, 50, 117, 0.92);
+      margin: 0 0 0.8vw 0;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 1vw;
+      font-size: 0.83vw;
+      color: rgba(31, 61, 122, 0.75);
+      margin-bottom: 1vw;
+    }
+
+    .post-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1vw;
+      margin-top: 1vw;
+      padding: 1.5vw;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 0.94vw;
+    }
+
+    .post-info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5vw;
+      font-size: 0.88vw;
+      color: rgba(24, 50, 117, 0.85);
+    }
+
+    .post-info-label {
+      font-weight: 600;
+      color: rgba(31, 61, 122, 0.75);
+    }
+
+    .post-stats {
+      display: flex;
+      align-items: center;
+      gap: 1.5vw;
+      font-size: 0.98vw;
+      color: rgba(31, 61, 122, 0.75);
+      position: relative;
+    }
+
+    .more-menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.3vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(31, 61, 122, 0.75);
+      transition: color 0.2s ease;
+    }
+
+    .more-menu-btn:hover {
+      color: rgba(31, 61, 122, 1);
+    }
+
+    .more-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5vw;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 0.94vw;
+      box-shadow: 0 0.52vw 1.56vw rgba(0, 0, 0, 0.15);
+      padding: 0.5vw 0;
+      min-width: 8vw;
+      z-index: 100;
+      display: none;
+    }
+
+    .more-menu.show {
+      display: block;
+    }
+
+    .more-menu-item {
+      display: block;
+      width: 100%;
+      padding: 0.73vw 1.04vw;
+      border: none;
+      background: none;
+      text-align: left;
+      font-size: 0.88vw;
+      color: rgba(24, 50, 117, 0.85);
+      cursor: pointer;
+      transition: background 0.2s ease;
+      font-family: "Pretendard", sans-serif;
+    }
+
+    .more-menu-item:hover {
+      background: rgba(44, 120, 255, 0.1);
+    }
+
+    .more-menu-item.danger {
+      color: #ff3b3b;
+    }
+
+    .post-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4vw;
+    }
+
+    .post-content {
+      font-size: 1.05vw;
+      line-height: 1.8;
+      color: rgba(24, 50, 117, 0.85);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-bottom: 1.5vw;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+    }
+
+    .hashtags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5vw;
+      margin-top: 1.5vw;
+      padding-top: 1.5vw;
+      border-top: 0.05vw solid rgba(44, 120, 255, 0.15);
+    }
+
+    .hashtag {
+      padding: 0.3vw 0.6vw;
+      border-radius: 0.5vw;
+      background: rgba(44, 120, 255, 0.1);
+      color: #2f6bff;
+      font-size: 0.95vw;
+      font-weight: 600;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5vw;
+      color: rgba(24, 50, 117, 0.8);
+      text-decoration: none;
+      font-size: 0.94vw;
+      font-weight: 600;
+      margin-bottom: 1.5vw;
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: #1d5dff;
+    }
+
+    .comments-section {
+      margin-top: 2vw;
+      padding-top: 1.5vw;
+      border-top: 0.05vw solid rgba(44, 120, 255, 0.15);
+    }
+
+    .comment-form {
+      margin-bottom: 2vw;
+    }
+
+    .comment-input {
+      width: 100%;
+      padding: 0.83vw 1.04vw;
+      border-radius: 0.94vw;
+      border: 0.05vw solid rgba(44, 120, 255, 0.25);
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 1.00vw;
+      color: #1f3d7a;
+      font-family: "Pretendard", sans-serif;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 4vw;
+    }
+
+    .comment-input:focus {
+      outline: none;
+      border-color: #2f6bff;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: none;
+    }
+
+    .comment-submit {
+      margin-top: 1vw;
+      padding: 0.73vw 1.46vw;
+      border-radius: 0.94vw;
+      border: none;
+      font-size: 1.00vw;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(120deg, #2f6bff, #4ea6ff);
+      color: #ffffff;
+      box-shadow: none;
+    }
+
+    .comment-submit:hover {
+      background: linear-gradient(120deg, #2560e6, #3d96e6);
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5vw;
+    }
+
+    .comment-item {
+      padding: 1.5vw;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 0.94vw;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8vw;
+      position: relative;
+    }
+
+    .comment-author {
+      font-weight: 700;
+      font-size: 1.02vw;
+      color: rgba(24, 50, 117, 0.92);
+    }
+
+    .comment-date {
+      font-size: 0.90vw;
+      color: rgba(31, 61, 122, 0.6);
+    }
+
+    .comment-content {
+      font-size: 1.00vw;
+      line-height: 1.65;
+      color: rgba(24, 50, 117, 0.88);
+      margin-bottom: 0.8vw;
+      white-space: pre-wrap;
+    }
+
+    .comment-actions {
+      display: flex;
+      align-items: center;
+      gap: 1vw;
+    }
+
+    .comment-like-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4vw;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.3vw 0.6vw;
+      border-radius: 0.5vw;
+      font-size: 0.78vw;
+      color: rgba(31, 61, 122, 0.75);
+      transition: background 0.2s ease;
+    }
+
+    .comment-like-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <% const displayName=currentUser && currentUser.nickname ? currentUser.nickname : currentUser && currentUser.name ?
+    currentUser.name : "링커" ; %>
+
+    <%- include('../include/_nav', { active: 'campus', displayName: displayName }) %>
+
+      <main class="main-content" aria-label="메인 콘텐츠">
+        <div class="post-detail-container">
+          <a href="/campus" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            목록으로
+          </a>
+
+          <div class="post-header">
+            <div class="post-header-left">
+              <div>
+                <span class="post-category">
+                  <%= post.type === 'recruit' ? '팀원 모집하기' : '팀 구하기' %>
+                </span>
+                <span class="post-category">
+                  <%
+                    const categoryMap = {
+                      'project': '프로젝트',
+                      'study': '스터디'
+                    };
+                  %>
+                  <%= categoryMap[post.category] || post.category %>
+                </span>
+              </div>
+              <h1 class="post-title"><%= post.title %></h1>
+              <div class="post-meta">
+                <span><%= post.writer && post.writer.nickname ? post.writer.nickname : post.writer && post.writer.name ? post.writer.name : '익명' %></span>
+                <span>·</span>
+                <span><%= new Date(post.createdAt).toLocaleString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></span>
+              </div>
+              <div class="post-info">
+                <div class="post-info-item">
+                  <span class="post-info-label">모집 마감일:</span>
+                  <span><%= new Date(post.deadline).toLocaleDateString('ko-KR') %></span>
+                </div>
+                <div class="post-info-item">
+                  <span class="post-info-label">모집 인원:</span>
+                  <span><%= post.currentCount || 1 %>/<%= post.recruitCount %>명</span>
+                </div>
+                <% if (post.positions && post.positions.length > 0) { %>
+                  <div class="post-info-item">
+                    <span class="post-info-label">포지션:</span>
+                    <span><%= post.positions.join(', ') %></span>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+            <div class="post-stats">
+              <button type="button" class="post-stat-item scrap-btn-detail" data-post-id="<%= post._id %>" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 0.4vw;">
+                <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13.7139 1C14.0837 1 14.3718 1.1174 14.6318 1.37012C14.891 1.62205 15.0004 1.88812 15 2.2207V18.5L8.38477 15.7432C8.13863 15.6406 7.86137 15.6406 7.61523 15.7432L1 18.5V2.22266C1 1.88855 1.10965 1.6221 1.36816 1.37109C1.59622 1.14975 1.84572 1.03206 2.15234 1.00586L2.28711 1H13.7139Z" stroke="<%= typeof isScrapped !== 'undefined' && isScrapped ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= typeof isScrapped !== 'undefined' && isScrapped ? '#1D5DFF' : 'none' %>"/>
+                </svg>
+                <span class="post-scraps-detail-<%= post._id %>"><%= post.scraps || 0 %></span>
+              </button>
+              <div class="post-stat-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <mask id="path-1-inside-1_389_1164" fill="white">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0.00100005C15.523 0.00100005 20 4.478 20 10.001C20.0008 11.4744 19.6761 12.9297 19.049 14.263L19.979 18.8C20.0121 18.962 20.0045 19.1297 19.957 19.288C19.9094 19.4464 19.8233 19.5904 19.7064 19.7074C19.5894 19.8243 19.4454 19.9104 19.287 19.958C19.1287 20.0055 18.961 20.0131 18.799 19.98L14.262 19.05C12.968 19.66 11.522 20 10 20C4.477 20 0 15.524 0 10C0 4.478 4.477 0 10 0"/>
+                  </mask>
+                  <path d="M20 10.001L18 10.0021V10.001H20ZM19.049 14.263L17.0897 14.6646L16.9562 14.0133L17.2392 13.4117L19.049 14.263ZM19.979 18.8L21.9383 18.3984L21.9385 18.3995L19.979 18.8ZM18.799 19.98L18.3985 21.9395L18.3974 21.9393L18.799 19.98ZM14.262 19.05L13.4092 17.2409L14.0114 16.957L14.6636 17.0907L14.262 19.05ZM10 0.00100005V-1.999C16.6276 -1.999 22 3.37343 22 10.001H20H18C18 5.58257 14.4184 2.001 10 2.001V0.00100005ZM20 10.001L22 9.99985C22.001 11.7679 21.6113 13.5143 20.8588 15.1142L19.049 14.263L17.2392 13.4117C17.7409 12.3451 18.0007 11.1809 18 10.0021L20 10.001ZM19.049 14.263L21.0083 13.8614L21.9383 18.3984L19.979 18.8L18.0197 19.2016L17.0897 14.6646L19.049 14.263ZM19.979 18.8L21.9385 18.3995C22.0378 18.8855 22.0151 19.3885 21.8724 19.8635L19.957 19.288L18.0416 18.7125C17.994 18.8708 17.9864 19.0385 18.0195 19.2005L19.979 18.8ZM19.957 19.288L21.8724 19.8635C21.7296 20.3386 21.4713 20.7708 21.1206 21.1216L19.7064 19.7074L18.2921 18.2931C18.1752 18.4101 18.0891 18.5541 18.0416 18.7125L19.957 19.288ZM19.7064 19.7074L21.1206 21.1216C20.7698 21.4723 20.3376 21.7306 19.8625 21.8734L19.287 19.958L18.7115 18.0426C18.5531 18.0901 18.4091 18.1762 18.2921 18.2931L19.7064 19.7074ZM19.287 19.958L19.8625 21.8734C19.3875 22.0161 18.8845 22.0388 18.3985 21.9395L18.799 19.98L19.1995 18.0205C19.0375 17.9874 18.8698 17.995 18.7115 18.0426L19.287 19.958ZM18.799 19.98L18.3974 21.9393L13.8604 21.0093L14.262 19.05L14.6636 17.0907L19.2006 18.0207L18.799 19.98ZM14.262 19.05L15.1148 20.8591C13.5591 21.5924 11.8223 22 10 22V20V18C11.2217 18 12.3769 17.7275 13.4092 17.2409L14.262 19.05ZM10 20V22C3.37256 22 -2 16.6287 -2 10H0H2C2 14.4193 5.58144 18 10 18V20ZM0 10H-2C-2 3.37356 3.3723 -2 10 -2V0V2C5.5817 2 2 5.58244 2 10H0Z" fill="#818181" mask="url(#path-1-inside-1_389_1164)"/>
+                </svg>
+                <span class="post-comments-count"><%= post.comments || 0 %></span>
+              </div>
+              <% if (typeof isOwner !== 'undefined' && isOwner) { %>
+                <div style="position: relative;">
+                  <button type="button" class="more-menu-btn post-more-btn" data-post-id="<%= post._id %>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="12" cy="5" r="2" fill="currentColor"/>
+                      <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                      <circle cx="12" cy="19" r="2" fill="currentColor"/>
+                    </svg>
+                  </button>
+                  <div class="more-menu post-more-menu" data-post-id="<%= post._id %>">
+                    <button type="button" class="more-menu-item" onclick="window.location.href='/campus/<%= post._id %>/edit'">수정하기</button>
+                    <button type="button" class="more-menu-item danger" onclick="deletePost('<%= post._id %>')">삭제하기</button>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="post-content">
+            <%= post.content %>
+          </div>
+
+          <% if (post.hashtags && post.hashtags.length > 0) { %>
+            <div class="hashtags">
+              <% post.hashtags.forEach(tag => { %>
+                <span class="hashtag">#<%= tag %></span>
+              <% }) %>
+            </div>
+          <% } %>
+
+          <div class="comments-section">
+            <h2 style="font-size: 1.25vw; font-weight: 700; color: rgba(24, 50, 117, 0.92); margin-bottom: 1.5vw;">댓글</h2>
+            
+            <div class="comment-form">
+              <textarea class="comment-input" id="comment-input" placeholder="댓글을 입력하세요..." rows="3"></textarea>
+              <button type="button" class="comment-submit" id="comment-submit">댓글 작성</button>
+            </div>
+
+            <div class="comment-list" id="comment-list">
+              <% if (typeof comments !== 'undefined' && comments && comments.length > 0) { %>
+                <% comments.forEach(comment => { %>
+                  <div class="comment-item" data-comment-id="<%= comment._id %>">
+                    <div class="comment-header">
+                      <div>
+                        <span class="comment-author"><%= comment.writer && comment.writer.nickname ? comment.writer.nickname : comment.writer && comment.writer.name ? comment.writer.name : '익명' %></span>
+                        <span class="comment-date comment-time-ago" data-timestamp="<%= comment.createdAt.toISOString() %>"> · </span>
+                      </div>
+                      <% if (typeof comment.isCommentOwner !== 'undefined' && comment.isCommentOwner) { %>
+                        <div style="position: relative;">
+                          <button type="button" class="more-menu-btn comment-more-btn" data-comment-id="<%= comment._id %>">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="5" r="2" fill="currentColor"/>
+                              <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                              <circle cx="12" cy="19" r="2" fill="currentColor"/>
+                            </svg>
+                          </button>
+                          <div class="more-menu comment-more-menu" data-comment-id="<%= comment._id %>">
+                            <button type="button" class="more-menu-item" onclick="editComment('<%= comment._id %>', '<%= comment.content.replace(/'/g, "\\'") %>')">수정하기</button>
+                            <button type="button" class="more-menu-item danger" onclick="deleteComment('<%= comment._id %>')">삭제하기</button>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                    <div class="comment-content"><%= comment.content %></div>
+                    <div class="comment-actions">
+                      <button type="button" class="comment-like-btn" data-comment-id="<%= comment._id %>">
+                        <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="<%= typeof comment.isLiked !== 'undefined' && comment.isLiked ? '#1D5DFF' : '#818181' %>" stroke-width="2" stroke-linejoin="round" fill="<%= typeof comment.isLiked !== 'undefined' && comment.isLiked ? '#1D5DFF' : 'none' %>"/>
+                        </svg>
+                        <span class="comment-likes-<%= comment._id %>"><%= comment.likes || 0 %></span>
+                      </button>
+                    </div>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <p style="text-align: center; color: rgba(31, 61, 122, 0.6); font-size: 0.88vw; padding: 2vw;">아직 댓글이 없습니다. 첫 댓글을 작성해보세요!</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <dialog class="modal" id="folder-select-modal">
+          <div class="modal-form">
+            <h2>폴더 선택</h2>
+            <p class="modal-desc">이 글을 저장할 폴더를 선택하세요</p>
+            <div id="folder-list" class="folder-select-list">
+              <% if (typeof folders !== 'undefined' && folders && folders.length > 0) { %>
+                <% folders.forEach(folder => { %>
+                  <button type="button" class="folder-select-item" data-folder-id="<%= folder._id %>">
+                    <span><%= folder.name %></span>
+                    <span class="folder-select-count"><%= folder.posts ? folder.posts.length : 0 %>개</span>
+                  </button>
+                <% }) %>
+              <% } else { %>
+                <p style="text-align: center; color: rgba(31, 61, 122, 0.6); font-size: 0.9vw; padding: 2vw;">폴더가 없습니다. 프로필에서 폴더를 먼저 생성해주세요.</p>
+              <% } %>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-primary" onclick="document.getElementById('folder-select-modal').close(); showCreateFolderModal();">폴더 생성</button>
+              <button type="button" class="btn" onclick="document.getElementById('folder-select-modal').close()">취소</button>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog class="modal" id="create-folder-modal">
+          <form id="create-folder-form" class="modal-form" autocomplete="off">
+            <h2>폴더 생성</h2>
+            <p style="margin-bottom: 1.5vw; color: rgba(31, 61, 122, 0.75); font-size: 0.9vw;">스크랩한 글을 저장할 폴더를 만들어주세요</p>
+            <div class="form-group" style="margin-bottom: 1.5vw;">
+              <label for="folder-name" style="display: block; margin-bottom: 0.5vw; color: rgba(24, 50, 117, 0.92); font-size: 0.9vw; font-weight: 600;">폴더 이름</label>
+              <input type="text" id="folder-name" name="name" required autocomplete="off" placeholder="폴더 이름을 입력하세요" style="width: 100%; padding: 0.8vw; border: 0.05vw solid rgba(29, 93, 255, 0.3); border-radius: 0.5vw; font-size: 0.9vw; background: rgba(255, 255, 255, 0.1); color: rgba(24, 50, 117, 0.92);" />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary" style="padding: 0.8vw 1.5vw; background: #1D5DFF; color: white; border: none; border-radius: 0.5vw; font-size: 0.9vw; font-weight: 600; cursor: pointer;">생성</button>
+              <button type="button" class="btn" onclick="document.getElementById('create-folder-modal').close()" style="padding: 0.8vw 1.5vw; background: rgba(255, 255, 255, 0.1); color: rgba(24, 50, 117, 0.92); border: 0.05vw solid rgba(29, 93, 255, 0.3); border-radius: 0.5vw; font-size: 0.9vw; font-weight: 600; cursor: pointer;">취소</button>
+            </div>
+          </form>
+        </dialog>
+      </main>
+
+      <script>
+        const postId = '<%= post._id %>';
+        const postType = '<%= typeof postType !== 'undefined' ? postType : 'recruit' %>';
+        let currentScrapStatus = false;
+
+        // 스크랩 기능
+        document.querySelector('.scrap-btn-detail')?.addEventListener('click', async function() {
+          const scrapsSpan = this.querySelector(`.post-scraps-detail-${postId}`);
+          const svg = this.querySelector('svg path');
+
+          try {
+            const url = postType === 'recruit' 
+              ? `/campus/${postId}/scrap`
+              : `/campus/seek/${postId}/scrap`;
+            
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'same-origin'
+            });
+
+            const data = await response.json();
+            if (data.success) {
+              scrapsSpan.textContent = data.scraps;
+              currentScrapStatus = data.isScrapped;
+              
+              if (data.isScrapped) {
+                svg.setAttribute('stroke', '#1D5DFF');
+                svg.setAttribute('fill', '#1D5DFF');
+                svg.removeAttribute('fill-opacity');
+                
+                // 스크랩 성공 시 폴더 선택 모달 표시
+                const folders = <%- JSON.stringify(typeof folders !== 'undefined' && folders ? folders : []) %>;
+                console.log('Folders:', folders, 'Length:', folders ? folders.length : 0);
+                if (folders && Array.isArray(folders) && folders.length > 0) {
+                  showFolderSelectModal();
+                } else {
+                  // 폴더가 없으면 폴더 생성 모달 표시
+                  console.log('Showing create folder modal');
+                  showCreateFolderModal();
+                }
+              } else {
+                svg.setAttribute('stroke', '#818181');
+                svg.setAttribute('fill', 'none');
+                svg.removeAttribute('fill-opacity');
+              }
+            }
+          } catch (error) {
+            console.error('스크랩 처리 중 오류:', error);
+          }
+        });
+
+        // 폴더 선택 모달 표시
+        function showFolderSelectModal() {
+          const modal = document.getElementById('folder-select-modal');
+          if (modal) {
+            modal.showModal();
+          }
+        }
+
+        // 폴더 생성 모달 표시
+        function showCreateFolderModal() {
+          const modal = document.getElementById('create-folder-modal');
+          console.log('showCreateFolderModal called, modal:', modal);
+          if (modal) {
+            modal.showModal();
+            console.log('Modal shown');
+          } else {
+            console.error('Create folder modal not found!');
+          }
+        }
+
+        // 폴더 선택
+        document.querySelectorAll('.folder-select-item').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const folderId = this.dataset.folderId;
+            
+            try {
+              const response = await fetch(`/folders/${folderId}/posts`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                  postId: postId,
+                  postType: postType
+                })
+              });
+
+              const data = await response.json();
+              if (data.success) {
+                document.getElementById('folder-select-modal').close();
+                alert('폴더에 추가되었습니다.');
+              } else {
+                alert(data.message || '폴더에 추가하는데 실패했습니다.');
+              }
+            } catch (error) {
+              console.error('폴더에 추가 중 오류:', error);
+              alert('폴더에 추가 중 오류가 발생했습니다.');
+            }
+          });
+        });
+
+        // 폴더 생성
+        document.getElementById('create-folder-form')?.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const name = formData.get('name');
+
+          if (!name || !name.trim()) {
+            alert('폴더 이름을 입력해주세요.');
+            return;
+          }
+
+          try {
+            const response = await fetch('/folders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'same-origin',
+              body: JSON.stringify({ name: name.trim() })
+            });
+
+            const data = await response.json();
+            if (data.success && data.folder) {
+              document.getElementById('create-folder-modal').close();
+              
+              // 생성된 폴더에 자동으로 글 추가
+              try {
+                const addResponse = await fetch(`/folders/${data.folder._id}/posts`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  credentials: 'same-origin',
+                  body: JSON.stringify({
+                    postId: postId,
+                    postType: postType
+                  })
+                });
+
+                const addData = await addResponse.json();
+                if (addData.success) {
+                  alert('폴더가 생성되었고 글도 추가되었습니다.');
+                } else {
+                  alert('폴더는 생성되었지만 글 추가에 실패했습니다.');
+                }
+              } catch (error) {
+                console.error('폴더에 글 추가 중 오류:', error);
+                alert('폴더는 생성되었지만 글 추가 중 오류가 발생했습니다.');
+              }
+            } else {
+              alert(data.message || '폴더 생성에 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('폴더 생성 중 오류:', error);
+            alert('폴더 생성 중 오류가 발생했습니다.');
+          }
+        });
+
+        // 댓글 작성
+        document.getElementById('comment-submit')?.addEventListener('click', async function() {
+          const input = document.getElementById('comment-input');
+          const content = input.value.trim();
+
+          if (!content) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+          }
+
+          try {
+            const response = await fetch(`/campus/${postId}/comment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'same-origin',
+              body: JSON.stringify({ content })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+              input.value = '';
+              const commentList = document.getElementById('comment-list');
+              const emptyMsg = commentList.querySelector('p');
+              if (emptyMsg) emptyMsg.remove();
+              
+              const escapedContent = data.comment.content.replace(/'/g, "\\'").replace(/\n/g, '\\n');
+              const commentHtml = `
+                <div class="comment-item" data-comment-id="${data.comment._id}">
+                  <div class="comment-header">
+                    <div>
+                      <span class="comment-author">${data.comment.writer && data.comment.writer.nickname ? data.comment.writer.nickname : data.comment.writer && data.comment.writer.name ? data.comment.writer.name : '익명'}</span>
+                      <span class="comment-date comment-time-ago" data-timestamp="${data.comment.createdAt}"> · 방금 전</span>
+                    </div>
+                    <div style="position: relative;">
+                      <button type="button" class="more-menu-btn comment-more-btn" data-comment-id="${data.comment._id}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="5" r="2" fill="currentColor"/>
+                          <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                          <circle cx="12" cy="19" r="2" fill="currentColor"/>
+                        </svg>
+                      </button>
+                      <div class="more-menu comment-more-menu" data-comment-id="${data.comment._id}">
+                        <button type="button" class="more-menu-item" onclick="editComment('${data.comment._id}', '${escapedContent}')">수정하기</button>
+                        <button type="button" class="more-menu-item danger" onclick="deleteComment('${data.comment._id}')">삭제하기</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="comment-content">${data.comment.content}</div>
+                  <div class="comment-actions">
+                    <button type="button" class="comment-like-btn" data-comment-id="${data.comment._id}">
+                      <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.5 1C17.0289 1 19 2.96348 19 5.5C19 7.05624 18.3069 8.55147 16.8818 10.2949C15.4458 12.0517 13.3728 13.9364 10.7783 16.2891L10.7764 16.29L10 16.9971L9.22363 16.29L9.22168 16.2891C6.62719 13.9364 4.55418 12.0517 3.11816 10.2949C1.69311 8.55147 1 7.05624 1 5.5C1 2.96348 2.97109 1 5.5 1C6.9377 1 8.33417 1.67462 9.24121 2.73145C9.43119 2.95272 9.70835 3.08008 10 3.08008C10.2916 3.08008 10.5688 2.95272 10.7588 2.73145C11.6658 1.67462 13.0623 1 14.5 1Z" stroke="#818181" stroke-width="2" stroke-linejoin="round" fill="none"/>
+                      </svg>
+                      <span class="comment-likes-${data.comment._id}">0</span>
+                    </button>
+                  </div>
+                </div>
+              `;
+              commentList.insertAdjacentHTML('beforeend', commentHtml);
+              setupMoreMenu(document.querySelector(`.comment-more-btn[data-comment-id="${data.comment._id}"]`));
+
+              const commentCount = document.querySelector('.post-comments-count');
+              if (commentCount) {
+                commentCount.textContent = data.commentCount;
+              }
+            }
+          } catch (error) {
+            console.error('댓글 작성 중 오류:', error);
+            alert('댓글 작성 중 오류가 발생했습니다.');
+          }
+        });
+
+        // 댓글 좋아요 (폴더 모달 없이)
+        document.querySelectorAll('.comment-like-btn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const commentId = this.dataset.commentId;
+            const likesSpan = this.querySelector(`.comment-likes-${commentId}`);
+            const svg = this.querySelector('svg path');
+
+            try {
+              const response = await fetch(`/community/comment/${commentId}/like`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin'
+              });
+
+              const data = await response.json();
+              if (data.success) {
+                likesSpan.textContent = data.likes;
+                if (data.isLiked) {
+                  svg.setAttribute('stroke', '#1D5DFF');
+                  svg.setAttribute('fill', '#1D5DFF');
+                } else {
+                  svg.setAttribute('stroke', '#818181');
+                  svg.setAttribute('fill', 'none');
+                }
+              }
+            } catch (error) {
+              console.error('댓글 좋아요 처리 중 오류:', error);
+            }
+          });
+        });
+
+        // 더보기 메뉴
+        function setupMoreMenu(btn) {
+          if (btn.dataset.attached === 'true') return;
+          btn.dataset.attached = 'true';
+
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const menu = this.nextElementSibling;
+            document.querySelectorAll('.more-menu').forEach(m => {
+              if (m !== menu) m.classList.remove('show');
+            });
+            menu.classList.toggle('show');
+          });
+        }
+
+        document.querySelectorAll('.more-menu-btn').forEach(btn => setupMoreMenu(btn));
+        document.addEventListener('click', () => {
+          document.querySelectorAll('.more-menu').forEach(m => m.classList.remove('show'));
+        });
+
+        // 댓글 상대 시간 표시
+        function commentTimeAgo(date) {
+          const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+          const minutes = Math.floor(seconds / 60);
+          const hours = Math.floor(minutes / 60);
+          const days = Math.floor(hours / 24);
+
+          if (days < 1) {
+            if (seconds < 60) return "방금 전";
+            if (minutes < 60) return `${minutes}분 전`;
+            return `${hours}시간 전`;
+          } else {
+            return new Date(date).toLocaleString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          }
+        }
+
+        document.querySelectorAll('.comment-time-ago').forEach(element => {
+          const timestamp = element.dataset.timestamp;
+          element.textContent = ` · ${commentTimeAgo(timestamp)}`;
+        });
+
+        // 게시글 삭제
+        function deletePost(postId) {
+          if (!confirm('정말 이 글을 삭제하시겠습니까?')) return;
+
+          fetch(`/campus/${postId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: '_method=DELETE',
+            credentials: 'same-origin'
+          })
+          .then(res => {
+            if (res.ok || res.redirected) {
+              window.location.href = '/campus';
+            } else {
+              alert('삭제 중 오류가 발생했습니다.');
+            }
+          })
+          .catch(error => {
+            console.error('삭제 중 오류:', error);
+            alert('삭제 중 오류가 발생했습니다.');
+          });
+        }
+
+        // 댓글 수정
+        function editComment(commentId, currentContent) {
+          const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
+          const contentDiv = commentItem.querySelector('.comment-content');
+          const originalContent = contentDiv.textContent;
+
+          const textarea = document.createElement('textarea');
+          textarea.value = originalContent;
+          textarea.className = 'comment-input';
+          textarea.style.marginBottom = '0.8vw';
+          textarea.style.minHeight = '3vw';
+
+          const buttonGroup = document.createElement('div');
+          buttonGroup.style.display = 'flex';
+          buttonGroup.style.gap = '0.5vw';
+          buttonGroup.style.marginTop = '0.5vw';
+
+          const saveBtn = document.createElement('button');
+          saveBtn.textContent = '저장';
+          saveBtn.className = 'comment-submit';
+          saveBtn.style.marginTop = '0';
+          saveBtn.style.padding = '0.5vw 1vw';
+          saveBtn.onclick = async () => {
+            const newContent = textarea.value.trim();
+            if (!newContent) {
+              alert('댓글 내용을 입력해주세요.');
+              return;
+            }
+
+            try {
+              const formData = new FormData();
+              formData.append('_method', 'PUT');
+              formData.append('content', newContent);
+
+              const response = await fetch(`/community/comment/${commentId}`, {
+                method: 'POST',
+                credentials: 'same-origin',
+                body: formData
+              });
+
+              if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                  contentDiv.textContent = data.comment.content;
+                  contentDiv.style.display = 'block';
+                  textarea.remove();
+                  buttonGroup.remove();
+                } else {
+                  alert('댓글 수정 중 오류가 발생했습니다.');
+                }
+              } else {
+                alert('댓글 수정 중 오류가 발생했습니다.');
+              }
+            } catch (error) {
+              console.error('댓글 수정 중 오류:', error);
+              alert('댓글 수정 중 오류가 발생했습니다.');
+            }
+          };
+
+          const cancelBtn = document.createElement('button');
+          cancelBtn.textContent = '취소';
+          cancelBtn.className = 'comment-submit';
+          cancelBtn.style.marginTop = '0';
+          cancelBtn.style.padding = '0.5vw 1vw';
+          cancelBtn.style.background = '#ccc';
+          cancelBtn.style.boxShadow = 'none';
+          cancelBtn.onclick = () => {
+            contentDiv.textContent = originalContent;
+            contentDiv.style.display = 'block';
+            textarea.remove();
+            buttonGroup.remove();
+          };
+
+          buttonGroup.appendChild(saveBtn);
+          buttonGroup.appendChild(cancelBtn);
+
+          contentDiv.style.display = 'none';
+          contentDiv.parentNode.insertBefore(textarea, contentDiv);
+          textarea.parentNode.insertBefore(buttonGroup, textarea.nextSibling);
+          textarea.focus();
+        }
+
+        // 댓글 삭제
+        function deleteComment(commentId) {
+          if (!confirm('정말 이 댓글을 삭제하시겠습니까?')) return;
+
+          const formData = new FormData();
+          formData.append('_method', 'DELETE');
+
+          fetch(`/community/comment/${commentId}`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: formData
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
+              commentItem.remove();
+
+              const commentCount = document.querySelector('.post-comments-count');
+              if (commentCount) {
+                const currentCount = parseInt(commentCount.textContent) || 0;
+                commentCount.textContent = Math.max(0, currentCount - 1);
+              }
+
+              const commentList = document.getElementById('comment-list');
+              if (commentList.children.length === 0) {
+                commentList.innerHTML = '<p style="text-align: center; color: rgba(31, 61, 122, 0.6); font-size: 0.88vw; padding: 2vw;">아직 댓글이 없습니다. 첫 댓글을 작성해보세요!</p>';
+              }
+            } else {
+              alert('삭제 중 오류가 발생했습니다.');
+            }
+          })
+          .catch(error => {
+            console.error('댓글 삭제 중 오류:', error);
+            alert('삭제 중 오류가 발생했습니다.');
+          });
+        }
+      </script>
+</body>
+
+</html>
+
