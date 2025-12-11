@@ -21,7 +21,6 @@ const port = process.env.PORT || 4000;
 
 // EJS 설정
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
 
 app.use(express.static("./public"));

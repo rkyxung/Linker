@@ -50,6 +50,10 @@ header nav a {
   font-weight: bold;
 }
 
+.inline-form {
+  display: inline;
+}
+
 header nav .nav-logo {
   display: inline-flex;
   align-items: center;

@@ -1,3 +1,8 @@
+/* 프로필 페이지 스타일 */
+
+.profile-form {
+  width: 100%;
+}
 
 /* SVG sizing for profile (1920 base) */
 .icon-hero-edit { width: 1.71875vw; height: auto; }

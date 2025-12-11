@@ -40,11 +40,11 @@
               aria-labelledby="tab-all">
               <% if (typeof posts !== 'undefined' && posts && posts.length > 0) { %>
                 <% posts.forEach(post => { %>
-                  <article class="post-card" style="cursor: pointer; position: relative;" onclick="window.location.href='/community/<%= post._id %>'">
+                  <article class="post-card community-post-card" onclick="window.location.href='/community/<%= post._id %>'">
                     <div class="post-header">
-                      <div class="post-header__title" style="flex: 1;">
-                        <div style="display: flex; align-items: center; gap: 0.52vw; margin-bottom: 0.5vw;">
-                          <span style="padding: 0.42vw 0.78vw; border-radius: 0.78vw; background: rgba(43, 107, 255, 0.12); color: #2f6bff; font-size: 0.74vw; font-weight: 600;">
+                      <div class="post-header__title community-post-header-title">
+                        <div class="community-post-category-wrapper">
+                          <span class="community-post-category">
                             <% 
                               const categoryMap = {
                                 'free': '자유게시판',

@@ -883,6 +883,73 @@ select:not([multiple]) {
   color: rgba(31, 61, 122, 0.6);
 }
 
+/* 모달 내부 폼 스타일 */
+.modal .modal-desc {
+  margin-bottom: 1.5vw;
+  color: rgba(31, 61, 122, 0.75);
+  font-size: 0.9vw;
+}
+
+.modal .form-group {
+  margin-bottom: 1.5vw;
+}
+
+.modal .form-group label {
+  display: block;
+  margin-bottom: 0.5vw;
+  color: rgba(24, 50, 117, 0.92);
+  font-size: 0.9vw;
+  font-weight: 600;
+}
+
+.modal .form-group input[type="text"] {
+  width: 100%;
+  padding: 0.8vw;
+  border: 0.05vw solid rgba(29, 93, 255, 0.3);
+  border-radius: 0.5vw;
+  font-size: 0.9vw;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(24, 50, 117, 0.92);
+  box-sizing: border-box;
+}
+
+.modal .btn-primary {
+  padding: 0.8vw 1.5vw;
+  background: #1D5DFF;
+  color: white;
+  border: none;
+  border-radius: 0.5vw;
+  font-size: 0.9vw;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal .btn {
+  padding: 0.8vw 1.5vw;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(24, 50, 117, 0.92);
+  border: 0.05vw solid rgba(29, 93, 255, 0.3);
+  border-radius: 0.5vw;
+  font-size: 0.9vw;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 댓글 없음 메시지 */
+.comment-empty-message {
+  text-align: center;
+  color: rgba(31, 61, 122, 0.6);
+  font-size: 0.88vw;
+  padding: 2vw;
+}
+
+.folder-empty-message {
+  text-align: center;
+  color: rgba(31, 61, 122, 0.6);
+  font-size: 0.9vw;
+  padding: 2vw;
+}
+
 /* Hero CTA button (shared) */
 .hero-cta-btn {
   padding: 0.9vw 2vw;

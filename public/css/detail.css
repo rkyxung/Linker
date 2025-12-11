@@ -357,3 +357,29 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* 상세 페이지 버튼 및 제목 스타일 */
+.post-stat-item-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+
+.comments-title {
+  font-size: 1.25vw;
+  font-weight: 700;
+  color: rgba(24, 50, 117, 0.92);
+  margin-bottom: 1.5vw;
+}
+
+.more-menu-wrapper {
+  position: relative;
+}
+
+.post-info-value {
+  white-space: pre-wrap;
+}
+
