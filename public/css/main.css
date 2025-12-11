@@ -171,9 +171,7 @@ body {
   overflow: hidden;
 }
 
-.home-page .hero-card,
-.page-campus .hero-card,
-.page-contest .hero-card {
+.hero-card {
   position: relative;
   padding: 4.62vh 3.2vw 2.5vh;
   border-radius: 1.67vw;
@@ -187,9 +185,7 @@ body {
   overflow: hidden;
 }
 
-.home-page .hero-text,
-.page-campus .hero-text,
-.page-contest .hero-text {
+.hero-text {
   display: flex;
   flex-direction: column;
   gap: 1.30vh;
@@ -198,9 +194,7 @@ body {
   color: #ffffff;
 }
 
-.home-page .hero-nickname,
-.page-campus .hero-nickname,
-.page-contest .hero-nickname {
+.hero-nickname {
   display: flex;
   align-items: center;
   gap: 0.625vw;
@@ -208,9 +202,7 @@ body {
   font-weight: 600;
 }
 
-.home-page .hero-edit,
-.page-campus .hero-edit,
-.page-contest .hero-edit {
+.hero-edit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -218,36 +210,26 @@ body {
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.home-page .hero-edit:hover,
-.page-campus .hero-edit:hover,
-.page-contest .hero-edit:hover {
+.hero-edit:hover {
   transform: translateY(-0.2vw);
 }
 
-.home-page .hero-job,
-.page-campus .hero-job,
-.page-contest .hero-job {
+.hero-job {
   font-size: 1.3vw;
   font-weight: 500;
   margin-top: 2vh;
   opacity: 1;
 }
 
-.home-page .hero-job.hero-text--empty,
-.page-campus .hero-job.hero-text--empty,
-.page-contest .hero-job.hero-text--empty {
+.hero-job.hero-text--empty {
   opacity: 0.7;
 }
 
-.home-page .hero-school,
-.page-campus .hero-school,
-.page-contest .hero-school {
+.hero-school {
   opacity: 1;
 }
 
-.home-page .hero-school.hero-text--empty,
-.page-campus .hero-school.hero-text--empty,
-.page-contest .hero-school.hero-text--empty {
+.hero-school.hero-text--empty {
   opacity: 0.7;
 }
 
@@ -257,9 +239,7 @@ body {
   margin-top: 0;
 }
 
-.home-page .hero-decoration,
-.page-campus .hero-decoration,
-.page-contest .hero-decoration {
+.hero-decoration {
   position: relative;
   width: 10.42vw;
   height: 6.77vw;

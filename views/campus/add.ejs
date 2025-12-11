@@ -152,7 +152,7 @@
           </a>
 
           <h1 style="font-size: 1.46vw; font-weight: 700; color: rgba(24, 50, 117, 0.92); margin-bottom: 2vw;">
-            <%= typeof isEdit !== 'undefined' && isEdit ? '팀원 모집 글 수정' : '팀원 모집하기' %>
+            팀원 모집하기
           </h1>
 
           <% if (typeof error !== "undefined" && error) { %>
@@ -161,7 +161,7 @@
             </div>
           <% } %>
 
-          <form action="<%= typeof isEdit !== 'undefined' && isEdit && formData && formData._id ? ('/campus/' + formData._id + '/edit') : '/campus/add' %>" method="POST">
+          <form action="/campus/add" method="POST">
             <div class="form-group">
               <label for="title">제목</label>
               <input type="text" id="title" name="title" placeholder="모집글 제목을 입력하세요" 
@@ -212,7 +212,7 @@
 
             <div class="form-actions">
               <button type="button" class="btn btn-secondary" onclick="window.location.href='/campus'">취소</button>
-              <button type="submit" class="btn btn-primary"><%= typeof isEdit !== 'undefined' && isEdit ? '수정' : '등록' %></button>
+              <button type="submit" class="btn btn-primary">등록</button>
             </div>
           </form>
         </div>
