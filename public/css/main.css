@@ -692,9 +692,9 @@ body {
 }
 
 .modal[open] {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal::backdrop {
