@@ -557,14 +557,11 @@
             }
 
             try {
-              const formData = new FormData();
-              formData.append('_method', 'PUT');
-              formData.append('content', newContent);
-
               const response = await fetch(`/community/comment/${commentId}`, {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 credentials: 'same-origin',
-                body: formData
+                body: new URLSearchParams({ _method: 'PUT', content: newContent }).toString()
               });
 
               if (response.ok) {
@@ -613,13 +610,11 @@
         function deleteComment(commentId) {
           if (!confirm('정말 이 댓글을 삭제하시겠습니까?')) return;
 
-          const formData = new FormData();
-          formData.append('_method', 'DELETE');
-
           fetch(`/community/comment/${commentId}`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             credentials: 'same-origin',
-            body: formData
+            body: new URLSearchParams({ _method: 'DELETE' }).toString()
           })
           .then(res => res.json())
           .then(data => {

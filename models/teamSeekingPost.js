@@ -1,3 +1,4 @@
+// models/teamSeekingPost.js
 const mongoose = require("mongoose");
 
 // 팀 구하기 글 (자기 PR 위주)

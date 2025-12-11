@@ -1,6 +1,12 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
 const User = require("../models/userModel");
+const CommunityPost = require("../models/communityPost");
+const CommunityComment = require("../models/communityComment");
+const RecruitmentPost = require("../models/recruitmentPost");
+const TeamSeekingPost = require("../models/teamSeekingPost");
+const UserDescription = require("../models/userDescriptionModel");
 
 // @desc Get all users
 // @route GET /users
@@ -239,9 +245,77 @@ const logoutUser = (req, res) => {
 // @desc Delete user
 // @route DELETE /users/:id
 const deleteUser = asyncHandler(async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
+  const userId = req.params.id;
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+
+  // 본인만 탈퇴 가능
+  if (!req.session || req.session.userId !== userId) {
+    return res.status(403).json({ success: false, message: "본인 계정만 탈퇴할 수 있습니다." });
+  }
+
+  // 사용자가 작성한 댓글 목록 (댓글 수 보정용)
+  const userCommentCounts = await CommunityComment.aggregate([
+    { $match: { writer: userObjectId } },
+    { $group: { _id: "$postId", count: { $sum: 1 } } }
+  ]);
+
+  // 댓글 삭제
+  await CommunityComment.deleteMany({ writer: userObjectId });
+
+  // 댓글 카운트 보정 (커뮤니티/캠퍼스/공모전 공통)
+  for (const { _id: postId, count } of userCommentCounts) {
+    await Promise.all([
+      CommunityPost.updateOne({ _id: postId }, { $inc: { comments: -count } }),
+      RecruitmentPost.updateOne({ _id: postId }, { $inc: { comments: -count } }),
+      TeamSeekingPost.updateOne({ _id: postId }, { $inc: { comments: -count } }),
+    ]);
+  }
+
+  // 사용자가 작성한 글과 그 댓글 삭제
+  const [recruitPosts, seekPosts, communityPosts] = await Promise.all([
+    RecruitmentPost.find({ writer: userObjectId }).select("_id").lean(),
+    TeamSeekingPost.find({ writer: userObjectId }).select("_id").lean(),
+    CommunityPost.find({ writer: userObjectId }).select("_id").lean(),
+  ]);
+
+  const recruitIds = recruitPosts.map(p => p._id);
+  const seekIds = seekPosts.map(p => p._id);
+  const communityIds = communityPosts.map(p => p._id);
+
+  if (recruitIds.length) await CommunityComment.deleteMany({ postId: { $in: recruitIds } });
+  if (seekIds.length) await CommunityComment.deleteMany({ postId: { $in: seekIds } });
+  if (communityIds.length) await CommunityComment.deleteMany({ postId: { $in: communityIds } });
+
+  await Promise.all([
+    RecruitmentPost.deleteMany({ _id: { $in: recruitIds } }),
+    TeamSeekingPost.deleteMany({ _id: { $in: seekIds } }),
+    CommunityPost.deleteMany({ _id: { $in: communityIds } }),
+  ]);
+
+  // 좋아요/스크랩 참조 제거
+  await Promise.all([
+    CommunityPost.updateMany(
+      { likedBy: userObjectId },
+      { $pull: { likedBy: userObjectId }, $inc: { likes: -1 } }
+    ),
+    CommunityComment.updateMany(
+      { likedBy: userObjectId },
+      { $pull: { likedBy: userObjectId }, $inc: { likes: -1 } }
+    ),
+    RecruitmentPost.updateMany(
+      { scrappedBy: userObjectId },
+      { $pull: { scrappedBy: userObjectId }, $inc: { scraps: -1 } }
+    ),
+    TeamSeekingPost.updateMany(
+      { scrappedBy: userObjectId },
+      { $pull: { scrappedBy: userObjectId }, $inc: { scraps: -1 } }
+    ),
+    UserDescription.deleteOne({ userId: userObjectId })
+  ]);
+
+  // 최종 사용자 삭제 및 세션 종료
+  await User.findByIdAndDelete(userObjectId);
   
-  // 세션 제거
   if (req.session) {
     req.session.destroy((error) => {
       if (error) {

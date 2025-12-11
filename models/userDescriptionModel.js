@@ -1,3 +1,4 @@
+// models/userDescriptionModel.js
 const mongoose = require('mongoose');
 
 const userDescriptionSchema = new mongoose.Schema({
